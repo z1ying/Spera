@@ -1,0 +1,110 @@
+// ImpactLink data model — implements design doc §4 exactly
+// (~/workspace/hackathon-prep/hsi-tpw-design-doc.md).
+// Privacy (§4.1): there are deliberately NO name / date-of-birth / case-number
+// fields anywhere in this schema. Participants exist only as hashed
+// pseudonymous keys (see src/lib/privacy.ts).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id           String      @id
+  name         String
+  /// JSON array of program type labels, as supplied by the org.
+  programTypes String      @map("program_types")
+  /// JSON array of facility names.
+  facilities   String
+  /// A = outcomes linked, B = process data only, C = critical fields missing (§6.1).
+  dataGrade    String      @map("data_grade")
+  programs     Program[]
+  importJobs   ImportJob[]
+
+  @@map("organizations")
+}
+
+model Program {
+  id           String       @id
+  orgId        String       @map("org_id")
+  organization Organization @relation(fields: [orgId], references: [id])
+  name         String
+  /// education | vocational | sud | restorative | reentry | other (§4)
+  type         String
+  facility     String
+  startDate    DateTime     @map("start_date")
+  endDate      DateTime     @map("end_date")
+  enrollments  Enrollment[]
+
+  @@map("programs")
+}
+
+model Participant {
+  /// SHA-256 hashed pseudonymous key (§4.1). Never a raw identity.
+  participantKey String       @id @map("participant_key")
+  releaseYear    Int          @map("release_year")
+  ageBand        String       @map("age_band")
+  gender         String
+  riskBand       String       @map("risk_band")
+  enrollments    Enrollment[]
+  outcomes       Outcome[]
+
+  @@map("participants")
+}
+
+model Enrollment {
+  id             String      @id
+  participantKey String      @map("participant_key")
+  participant    Participant @relation(fields: [participantKey], references: [participantKey])
+  programId      String      @map("program_id")
+  program        Program     @relation(fields: [programId], references: [id])
+  enrollDate     DateTime    @map("enroll_date")
+  /// enrolled | completed | dropped
+  status         String
+  completionDate DateTime?   @map("completion_date")
+  /// JSON: {"MCC": boolean, "RACC": boolean, "EMC": boolean}
+  credits        String
+
+  @@map("enrollments")
+}
+
+model Outcome {
+  id             String      @id
+  participantKey String      @map("participant_key")
+  participant    Participant @relation(fields: [participantKey], references: [participantKey])
+  /// arrest | conviction | return_to_custody
+  eventType      String      @map("event_type")
+  eventDate      DateTime    @map("event_date")
+  /// felony | misdemeanor
+  offenseLevel   String      @map("offense_level")
+
+  @@map("outcomes")
+}
+
+model CostParam {
+  key    String @id
+  value  Float
+  source String
+  year   Int
+
+  @@map("cost_params")
+}
+
+model ImportJob {
+  id           String       @id
+  orgId        String       @map("org_id")
+  organization Organization @relation(fields: [orgId], references: [id])
+  fileName     String       @map("file_name")
+  status       String
+  /// JSON: confirmed column mapping (§6.1). Null until confirmed.
+  mapping      String?
+  /// JSON: array of validation issues. Never silently dropped (§6.1).
+  issues       String?
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  @@map("import_jobs")
+}

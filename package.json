@@ -1,0 +1,34 @@
+{
+  "dependencies": {
+    "@prisma/client": "6.16.2",
+    "next": "15.5.28",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "recharts": "3.1.2"
+  },
+  "description": "ImpactLink \u2014 TPW impact-data framework (HSI 2026, Justice Reform track). See ../hsi-tpw-design-doc.md.",
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.12",
+    "@types/node": "22.15.0",
+    "@types/react": "19.1.0",
+    "@types/react-dom": "19.1.0",
+    "prisma": "6.16.2",
+    "tailwindcss": "4.1.12",
+    "tsx": "4.20.5",
+    "typescript": "5.9.2",
+    "vitest": "3.2.4"
+  },
+  "name": "impactlink",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "dev": "next dev",
+    "sanity": "tsx scripts/sanity_check.ts",
+    "seed": "tsx scripts/seed.ts",
+    "start": "next start",
+    "test": "vitest run"
+  },
+  "version": "0.1.0"
+}

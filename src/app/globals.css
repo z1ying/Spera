@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* ImpactLink base styles. Visual system lands in the M6 polish pass
+   (design doc §8): deep green / slate, print stylesheet on /report. */
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+@media print {
+  body {
+    @apply bg-white;
+  }
+}
