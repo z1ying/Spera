@@ -25,7 +25,7 @@
 
 - Frontend (the big one today): import wizard + dashboard + report page
 - Presenter: pitch is 4 min + 1 min Q&A on Sunday; script is written, delivery is the job
-- Taozi: data pipeline, metrics correctness, report numbers
+- Grace: data pipeline, metrics correctness, report numbers
 
 ## House rules (non-negotiable, they are our edge)
 
