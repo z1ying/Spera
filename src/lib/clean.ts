@@ -3,7 +3,7 @@
  * Pure functions, no I/O: callers pass in the participant registry, the
  * program dictionary and what is already on file, and get back the rows to
  * insert plus a receipt in which every problem is listed, never dropped
- * silently (§6.1) and every unmatched key is counted (§6.1 step 6, §23).
+ * silently (§6.1) and every unmatched key is counted (§6.1 step 6, §25).
  */
 import { DEFAULT_FRAMEWORK, type FrameworkConfig, type OutcomeEventType } from "./framework";
 import { NO_CREDITS, type Credits } from "./metrics";

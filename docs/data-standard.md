@@ -1,4 +1,4 @@
-# ImpactLink Data Standard v0.1
+# ImpactLink Data Standard v0.1 (draft — for TPW review)
 
 *How a network of community programs joins its records with outcome records — without centralizing identity — and measures impact it can defend.*
 
@@ -23,7 +23,8 @@ participant_key = HMAC-SHA256(network_key, normalize(shared_identifier))
 normalize(x)    = trim, upper-case, remove spaces and dashes
 ```
 
-- **Shared identifier**: the one identifier *both* halves already record. For TPW it is the CDCR number (to be confirmed per organization). For another nonprofit it is whatever its records and its outcome source both carry (e.g. a county booking number).
+- **Shared identifier**: the one identifier *both* halves can produce. For TPW it is the CDCR number if organizations record it; if they do not, TPW issues each participant a shared ID and, as a neutral steward, keeps the mapping from each organization's local ID to that shared ID. For another nonprofit it is whatever its records and its outcome source both carry (e.g. a county booking number).
+- **Why not an organization-private salt alone**: a key built from an organization's local ID and a salt only that organization holds cannot be reproduced by the outcome system, so the two halves could never be joined. Who issues the shared identifier and who holds the network key is a governance decision for TPW (§9, question 1).
 - **Network key**: held by the network's data steward, given only to the hashing tool each data source runs locally, never stored centrally. A keyed hash is required because short, fixed-format identifiers can be reversed from a plain hash by enumeration.
 - **What never leaves a data source**: names, dates of birth, case numbers, the raw shared identifier.
 
@@ -102,6 +103,19 @@ These numbers describe association plus a dose-response gradient, not proven cau
 3. Fill in baselines and costs **only from published sources, with citations** — the software refuses an uncited number.
 4. Agree on who holds the network key.
 
+## 9. Open questions for TPW (to be resolved in the pilot)
+
+1. What identifier do organizations actually hold that can link to outcome records, and who governs the shared ID and the network key?
+2. Where does outcome data realistically come from, in what form (individual records or totals), and how often?
+3. Which parole event types matter most for the report?
+4. Which configuration values would another organization need to change first?
+5. What is the simplest first submission an organization can realistically make? Is quarterly the right cadence?
+
+## 10. Proposed additions (not yet implemented)
+
+- Organization `region`; enrollment `program_hours`; completion status `in_progress`; outcome `source` (which system the record came from).
+- Every report prints its match rate and grade mix next to the headline number.
+
 ---
 
-References [1]–[3] are listed in the README. Version 0.1, 2026-10-24.
+TPW owns the standard; ImpactLink implements it. v0.1 drafted at Hack for Social Impact 2026, merging two team drafts. References [1]–[3] are listed in the README. 2026-10-24.

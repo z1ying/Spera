@@ -3,7 +3,7 @@
  *
  * Suggestion sources, in priority order (the server picks; see importer.ts):
  *   1. template — a mapping a human already confirmed for a file with the
- *      same headers (next quarter's export maps itself, §24)
+ *      same headers (next quarter's export maps itself, §26)
  *   2. cache    — DEMO_MODE replay of a recorded Gemini answer (§6.2)
  *   3. gemini   — Gemini proposes {target, confidence} per column (§2)
  *   4. rules    — synonym matching, always available, no network

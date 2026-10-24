@@ -10,7 +10,7 @@
  *
  *   npm run seed:demo   (= seed.ts --demo)
  *
- * Demo mode (design doc §23) holds back the enrollments and outcomes of
+ * Demo mode (design doc §25) holds back the enrollments and outcomes of
  * DEMO_HOLDOUT_ORGS so the live demo can bring them back in two steps:
  * sample_import_C_spanish.csv (process half) then
  * sample_import_D_outcomes_external.csv (outcome half). The participant

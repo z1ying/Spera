@@ -1,5 +1,5 @@
 /**
- * Framework configuration — design doc §24 / docs/data-standard.md.
+ * Framework configuration — design doc §26 / docs/data-standard.md.
  *
  * Everything that is specific to one jurisdiction lives in a JSON file under
  * config/frameworks/, not in code: the shared identifier used for the join,

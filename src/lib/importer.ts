@@ -1,5 +1,5 @@
 /**
- * Server-side import orchestration (design doc §6, §23, §24): picks the
+ * Server-side import orchestration (design doc §6, §25, §26): picks the
  * mapping suggestion source, runs the pure cleaners in clean.ts against the
  * database, writes the rows, records the ImportJob, and recomputes data
  * grades for the organizations the import touched.

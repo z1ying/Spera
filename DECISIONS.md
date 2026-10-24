@@ -75,7 +75,7 @@ mapping, M4 dashboard, M5 report page, M6 polish + §17 anti-graveyard list.
 
 ## 2026-10-24 (Sat) — v1.6 join credibility, v1.7 framework, M3 import wizard
 
-Design changes (written into the design doc first: §4.1, §6.1, §23, §24):
+Design changes (written into the design doc first: §4.1, §6.1, §25, §26 — renumbered after merging the teammate's §23–§24):
 - participant_key = HMAC-SHA256(network key, normalized CDCR number). The old
   org-local-ID + org-salt key could never match outcome systems.
 - Every import receipt shows the match rate; outcome files split it into
