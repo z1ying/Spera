@@ -11,14 +11,9 @@
  *     can be re-identified from a published breakdown.
  */
 import { createHmac } from "node:crypto";
+import { DEMO_NETWORK_KEY, normalizeCdcrNumber } from "./normalize";
 
-/**
- * Canonical form of a CDCR number before hashing: trimmed, upper-case,
- * spaces and dashes removed, so "ab-1234" and "AB1234" link to one person.
- */
-export function normalizeCdcrNumber(cdcrNumber: string): string {
-  return cdcrNumber.trim().toUpperCase().replace(/[\s-]/g, "");
-}
+export { DEMO_NETWORK_KEY, normalizeCdcrNumber };
 
 /**
  * participant_key = HMAC-SHA256(network_key, normalized CDCR number), hex (§4.1 v1.6).

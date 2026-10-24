@@ -21,8 +21,8 @@ export interface TargetField {
 }
 
 export const TARGET_FIELDS: TargetField[] = [
-  { key: "participant_key", label: "Participant key", kind: "enrollments", required: true,
-    description: "Hashed participant key (keyed hash of the shared identifier). Never a name or raw ID." },
+  { key: "participant_key", label: "Participant key / CDCR number", kind: "enrollments", required: true,
+    description: "Hashed participant key, or the raw shared identifier (CDCR number), which is hashed in the browser before upload. Never a name." },
   { key: "program", label: "Program name", kind: "enrollments", required: true,
     description: "The organization's own name for the program, e.g. 'GED Prep'." },
   { key: "enroll_date", label: "Start date", kind: "enrollments", required: true,
@@ -68,7 +68,7 @@ export function headerSignature(headers: string[]): string {
 
 /** Known header spellings (normalized) — English, abbreviated, Spanish, external systems. */
 const SYNONYMS: Record<string, string[]> = {
-  participant_key: ["participantkey", "participantid", "prtcpntid", "idparticipante", "subjectref", "personkey", "clientkey", "participante"],
+  participant_key: ["participantkey", "participantid", "cdcrnumber", "cdcr", "cdcrno", "numerocdcr", "sharedidentifier", "sharedid", "prtcpntid", "idparticipante", "subjectref", "personkey", "clientkey", "participante"],
   program: ["programname", "program", "prognm", "programa", "nombreprograma", "course", "class"],
   enroll_date: ["startdate", "strtdt", "fechainicio", "enrolldate", "enrollmentdate", "start", "inicio"],
   completion_date: ["enddate", "enddt", "fechafin", "completiondate", "exitdate", "end", "fin"],

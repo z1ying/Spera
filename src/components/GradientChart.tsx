@@ -9,7 +9,16 @@ const SHORT: Record<string, string> = { none: "No credits", any: "Any credit", e
  * Credit-tier gradient (§8): this network's rate next to CDCR's published
  * rate for the same tier. Suppressed tiers (n < 10) are left out (§7.3).
  */
-export default function GradientChart({ tiers, animate = true }: { tiers: TierRow[]; animate?: boolean }) {
+export default function GradientChart({
+  tiers,
+  animate = true,
+  fixedWidth,
+}: {
+  tiers: TierRow[];
+  animate?: boolean;
+  /** Render at a fixed pixel width (print report): no resize measuring, prints reliably. */
+  fixedWidth?: number;
+}) {
   const data = tiers
     .filter((t) => typeof t.rate === "number")
     .map((t) => ({
@@ -20,10 +29,8 @@ export default function GradientChart({ tiers, animate = true }: { tiers: TierRo
   const reduced =
     typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
-  return (
-    <div className="h-72 w-full" role="img" aria-label="Three-year conviction rate by credit tier, this network versus CDCR published rates">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 24, right: 8, left: -12, bottom: 0 }} barGap={4}>
+  const chart = (
+        <BarChart data={data} width={fixedWidth} height={fixedWidth ? 260 : undefined} margin={{ top: 24, right: 8, left: -12, bottom: 0 }} barGap={4}>
           <CartesianGrid vertical={false} stroke="#e2e8f0" />
           <XAxis dataKey="tier" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: "#334155" }} />
           <YAxis unit="%" domain={[0, 50]} ticks={[0, 10, 20, 30, 40, 50]} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "#64748b" }} />
@@ -50,7 +57,10 @@ export default function GradientChart({ tiers, animate = true }: { tiers: TierRo
             <LabelList dataKey="published" position="top" formatter={(v) => `${v}%`} style={{ fontSize: 11, fill: "#475569" }} />
           </Bar>
         </BarChart>
-      </ResponsiveContainer>
+  );
+  return (
+    <div className={fixedWidth ? "" : "h-72 w-full"} role="img" aria-label="Three-year conviction rate by credit tier, this network versus CDCR published rates">
+      {fixedWidth ? chart : <ResponsiveContainer width="100%" height="100%">{chart}</ResponsiveContainer>}
     </div>
   );
 }

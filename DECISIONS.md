@@ -146,3 +146,22 @@ Decisions:
 4. Org conviction rate is shown only for grade A ("needs outcomes" otherwise).
 5. Not verified: that the report fits on one printed page in every browser
    (checked on screen only); Gemini path (no key yet).
+
+## 2026-10-24 (Sat afternoon) — merge + adoption items 1b / 1c / 2b
+
+- Merged teammate commits (design doc §23–§24, data standard draft, TPW
+  questions v2). Ours renumbered §25–§26. Join key reconciled: keyed hash of a
+  shared identifier = CDCR number, or a TPW-issued ID if orgs don't record it.
+- 1b: the wizard detects raw identifiers before anything is uploaded and hashes
+  them with Web Crypto HMAC-SHA256 (identical to the server's participantKey —
+  tested). Demo: `demo_raw_ids_english.csv` + 12 registry entries keyed with
+  the synthetic DEMO_NETWORK_KEY (seeded; no effect on metrics until imported).
+  Its "Victim Dialogue" rows land in the manual program-name queue (org-01
+  has no restorative program) — useful to show the queue.
+- 1c: `/data-use` plain-language promises, each marked "built into the
+  software" or "pilot agreement" (the org-visibility rule is an agreement, not
+  yet enforced by code).
+- 2b: blank CSV templates (English / Spanish headers, BOM for Excel).
+- Report chart uses a fixed width so printing is reliable; verified one page
+  with headless Chrome PDF.
+- Docs: pilot plan, handover memo, Devpost draft; question sheet items 8–13.

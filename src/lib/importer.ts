@@ -303,6 +303,7 @@ export const SAMPLE_FILES = [
   { name: "demo_q1_spanish.csv", label: "Spanish CBO export — Q1", kind: "enrollments" },
   { name: "sample_import_D_outcomes_external.csv", label: "External outcome system export", kind: "outcomes" },
   { name: "demo_q2_spanish.csv", label: "Spanish CBO export — Q2 (same format)", kind: "enrollments" },
+  { name: "demo_raw_ids_english.csv", label: "Sheet with raw CDCR-style IDs (hashed in your browser)", kind: "enrollments" },
   { name: "sample_import_A_english.csv", label: "English CBO export", kind: "enrollments" },
   { name: "sample_import_B_abbrev.csv", label: "Abbreviated-header CBO export", kind: "enrollments" },
 ] as const;

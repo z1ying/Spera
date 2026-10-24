@@ -27,6 +27,22 @@ Thank you for reading. Short answers are perfect, and I may type follow-ups.*
 7. After this weekend, who on your team would be the right contact for a
    pilot conversation, and can I get their email?
 
+8. Do organizations know which participants earned program credits
+   (MCC, RACC, EMC), or does only CDCR have that?
+
+9. Your "21% vs 44%" figure — is that return to prison or a new
+   conviction, and where does it come from?
+
+10. Do organizations keep records in Excel, Google Sheets, or on paper?
+
+11. Are there fields we must never collect? Do organizations' agreements
+    with CDCR limit what they can share?
+
+12. What would make an organization want to share its data? What would
+    it most like to get back?
+
+13. Do staff at any organizations prefer to work in Spanish?
+
 *Thank you. My name is Grace — my team is building ImpactLink, the data-joining
 framework. I would love to stay in touch by email or text after today,
 whichever is easier for you.*

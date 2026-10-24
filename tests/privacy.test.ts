@@ -20,3 +20,15 @@ describe("participantKey (§4.1 v1.6)", () => {
     expect(() => participantKey("AB1234", "")).toThrow();
   });
 });
+
+describe("browser hashing (backlog 1b)", () => {
+  it("produces exactly the server's participantKey", async () => {
+    const { hashColumn, looksHashed } = await import("../src/lib/browserHash");
+    const out = await hashColumn([["ab-1234", "x"], ["", "y"]], 0, "test-network-key");
+    expect(out[0][0]).toBe(participantKey("AB1234", "test-network-key"));
+    expect(out[0][1]).toBe("x");
+    expect(out[1][0]).toBe("");
+    expect(looksHashed([out[0][0]])).toBe(true);
+    expect(looksHashed(["DEMO-1001"])).toBe(false);
+  });
+});

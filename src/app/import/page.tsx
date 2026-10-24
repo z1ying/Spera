@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ImportWizard from "./ImportWizard";
 
 export const metadata = { title: "Import data — ImpactLink" };
@@ -9,7 +10,10 @@ export default function ImportPage() {
       <h1 className="text-3xl font-semibold">Bring in your data</h1>
       <p className="mt-2 max-w-2xl text-slate-600">
         Upload the spreadsheet you already keep, or an outcome export from another system. We propose how its columns
-        map; you confirm; the receipt shows what was linked and every row that needs attention.
+        map; you confirm; the receipt shows what was linked and every row that needs attention.{" "}
+        <Link href="/data-use" className="text-emerald-800 underline">
+          How your data is used
+        </Link>
       </p>
       <div className="mt-8">
         <ImportWizard />

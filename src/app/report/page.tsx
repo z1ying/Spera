@@ -113,7 +113,7 @@ export default async function Report({
       <section className="mt-4 grid grid-cols-[3fr_2fr] gap-5">
         <div>
           <h2 className="text-sm font-semibold">Conviction rate by depth of participation</h2>
-          <GradientChart tiers={o.tiers} animate={false} />
+          <GradientChart tiers={o.tiers} animate={false} fixedWidth={460} />
         </div>
         <div>
           <h2 className="text-sm font-semibold">Participation funnel</h2>

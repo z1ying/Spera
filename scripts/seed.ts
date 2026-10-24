@@ -27,6 +27,7 @@ import path from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { dataGrade } from "../src/lib/clean";
 import { parseCsv } from "../src/lib/csv";
+import { DEMO_NETWORK_KEY, participantKey } from "../src/lib/privacy";
 
 const prisma = new PrismaClient();
 const DEMO = process.argv.includes("--demo");
@@ -112,6 +113,18 @@ async function main() {
     riskBand: r.risk_band,
   }));
   await chunked(participants, 1000, (b) => prisma.participant.createMany({ data: b }));
+
+  // Twelve registry entries keyed from raw demo IDs with the demo network key,
+  // so demo_raw_ids_english.csv (hashed in the browser on import) can match.
+  // They have no enrollments until that file is imported.
+  const rawRegistry = readCsv("demo_raw_registry.csv").map((r) => ({
+    participantKey: participantKey(r.shared_identifier, DEMO_NETWORK_KEY),
+    releaseYear: Number(r.release_year),
+    ageBand: r.age_band,
+    gender: r.gender,
+    riskBand: r.risk_band,
+  }));
+  await prisma.participant.createMany({ data: rawRegistry });
 
   const allEnrollments = readCsv("enrollments.csv");
   const heldOutKeys = new Set(

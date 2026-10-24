@@ -23,6 +23,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/import" className="text-slate-700 hover:text-slate-900">
               Import
             </Link>
+            <Link href="/data-use" className="text-slate-700 hover:text-slate-900">
+              How data is used
+            </Link>
             <span className="ml-auto text-xs text-slate-500">Demonstration data are synthetic</span>
           </nav>
         </header>

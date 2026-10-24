@@ -59,3 +59,9 @@ export function parseCsv(text: string): Record<string, string>[] {
   const { headers, rows } = parseCsvTable(text);
   return rows.map((r) => Object.fromEntries(headers.map((h, i) => [h, r[i]])));
 }
+
+/** Serialize back to CSV, quoting only fields that need it. */
+export function toCsv(headers: string[], rows: string[][]): string {
+  const q = (v: string) => (/[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
+  return [headers, ...rows].map((r) => r.map(q).join(",")).join("\n") + "\n";
+}

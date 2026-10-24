@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { AUTO_ACCEPT, TARGET_FIELDS, fieldsFor, missingRequired, type ColumnSuggestion, type ImportKind, type MappingSource } from "@/lib/mapping";
+import { AUTO_ACCEPT, TARGET_FIELDS, fieldsFor, missingRequired, ruleMapping, type ColumnSuggestion, type ImportKind, type MappingSource } from "@/lib/mapping";
+import { hashColumn, looksHashed } from "@/lib/browserHash";
+import { parseCsvTable, toCsv } from "@/lib/csv";
+import { DEMO_NETWORK_KEY } from "@/lib/normalize";
 import { ISSUE_LABELS, REJECTING, type IssueCode, type Receipt } from "@/lib/clean";
 
 interface SuggestResponse {
@@ -52,6 +55,8 @@ export default function ImportWizard() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [samples, setSamples] = useState<Sample[]>([]);
+  /** A file whose identifier column holds raw IDs, waiting to be hashed locally. */
+  const [raw, setRaw] = useState<{ name: string; headers: string[]; rows: string[][]; keyIndex: number } | null>(null);
 
   useEffect(() => {
     fetch("/api/import/samples")
@@ -59,6 +64,35 @@ export default function ImportWizard() {
       .then(setSamples)
       .catch(() => setSamples([]));
   }, []);
+
+  /**
+   * Before anything is sent: if the identifier column holds raw IDs (not
+   * hashed keys), stop and hash them in this browser first (backlog 1b).
+   */
+  function receive(name: string, text: string) {
+    setError(null);
+    const { headers, rows } = parseCsvTable(text);
+    const keyIndex = ruleMapping(headers).findIndex((s) => s.target === "participant_key");
+    if (keyIndex >= 0 && !looksHashed(rows.slice(0, 50).map((r) => r[keyIndex]))) {
+      setRaw({ name, headers, rows, keyIndex });
+      return;
+    }
+    load(name, text);
+  }
+
+  async function protectAndLoad(networkKey: string) {
+    if (!raw) return;
+    setBusy("Hashing identifiers in your browser…");
+    try {
+      const hashed = await hashColumn(raw.rows, raw.keyIndex, networkKey);
+      const r = raw;
+      setRaw(null);
+      await load(r.name, toCsv(r.headers, hashed));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Hashing failed.");
+      setBusy(null);
+    }
+  }
 
   async function load(name: string, text: string) {
     setError(null);
@@ -112,7 +146,17 @@ export default function ImportWizard() {
       <Stepper step={step} />
       {error && <p className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">{error}</p>}
       {busy && <p className="mt-6 text-sm text-slate-600" role="status">{busy}</p>}
-      {step === 1 && <UploadStep samples={samples} disabled={!!busy} onFile={load} />}
+      {step === 1 && !raw && <UploadStep samples={samples} disabled={!!busy} onFile={receive} />}
+      {step === 1 && raw && (
+        <ProtectStep
+          fileName={raw.name}
+          column={raw.headers[raw.keyIndex]}
+          example={raw.rows.find((r) => r[raw.keyIndex])?.[raw.keyIndex] ?? ""}
+          disabled={!!busy}
+          onHash={protectAndLoad}
+          onCancel={() => setRaw(null)}
+        />
+      )}
       {step === 2 && suggest && file && (
         <ConfirmStep
           fileName={file.name}
@@ -163,6 +207,65 @@ function Stepper({ step }: { step: number }) {
   );
 }
 
+function ProtectStep({
+  fileName,
+  column,
+  example,
+  disabled,
+  onHash,
+  onCancel,
+}: {
+  fileName: string;
+  column: string;
+  example: string;
+  disabled: boolean;
+  onHash: (networkKey: string) => void;
+  onCancel: () => void;
+}) {
+  const [key, setKey] = useState("");
+  return (
+    <form
+      className="mt-8 max-w-2xl rounded-lg border border-emerald-200 bg-white p-6"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onHash(key);
+      }}
+    >
+      <h2 className="text-lg font-semibold">Protect identifiers before anything leaves this computer</h2>
+      <p className="mt-2 text-sm text-slate-700">
+        <strong>{fileName}</strong> has real identifiers in the column <span className="font-mono">{column}</span>{" "}
+        (for example <span className="font-mono">{example}</span>). Nothing has been uploaded. Your browser will turn
+        each one into a pseudonymous key using the network key from TPW; only the keys are sent.
+      </p>
+      <label className="mt-4 block text-sm">
+        <span className="font-medium">Network key (from TPW)</span>
+        <input
+          type="password"
+          value={key}
+          onChange={(e) => setKey(e.target.value)}
+          autoComplete="off"
+          className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 font-mono"
+        />
+      </label>
+      <button type="button" onClick={() => setKey(DEMO_NETWORK_KEY)} className="mt-2 text-xs text-emerald-800 underline">
+        Use the demo key (synthetic demo data only)
+      </button>
+      <div className="mt-5 flex gap-3">
+        <button
+          type="submit"
+          disabled={disabled || !key}
+          className="rounded-md bg-emerald-800 px-5 py-2 text-sm font-medium text-white hover:bg-emerald-900 disabled:opacity-50"
+        >
+          Hash in my browser and continue
+        </button>
+        <button type="button" onClick={onCancel} disabled={disabled} className="rounded-md px-4 py-2 text-sm text-slate-700 hover:bg-slate-200">
+          Choose another file
+        </button>
+      </div>
+    </form>
+  );
+}
+
 function UploadStep({
   samples,
   disabled,
@@ -198,6 +301,16 @@ function UploadStep({
         </span>
         <span className="mt-4 rounded-md bg-emerald-800 px-4 py-2 text-sm font-medium text-white">Choose file</span>
         <input type="file" accept=".csv,text/csv" className="sr-only" disabled={disabled} onChange={(e) => read(e.target.files?.[0])} />
+        <span className="mt-4 text-xs text-slate-500">
+          Starting from scratch? Blank template:{" "}
+          <a href="/api/import/template?lang=en" className="text-emerald-800 underline" onClick={(e) => e.stopPropagation()}>
+            English
+          </a>{" "}
+          ·{" "}
+          <a href="/api/import/template?lang=es" className="text-emerald-800 underline" onClick={(e) => e.stopPropagation()}>
+            Español
+          </a>
+        </span>
       </label>
 
       <div>

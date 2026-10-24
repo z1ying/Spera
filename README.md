@@ -99,6 +99,8 @@ generated report carries one of these citation numbers (design doc §18).
 - Strategy prep doc: `../hsi-tpw-prep.md`
 - Data standard (the framework, usable without this software): `docs/data-standard.md`
 - Framework files (measures, baselines, costs — every number cited): `config/frameworks/`
+- Pilot plan / handover memo for TPW: `docs/pilot-plan.md`, `docs/handover-memo.md`
+- Backlog: `docs/backlog.md`
 - Decision log: `DECISIONS.md`
 - Demo dataset + validation report: `../hsi-demo-data/`
 
