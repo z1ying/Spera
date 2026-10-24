@@ -103,7 +103,7 @@ ImportJob(id TEXT PK, org_id FK, file_name TEXT, status TEXT, mapping TEXT /*JSO
 
 ### 4.1 假名化规则（`privacy.ts`）
 
-- `participant_key = SHA256(org_local_id + ":" + SALT)`，SALT 由机构本地保管，中心库只收 key。
+- **（v1.6 修订）** `participant_key = HMAC-SHA256(NETWORK_KEY, normalize(共享标识))`，共享标识 = CDCR 编号，或机构不登记 CDCR 编号时由 TPW 发放的对照 ID（§25，待 TPW 确认）。CDCR 编号是过程侧（机构）与结果侧（CDCR/假释/法院）都记录的公共标识；NETWORK_KEY 由 TPW 作为数据管理方保管，只发给各数据源本地运行的哈希工具，中心库只收 key、永不存密钥。用 HMAC 而非裸 SHA-256：CDCR 编号短且格式固定，裸哈希可被穷举反推。原"机构内 ID + 机构私有盐"方案作废——结果系统拿不到机构内 ID 和盐，两半数据在现实中无法 join（见 §25）。
 - 所有聚合查询过 `suppressSmallCells()`：分组 n < 10 的结果替换为 `"<10"` 并不参与图表绘制。
 - 数据库中禁止出现姓名、出生日期、案号字段——schema 层面就不存在。
 
@@ -153,6 +153,7 @@ ImportJob(id TEXT PK, org_id FK, file_name TEXT, status TEXT, mapping TEXT /*JSO
 3. 人工确认页：逐列下拉修正 → 保存为该机构映射模板
 4. 清洗入库：日期多格式解析（`MM/DD/YYYY`、`YYYY-MM-DD`、`DD-Mon-YY`）、项目名同义词归一（字典 + 未命中项人工归类队列）、重复行按 participant_key + program 去重
 5. 校验回执：异常逐条列出（完成早于报名、缺失关键字段、孤儿 participant_key），**不静默吞掉**；按结果给机构数据等级 A（结果已关联）/ B（仅过程）/ C（关键字段缺失）
+6. **（v1.6 新增）匹配率**：每次导入回执必须显示 `matched / total` 的 participant_key 匹配率（对参与者登记表），结果数据导入另拆分为"关联到项目参与者 / 关联到对照人群"；未匹配记录逐条列出，不丢弃、不猜测。匹配率是 join 框架的头号质量指标。
 
 ### 6.2 演示缓存
 
@@ -430,10 +431,43 @@ savings_capacity     = avoided_returns × return_years × avg_cost_year        (
 
 ---
 
-## 25. TPW 现场确认的数据模型（v1.8，2026-10-24 TPW 访谈）
+## 25. Join 可信度修订（v1.8，用户 2026-10-24 定；与 §24 的 key 说法调和）
+
+赛题核心动作是 "Join disjoint records"。审查发现原设计的 join 只在合成数据里成立（结果表 D 与参与者表用同一批 key 生成，匹配率 100% 是构造出来的），现实中接不上。修订三项：
+
+**与 §24"纠正一点"的调和（用户 2026-10-24 定，待 TPW 确认第 1 题）**：§24 的关切成立——机构未必持有 CDCR 编号。但"机构本地编号 + 机构私有 salt"单独使用无法与结果数据 join：结果系统既没有机构本地编号，也没有该机构的 salt。因此 key 统一表述为 **HMAC-SHA256(网络密钥, 共享标识)**，共享标识 = CDCR 编号（若机构登记）**或 TPW 发放的对照 ID**（若不登记，由 TPW 作中立方维护本地编号↔对照 ID 的对应关系）。两种情况代码相同（`participantKey(identifier, networkKey)`），只是标识的来源不同。§24 提出的治理问题（谁发对应关系、谁保管密钥）保留为 TPW 必问第 1 题。
+
+**数据等级**：采用代码实现的定义（A = 结果已关联、B = 仅过程、C = 无数据或 >20% 行缺关键字段），演示动线 C→B→A 依赖它。数据标准 v0.1 中"按异常程度分级"的思路由回执逐条列出异常来承担。
+
+1. **公共标识 + 网络密钥**（§4.1 已改）：key 改为 HMAC-SHA256(NETWORK_KEY, CDCR 编号)。待现场向 TPW 确认：机构在监狱内的项目是否登记 CDCR 编号（§14 问题 2 / tpw-questions 第 4 题）。已知局限：持有 NETWORK_KEY 的数据源理论上可对自己知道的 CDCR 编号算 key；中心库对机构不开放行级数据，降低该风险。备选（若 TPW 不愿分发密钥）：TPW 作为中立匹配方（honest broker）统一做哈希。
+2. **匹配率进回执**（§6.1 第 6 步）。
+3. **演示动线改为两段导入**：先导入西班牙语表 C（过程数据，机构为 B 级）→ 再导入外部结果表 D（关联结果，匹配率上屏，机构升 A 级）→ 总览梯度图更新。为此新增 `npm run seed:demo`：种子入库时扣下 org-07/org-08 的报名与结果记录，由现场导入补回；`npm run seed` 保持全量（sanity 用）。
+
+**真实结果数据来源**（pitch 与试点计划必须点名，不假装已解决）：CDCR 研究办公室数据申请 + 数据共享协议；或第三方研究机构作中立匹配方；短期由机构自报随访结果，以 B 级标注。
+
+**合成数据纪律**：合成数据按学分层校准，其中的模式（如"辍学≈未报名"）是校准产物，不得作为发现讲述（pitch-script 已改）。
+
+*文档版本：v1.8（2026-10-24 新增第 25 节；§4.1、§6.1 同步修订）。*
+
+---
+
+## 26. 框架化：面向"nonprofits generally"（v1.9，用户 2026-10-24 定）
+
+1. **假释事件**：结果事件扩为 arrest / conviction / return_to_custody / **parole_violation / parole_discharge**（赛题点名 parole data）。parole_discharge 无罪名等级（offense_level 可空）。主指标不变（CDCR 三年定罪率）。
+2. **口径配置化**：共享标识名、跟踪的结果事件、主指标与随访窗、学分体系与层级、校准锚、基线、成本全部移入 `config/frameworks/<id>.json`；`metrics.ts` 从配置读取。每个数值必须带引用编号，否则为 null——校验器拒绝无出处的数字（§18 引用纪律进代码）。附 `example-county-reentry.json` 模板（数值留空，不编造）。
+3. **数据标准**：`docs/data-standard.md`——不依赖本软件也能执行的规则：两半数据 + 登记表、join key、文件字段、回执、数据等级、口径、隐私、他处采用步骤。
+4. **持续追踪（第二季度自动映射）**：人工确认过的映射按表头签名存入 ImportJob；同格式的下一份文件自动套用（来源标"Mapping remembered"）。演示动线改为三段：Q1 西班牙语表（B 级）→ 外部结果表 D（匹配率上屏，升 A 级）→ Q2 同格式表（一键导入）。`demo_q1_spanish.csv` / `demo_q2_spanish.csv` 由样例表 C 按行序对半切分，**不是真实季度**。
+
+*文档版本：v1.9（2026-10-24 新增第 26 节）。*
+
+---
+
+## 27. TPW 现场确认的数据模型（v1.10，2026-10-24 TPW 访谈）
 
 **TPW 不需要机构提供个人 ID。** 机构侧只交聚合数据，不交学员身份。
-这消掉了机构交数据最大的心理障碍（挑战一的核心）。
+这消掉了机构交数据最大的心理障碍（挑战一的核心），也与 §25 的
+key 治理互补：个人级 join 的钥匙不经过机构，由 TPW（或中立匹配方）
+在结果侧持有与治理，机构只负责聚合上报。
 
 **机构聚合记录字段（org form）**：
 - program_name, program_type, program_start_date
@@ -454,10 +488,11 @@ savings_capacity     = avoided_returns × return_years × avg_cost_year        (
 这意味着报告不只证明影响，还直接服务 TPW 下一次申请拨款。
 
 **可扩展性要求**：收集字段必须能加、能改，不改代码。
-本周末实现：字段定义放配置文件；管理界面进 Phase 2。
+本周末实现：字段定义放配置文件（与 §26 的 config/frameworks 机制一致）；
+管理界面进 Phase 2。
 
 **待追问的诚实缺口**：机构不交个人 ID 后，个人级再犯 join 的钥匙从哪来？
 两个可能答案：TPW 持有 crosswalk，或结果数据按项目/队列聚合后 join。
 下次访谈必须确认这一题，pitch 里现阶段只讲"机构侧零身份信息"，不替 TPW 选答案。
 
-*文档版本：v1.8（2026-10-24 新增第 25 节：TPW 现场确认模型）。*
+*文档版本：v1.10（2026-10-24 新增第 27 节：TPW 现场确认模型）。*
