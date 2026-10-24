@@ -1,5 +1,5 @@
 import { loadRuns } from "@/lib/loadRuns";
-import { groupTotals, missingFields, programYear, right4Signals, totals, type Run, type Totals } from "@/lib/runs";
+import { groupTotals, missingFields, participantHours, programYear, right4Signals, totals, type Run, type Totals } from "@/lib/runs";
 import { isTpwSignedIn } from "@/lib/tpwAuth";
 import LoginForm from "./LoginForm";
 
@@ -33,6 +33,7 @@ function TotalsRow({ label, t, max, extra }: { label: React.ReactNode; t: Totals
     <tr className="border-t border-slate-100">
       <td className="py-2 pr-3">{label}</td>
       <td className="py-2 pr-3 text-right tabular-nums">{t.runs}</td>
+      <td className="py-2 pr-3 text-right tabular-nums">{fmt(t.programmingHours)}</td>
       <td className="py-2 pr-3 text-right tabular-nums">{fmt(t.participants)}</td>
       <td className="py-2 pr-3 text-right tabular-nums">{fmt(t.completed)}</td>
       <td className="py-2 pr-3 text-right tabular-nums">{pct(t.completionRate)}</td>
@@ -45,7 +46,9 @@ function TotalsRow({ label, t, max, extra }: { label: React.ReactNode; t: Totals
   );
 }
 
-const HEAD = ["Runs", "Participants", "Completed", "Completion", "Participant hours", ""];
+// Column names follow TPW's Collective Impact Report.
+const HEAD = ["Runs", "Total programming hours", "Participants", "Completed", "Completion", "Total participant programming hours", ""];
+const RIGHT_ALIGNED = 6;
 
 function Table({ title, first, rows, extraHead }: { title: string; first: string; rows: React.ReactNode; extraHead?: string[] }) {
   return (
@@ -57,7 +60,7 @@ function Table({ title, first, rows, extraHead }: { title: string; first: string
             <tr>
               <th className="py-1 pr-3">{first}</th>
               {[...HEAD, ...(extraHead ?? [])].map((h, i) => (
-                <th key={i} className={`py-1 pr-3 ${i < 5 ? "text-right" : ""}`}>
+                <th key={i} className={`py-1 pr-3 align-bottom ${i < RIGHT_ALIGNED ? "text-right" : ""}`}>
                   {h}
                 </th>
               ))}
@@ -79,6 +82,13 @@ export default async function TpwDashboard() {
   const t = totals(runs);
   const years = groupTotals(runs, programYear).sort((a, b) => Number(a.key) - Number(b.key));
   const orgs = groupTotals(runs, (r) => r.orgName).sort((a, b) => String(a.key).localeCompare(String(b.key)));
+  const orgYears = orgs.map((o) => ({
+    org: String(o.key),
+    // Runs without a start date get their own row so nothing drops out of the totals.
+    rows: groupTotals<number | string>(o.runs, (r) => programYear(r) ?? "No start date").sort((a, b) =>
+      typeof a.key === "string" ? 1 : typeof b.key === "string" ? -1 : a.key - b.key,
+    ),
+  }));
   const prisons = groupTotals(runs, (r) => r.facilityCode).sort((a, b) => b.totals.participantHours - a.totals.participantHours);
   const incomplete = runs.filter((r) => missingFields(r).length > 0);
   const yearSpan = years.length ? `${years[0].key}–${years[years.length - 1].key}` : "—";
@@ -101,10 +111,10 @@ export default async function TpwDashboard() {
       </div>
 
       <section aria-label="Core numbers" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card primary value={fmt(t.participantHours)} label="Participant programming hours" sub="Completed × programming hours, summed" />
-        <Card value={fmt(t.participants)} label="Participants" sub={`${t.inProgressRuns} runs still in progress`} />
-        <Card value={fmt(t.completed)} label="Completed" sub={`${pct(t.completionRate)} of participants in finished runs`} />
-        <Card value={fmt(t.programmingHours)} label="Programming hours offered" sub="Hours per participant, summed over runs" />
+        <Card primary value={fmt(t.participantHours)} label="Total participant programming hours" sub="Participants completed × total programming hours" />
+        <Card value={fmt(t.programmingHours)} label="Total programming hours" sub="Course hours per participant, summed over runs" />
+        <Card value={fmt(t.participants)} label="Number of participants" sub={`${t.inProgressRuns} runs still in progress`} />
+        <Card value={fmt(t.completed)} label="Number of participants completed" sub={`${pct(t.completionRate)} of participants in finished runs`} />
       </section>
 
       <div className="mt-6 grid gap-6">
@@ -144,6 +154,41 @@ export default async function TpwDashboard() {
           })}
         />
 
+        <section className="rounded-xl border border-slate-200 bg-white p-6">
+          <h2 className="text-lg font-semibold">Each organization, by program year</h2>
+          <p className="mt-1 text-sm text-slate-600">Program year = year of the start date.</p>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[44rem] text-sm">
+              <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th className="py-1 pr-3 align-bottom">Organization</th>
+                  <th className="py-1 pr-3 align-bottom">Program year</th>
+                  {["Runs", "Total programming hours", "Participants", "Completed", "Total participant programming hours"].map((h) => (
+                    <th key={h} className="py-1 pr-3 text-right align-bottom">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {orgYears.map(({ org, rows }) =>
+                  rows.map((y, i) => (
+                    <tr key={`${org}-${y.key}`} className={i === 0 ? "border-t border-slate-200" : ""}>
+                      <td className="py-1.5 pr-3 font-medium">{i === 0 ? org : ""}</td>
+                      <td className="py-1.5 pr-3">{y.key}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{y.totals.runs}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{fmt(y.totals.programmingHours)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{fmt(y.totals.participants)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{fmt(y.totals.completed)}</td>
+                      <td className="py-1.5 pr-3 text-right font-medium tabular-nums">{fmt(y.totals.participantHours)}</td>
+                    </tr>
+                  )),
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <Table
           title="By prison"
           first="Prison"
@@ -165,6 +210,51 @@ export default async function TpwDashboard() {
             );
           })}
         />
+
+        <details className="rounded-xl border border-slate-200 bg-white p-6">
+          <summary className="cursor-pointer text-lg font-semibold">All program runs ({runs.length})</summary>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[60rem] text-sm">
+              <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
+                <tr>
+                  {["Organization", "Program", "Prison", "Status", "Start date"].map((h) => (
+                    <th key={h} className="py-1 pr-3 align-bottom">
+                      {h}
+                    </th>
+                  ))}
+                  {["Program year", "Total programming hours", "Participants", "Completed", "Total participant programming hours"].map((h) => (
+                    <th key={h} className="py-1 pr-3 text-right align-bottom">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {runs.map((r) => {
+                  const ph = participantHours(r);
+                  const cell = (v: number | null) => (v === null ? <span className="text-amber-800">—</span> : fmt(v));
+                  return (
+                    <tr key={r.id} className="border-t border-slate-100">
+                      <td className="py-1.5 pr-3">{r.orgName}</td>
+                      <td className="py-1.5 pr-3">{r.programName}</td>
+                      <td className="py-1.5 pr-3">
+                        {r.facilityCode}
+                        {r.yard ? ` · ${r.yard}` : ""}
+                      </td>
+                      <td className="py-1.5 pr-3">{r.status}</td>
+                      <td className="py-1.5 pr-3 tabular-nums">{day(r.startDate)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{programYear(r) ?? <span className="text-amber-800">—</span>}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{cell(r.totalHours)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{cell(r.participants)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{cell(r.completed)}</td>
+                      <td className="py-1.5 pr-3 text-right font-medium tabular-nums">{cell(ph)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </details>
 
         <section className="rounded-xl border border-amber-200 bg-amber-50 p-6">
           <h2 className="text-lg font-semibold">Needs a follow-up ({incomplete.length})</h2>
