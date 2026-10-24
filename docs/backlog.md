@@ -30,7 +30,7 @@ Also noted: TPW's participant-hours formula (completed × course length) is an e
 
 ## Future
 
-- Per-organization private links (security), instead of no sign-in.
+- Per-organization private links (security), instead of no sign-in. **Biggest current gap**: `/grants` shows any organization's totals by name; postponed by the user (2026-10-24).
 - Organization budget field for RIGHT budget points (1–3), program type — if TPW wants them.
 - Background music toggle — deferred.
 - Outcome (recidivism) linkage — only once TPW chooses how records would be linked.
