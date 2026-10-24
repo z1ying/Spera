@@ -27,9 +27,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Link href="/" className="text-slate-700 hover:text-slate-900">
                   Organization form
                 </Link>
-                <Link href="/future/overview" className="text-slate-700 hover:text-slate-900">
-                  Future: outcomes
-                </Link>
                 <form action="/api/tpw/logout" method="post" className="ml-auto flex items-center gap-3">
                   <span className="text-xs text-slate-500">Signed in as TPW staff</span>
                   <button className="rounded-md border border-slate-300 px-3 py-1 text-slate-700 hover:bg-slate-50">Sign out</button>

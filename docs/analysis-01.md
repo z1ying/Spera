@@ -1,3 +1,5 @@
+> ⚠️ **Outdated (2026-10-24):** written for the earlier synthetic outcome-linkage demo, which has been removed. Current direction: design doc §28 (real TPW program-run data). Rewrite before use.
+
 # TPW 数据分析简报 #01（2026-10-23 晚）
 
 **数据**：`hsi-demo-data/` 校准合成数据（5,000 参与者 + 2,000 对照，seed=42，验收全绿）。以下"数据发现"均为该数据集内结果；"真实世界参照"另行标注来源（design doc §18）。合成数据按 CDCR 公开统计校准到学分层，因此**学分/完成相关的结论与官方发现同向**；未校准的维度（如按年龄、风险带）不产生可引用结论，见 §4。

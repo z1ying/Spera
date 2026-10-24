@@ -6,7 +6,7 @@
     "react-dom": "19.1.1",
     "recharts": "3.1.2"
   },
-  "description": "ImpactLink \u2014 TPW impact-data framework (HSI 2026, Justice Reform track). See ../hsi-tpw-design-doc.md.",
+  "description": "ImpactLink \u2014 program reporting for TPW's network (HSI 2026, Justice Reform track).",
   "devDependencies": {
     "@tailwindcss/postcss": "4.1.12",
     "@types/node": "22.15.0",
@@ -25,11 +25,9 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "dev": "next dev",
-    "sanity": "tsx scripts/sanity_check.ts",
     "seed": "tsx scripts/seed.ts",
     "start": "next start",
-    "test": "vitest run",
-    "seed:demo": "tsx scripts/seed.ts --demo"
+    "test": "vitest run"
   },
   "version": "0.1.0"
 }

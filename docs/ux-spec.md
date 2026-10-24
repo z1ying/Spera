@@ -75,3 +75,14 @@ The form computes and shows, live, as the user types:
 
 Field list is configurable (add/modify without code changes).
 TPW view adds a grant-readiness panel built from the RFP flags.
+
+---
+
+## Updates after the TPW data arrived (user, 2026-10-24 — design doc §28 wins)
+
+- The org landing page is a **click-first form for one program run**, not a file-upload wizard.
+- Header: organizations see no role switch; TPW staff use "TPW staff sign in" (top right) with a passcode.
+- **Music toggle: deferred** — not in scope for now.
+- **No Spanish sample, no language field**: programs are delivered in English, and RIGHT 3.0 awards no points for language.
+- No synthetic dashboard (gradient chart, funnel, cohort maturity): TPW's dashboard shows its five core fields from real data.
+- RFP flags (target institution, women's prison) are **derived from the prison chosen**, not entered by organizations; "serves RHU/EOP/MHCB" is one checkbox.

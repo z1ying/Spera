@@ -1,3 +1,5 @@
+> ⚠️ **Outdated (2026-10-24):** written for the earlier synthetic outcome-linkage demo, which has been removed. Current direction: design doc §28 (real TPW program-run data). Rewrite before use.
+
 # Devpost draft — ImpactLink
 
 *Draft. Update numbers and the "Built with" list after the final run-through; remove Gemini if it was not verified live.*

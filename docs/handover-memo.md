@@ -1,3 +1,5 @@
+> ⚠️ **Outdated (2026-10-24):** written for the earlier synthetic outcome-linkage demo, which has been removed. Current direction: design doc §28 (real TPW program-run data). Rewrite before use.
+
 # Handover memo — ImpactLink for TPW
 
 **To:** Transformative Programming Works · **From:** the ImpactLink team (Hack for Social Impact 2026) · **Date:** October 2026

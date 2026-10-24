@@ -186,3 +186,17 @@ Decisions:
   browser", TPW sign-in, dashboard tables, export 401 without sign-in.
   Not verified: date entry by keyboard in a zh-locale browser (picker works
   for users; automated typing did not) and phone layout.
+
+## 2026-10-24 (Sat night) — real data only
+
+- Merged teammate docs (design doc §27, ux-spec, design-style, data-standard
+  §8); our real-data section renumbered §28 and wins where they differ.
+- Removed everything synthetic (user: "use my data, no sample data"):
+  data/demo-data, config/frameworks, the outcome demo pages and APIs, the
+  metrics/privacy/mapping/cleaning libraries and their tests, sanity script,
+  synthetic Prisma models, `seed:demo`. Recoverable from git history.
+- No language field / Spanish demo (English-only delivery; no RIGHT points).
+- Data standard rewritten as v0.2 (program-run reporting); README rewritten.
+- Outdated planning docs (pitch, Devpost, handover, pilot, idea, brief,
+  analysis) carry a banner instead of being deleted.
+- Paper records recorded as the main open problem (backlog).

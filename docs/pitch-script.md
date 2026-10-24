@@ -1,3 +1,5 @@
+> ⚠️ **Outdated (2026-10-24):** written for the earlier synthetic outcome-linkage demo, which has been removed. Current direction: design doc §28 (real TPW program-run data). Rewrite before use.
+
 # ImpactLink — Pitch 讲稿（Round 1：4 分钟 + 1 分钟 Q&A）
 
 语速基准 ~135 词/分钟，全文约 540 词。每段标注时间与屏幕动作。

@@ -1,44 +1,32 @@
-# Backlog — the two adoption pain points (2026-10-24)
+# Backlog (updated 2026-10-24, after the pivot to real data — design doc §28)
 
-Main flow (import → overview → one-page report) is built: M3–M5 done.
-These items make it easier for small, unpaid organizations to take part.
-Order = recommended build order. ✅ = done.
+The site runs on TPW's real program-run data: organization form at `/`, TPW dashboard at `/tpw`.
 
-## Blocking first
+## Most important open problem: records start on paper
 
-- [x] **Merge with the teammate's commits on origin/main and push.** Done 2026-10-24 (key reconciled: CDCR number or TPW-issued ID).
+Most organizations track attendance on **paper sign-in sheets**. Reporting means a staff member counts from paper and types totals in — extra unpaid work. Options to explore (none built yet):
 
-## Pain point 1 — why would a small organization share its data?
+| Idea | What it removes | Watch out for |
+|---|---|---|
+| A printable one-page tally sheet that mirrors the web form, kept with the class binder | Hunting for numbers at reporting time | Still typed in later |
+| Report at the end of each run, not on a schedule; the form asks only for what changed | Re-entering the whole run | Needs the "update" flow (exists, per browser) |
+| A phone-friendly form opened from a QR code on the tally sheet | Getting to a computer | Phone layout not yet verified |
+| Photo of the *tally* (not the sign-in sheet) read into the form for confirmation | Typing | Sign-in sheets carry names — never send those to an AI service |
+| TPW or a volunteer enters for small organizations during the pilot | All of it, for those orgs | Doesn't scale; good for the first months |
 
-| # | Item | Type | Size |
-|---|---|---|---|
-| 1a | ✅ Per-organization report (`/report?org=`): an org gets a funder-ready report on its own program | code | done |
-| 1b | ✅ Hash the identifier column **in the browser** before upload, so raw IDs never leave the org's computer and no separate tool is needed | code | ~1.5 h |
-| 1c | ✅ One-screen, plain-language "How your data is used" promise, linked from the import page | code + copy | ~30 min |
-| 1d | Visibility rule in the product: an org view that shows only its own data plus network aggregates | code | ~1.5 h |
-| 1e | Concierge onboarding: the team does each pilot org's first import with them | pilot plan / pitch | — |
-| 1f | Say honestly that the network benchmark starts from CDCR anchors + 5 pilot orgs and grows | pitch | — |
+Ask TPW: what does a typical sheet look like, who fills it, and when?
 
-## Pain point 2 — input must be very easy
+## Next
 
-| # | Item | Type | Size |
-|---|---|---|---|
-| 2a | Spanish toggle for the import wizard UI | code | ~1 h |
-| 2b | ✅ "Download a blank template" (English / Spanish headers) for orgs starting from scratch | code | ~20 min |
-| 2c | Type-it-in grid for orgs with no spreadsheet — **only if TPW confirms paper sign-in sheets** | code | ~2 h |
-| 2d | Usability check: someone new to the system finishes the Spanish import in under 3 minutes | test | ~15 min |
-| 2e | Verify Gemini mapping once a key is available; record the offline cache | code | ~10 min |
-| 2f | Photo/paper capture | roadmap only (names on paper must not reach an LLM) | — |
+- [ ] UI pass the user will specify (visual spec: `docs/design-style.md`).
+- [ ] Verify the form on a phone; date entry in non-English browser locales.
+- [ ] Rewrite pitch, Devpost, handover memo and pilot plan for the real-data product (marked outdated).
+- [ ] Organization's own summary (its submitted runs and totals) as the "give back".
+- [ ] TPW can add or change collected fields without code (config).
 
-## Waiting on TPW answers
+## Future
 
-- Do organizations record the CDCR number? If not, who would issue a shared ID? (decides the join key)
-- Excel, Google Sheets, or paper? (decides 2c)
-- What would organizations most want back from TPW? (sharpens 1a)
-
-## Other open checks
-
-- ✅ Report fits on one printed page (verified with headless Chrome PDF, chart included).
-- Report prints the match rate next to the headline (teammate's data-standard proposal).
-- ✅ Pilot plan, handover memo, Devpost draft written (`docs/pilot-plan.md`, `docs/handover-memo.md`, `docs/devpost.md`).
-- Pitch: add the per-org report line ("every organization gets back a report on its own program").
+- Per-organization private links (security), instead of no sign-in.
+- Organization budget field for RIGHT budget points (1–3), program type — if TPW wants them.
+- Background music toggle — deferred.
+- Outcome (recidivism) linkage — only once TPW chooses how records would be linked.

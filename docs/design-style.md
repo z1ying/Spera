@@ -30,3 +30,7 @@ type, code-symbol confetti). Do NOT copy their logo; borrow the language.
 
 Playful frame, serious data. The symbols say "we belong to this event";
 the clean numbers say "you can trust this evidence".
+
+---
+
+*Status (2026-10-24): not applied yet. The app currently uses a white/slate base with a deep-green accent. Applying this spec is part of the UI pass the user will specify.*

@@ -1,3 +1,5 @@
+> ⚠️ **Outdated (2026-10-24):** written for the earlier synthetic outcome-linkage demo, which has been removed. Current direction: design doc §28 (real TPW program-run data). Rewrite before use.
+
 # ImpactLink — 90-day pilot plan (draft for TPW)
 
 *Five organizations. Ninety days. One real cohort report TPW can take to Sacramento.*
