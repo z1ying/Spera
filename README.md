@@ -31,8 +31,11 @@ compared across 120 organizations.
    proposes a mapping to a common schema; a human confirms it. Messy files
    are expected: three date formats, synonyms, duplicates, missing cells.
 2. **Join without centralizing identity** — process records and outcome
-   records are linked by hashed pseudonymous keys (SHA-256 of the org-local
-   ID with a salt only the org holds). The central database schema contains
+   records are linked by a keyed hash (HMAC-SHA256) of the CDCR number — the
+   one identifier both program sheets and state outcome systems record —
+   computed locally by each data source with a network key TPW holds. Every
+   import reports its match rate and lists unmatched records. The central
+   database schema contains
    no name, birth-date, or case-number fields at all, and published
    aggregates suppress any group smaller than 10 people.
 3. **Measure with the official yardstick** — rates follow CDCR's primary

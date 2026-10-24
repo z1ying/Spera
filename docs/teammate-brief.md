@@ -4,7 +4,7 @@
 
 **Why it matters:** California spends under 1% of its corrections budget on rehabilitation [5]. Programs cut reincarceration from 44% to 21% [4] — but nobody can prove it in a budget hearing, because the two halves of the data never meet.
 
-**Our key finding (from the data, already validated):** it is not which class someone takes, it is whether they finish. Dropouts reoffend at 47% — same as never enrolling. Completers with credits: ~21%. The lever is completion.
+**What we can and can't claim:** CDCR's published gradient (no credits 45.6% → rehabilitation credits 21.1% [2]) says deeper participation goes with lower conviction rates. Our demo data is synthetic and calibrated to that gradient, so patterns in it (e.g. "dropouts ≈ never enrolled") are calibration artifacts, not findings — never pitch them as discoveries. The product's job is to let TPW test the gradient on its own network's real records.
 
 ## What is already done (homework before the event — research & foundation)
 

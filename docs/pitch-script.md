@@ -19,20 +19,24 @@ Those two halves never meet.
 So when Transformative Programming Works goes to Sacramento, all they can show is attendance.”
 
 **[1:05–1:35｜Slide 2 停留，讲述者看向观众]**
-“And when we joined the data that does exist, we found something sharper.
-It is not which class someone takes. It is whether they finish.
-People who drop out reoffend at 47 percent — the same as people who never enrolled.
-People who complete, and earn credits, fall to 21.
-The lever is completion. That is where the money should go.”
+“And the state's own numbers already point to the answer.
+CDCR reports that people who earn no program credits are convicted again at 45.6 percent.
+People who earn rehabilitative achievement credits: 21.1. [2]
+The deeper the participation, the lower the rate.
+What nobody can tell you is whether that holds for TPW's 120 organizations — program by program.
+That is the question ImpactLink lets TPW answer.”
 
 **[1:35–3:00｜切到 live demo，操作者同步动作]**
 “This is ImpactLink.
 [导入西班牙语样例表] A program manager drops in her spreadsheet — Spanish headers, three different date formats, duplicates.
 [映射确认页] The system proposes the mapping, she confirms it — she never fills in a new form.
-[校验回执] Fifty-four duplicates merged. Twenty-six problem rows, listed, not hidden.
-[切到总览页，梯度图动画] And now her data joins the network.
-Forty-five point six. Thirty-nine point two. Twenty-six point one. Twenty-one point seven.
-The deeper the participation, the lower the conviction rate — measured with CDCR's own definitions. [1][2]
+[校验回执] Duplicates merged. Problem rows listed, not hidden. Her organizations are grade B: process data only.
+[导入结果表 D] Now the other half — an export from a different system, different column names, different date formats.
+[匹配率] Every record is linked by a keyed hash of the CDCR number. No name, no birth date ever reaches our database.
+Match rate on screen — and every record that didn't match is listed. Her organizations move to grade A.
+[切到总览页，梯度图动画] Both halves of the evidence, in one place.
+In this demonstration data the gradient reads forty-six, thirty-eight, twenty-five, twenty-two —
+calibrated to CDCR's published 45.6 to 21.1. [2] With real records, this is the chart TPW has never been able to draw.
 [点击生成报告] One click, and this is the page TPW takes to a hearing.
 Both cost figures are printed — the conservative one first. [3]”
 
@@ -65,6 +69,12 @@ Our job is to make sure that transformation shows up in the data, too.”
 **省钱口径**：“We lead with the marginal cost — $21,534 per person-year — because that's what next year's budget actually saves. The $127,788 average is the long-run capacity number, and it's labeled as such on the report. Both come from the LAO.”
 
 **赛后谁维护**：“The repo is public, the handover memo is written, and the pilot plan names what TPW needs to run it: one part-time data steward. We are proposing five orgs and ninety days, with a named contact on their side and us on ours.”
+
+## 数字纪律（v1.6 修订）
+
+- 合成数据里的结论**不是发现**：生成器按 CDCR 学分层校准，"辍学者≈未报名"等模式是校准的结果，不得当作洞察讲。
+- 台上只讲两类数字：带编号的公开数字（[1]–[4]），以及明确说"in this demonstration data"的合成数字。
+- 匹配率、重复数、问题行数以现场回执为准，台词不写死具体值。
 
 ## 演示纪律
 

@@ -12,14 +12,11 @@ TPW advocates for 120 community organizations, but it cannot prove their program
 - But when TPW goes to Sacramento to ask for funding, all it can show is attendance: who enrolled, how long a class ran.
 - The reason is structural, not technical. Half the evidence lives in spreadsheets at 120 small organizations: enrollment, attendance, completion, credits. The other half lives in state systems: arrests, convictions, returns to custody. Those two halves never meet, so no one can answer the only question that matters: which programs actually keep people from going back?
 
-## The insight (from real data, already validated)
+## What the public evidence already says (and what it can't)
 
-It is not which class someone takes. It is whether they finish.
-
-- People who drop out reoffend at 47.3% — essentially the same as people who never enrolled at all.
-- People who complete their program reoffend at 35.0%.
-- And the deeper the participation, the lower the rate: no credits 45.6%, any credit 39.2%, education credits 26.1%, rehabilitation credits 21.1% (CDCR's own three-year conviction measure).
-- So the lever is completion. Funding should go to helping people finish — not to adding more course types.
+- CDCR's own published numbers show a dose-response gradient: the deeper the participation, the lower the three-year conviction rate — no credits 45.6%, any credit 39.2%, education credits 26.1%, rehabilitation credits 21.1% [2].
+- What nobody can show today is whether that holds for TPW's network, organization by organization and program by program — because the process half and the outcome half of the data never meet.
+- Our demo dataset is synthetic and calibrated to these published rates, so any pattern in it (for example, dropouts looking like non-participants) reflects the calibration, not a discovery. We never present it as a finding. With real records, ImpactLink is how TPW would find out.
 
 ## The product (a website, three parts)
 
