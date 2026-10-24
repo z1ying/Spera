@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { hoursFromSchedule, STATUSES, type RunInput } from "@/lib/runs";
 import SearchPick from "./SearchPick";
+import ReportModal from "@/components/ReportModal";
+import type { OrgSummary } from "@/lib/orgSummary";
 
 interface Options {
   orgs: { name: string; programs: string[] }[];
@@ -139,7 +141,7 @@ export default function RunForm() {
   const [editing, setEditing] = useState<{ id: string; editToken: string } | null>(null);
   const [problems, setProblems] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
-  const [thanks, setThanks] = useState<{ hours: number | null; people: number | null; program: string } | null>(null);
+  const [report, setReport] = useState<{ summary: OrgSummary; added: number | null } | null>(null);
   const [mine, setMine] = useState<MyRun[]>([]);
   const [otherLanguage, setOtherLanguage] = useState(false);
 
@@ -192,7 +194,6 @@ export default function RunForm() {
     setOtherLanguage(!!r.nonEnglishLanguage);
     setSchedule((s) => ({ ...s, on: false }));
     setNewProgram(false);
-    setThanks(null);
     setProblems([]);
     const token = readStore<{ id: string; editToken: string }[]>(STORE, []).find((i) => i.id === r.id)?.editToken;
     setEditing(asEdit && token ? { id: r.id, editToken: token } : null);
@@ -215,14 +216,14 @@ export default function RunForm() {
       }
       if (!editing) writeStore(STORE, [...readStore<{ id: string; editToken: string }[]>(STORE, []), { id: out.id, editToken: out.editToken }]);
       writeStore(LAST, { orgName: form.orgName, programName: form.programName });
-      setThanks({ hours: participantHours, people: form.participants ?? null, program: form.programName });
+      const summary = (await (await fetch(`/api/org-summary?org=${encodeURIComponent(form.orgName)}`)).json()) as OrgSummary;
+      setReport({ summary, added: participantHours });
       setForm({ ...EMPTY, orgName: form.orgName, programName: form.programName });
       setOtherLanguage(false);
       setEditing(null);
         setNewProgram(false);
       setOpts(await (await fetch("/api/form-options")).json());
       refreshMine();
-      window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setBusy(false);
     }
@@ -233,21 +234,7 @@ export default function RunForm() {
   return (
     <div className="grid gap-8 lg:grid-cols-[3fr_2fr]">
       <div>
-        {thanks && (
-          <div role="status" className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-5">
-            <p className="text-lg font-semibold text-emerald-950">Thank you — {thanks.program} is in.</p>
-            <p className="mt-1 text-sm text-emerald-900">
-              {thanks.hours !== null
-                ? `That adds ${fmt(thanks.hours)} participant programming hours to TPW's network.`
-                : thanks.people
-                  ? `${fmt(thanks.people)} people taking part — come back to add how many completed when it finishes.`
-                  : "Come back to add numbers whenever you have them."}
-            </p>
-            <button type="button" onClick={() => setThanks(null)} className="mt-3 text-sm font-medium text-emerald-900 underline">
-              Add another program
-            </button>
-          </div>
-        )}
+        {report && <ReportModal s={report.summary} added={report.added} onClose={() => setReport(null)} />}
 
         <form onSubmit={submit} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           {editing && (

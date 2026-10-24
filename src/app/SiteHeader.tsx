@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const ORG_LINKS = [
   { href: "/", label: "Report a program" },
+  { href: "/report", label: "My report" },
   { href: "/grants", label: "Grants" },
   { href: "/data-use", label: "How data is used" },
 ];
@@ -17,12 +18,13 @@ const ORG_LINKS = [
 export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
   const path = usePathname();
   const tpwArea = path.startsWith("/tpw");
+  const active = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
   const link = (href: string, label: string) => (
     <Link
       key={href}
       href={href}
-      aria-current={path === href ? "page" : undefined}
-      className={path === href ? "font-medium text-slate-900" : "text-slate-600 hover:text-slate-900"}
+      aria-current={active(href) ? "page" : undefined}
+      className={active(href) ? "font-medium text-slate-900" : "text-slate-600 hover:text-slate-900"}
     >
       {label}
     </Link>

@@ -64,7 +64,7 @@ export default function ChatPanel({ org }: { org: string }) {
         </p>
       </header>
 
-      <div className="max-h-[32rem] min-h-64 flex-1 space-y-4 overflow-y-auto px-5 py-4" aria-live="polite">
+      <div className="max-h-[60vh] min-h-80 flex-1 space-y-4 overflow-y-auto px-5 py-4" aria-live="polite">
         {messages.length === 0 && (
           <div>
             <p className="text-sm text-slate-600">Start with one of these, or ask anything about the application:</p>

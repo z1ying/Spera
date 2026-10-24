@@ -25,3 +25,17 @@ body {
     break-inside: avoid;
   }
 }
+
+/* One-page organization report (design doc §28). */
+@page {
+  size: letter;
+  margin: 0.5in;
+}
+@media print {
+  html {
+    font-size: 11px;
+  }
+  .report-page {
+    break-inside: avoid;
+  }
+}

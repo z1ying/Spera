@@ -226,3 +226,16 @@ Decisions:
   chars. Instructions go in the first user turn (Gemma has no system role).
 - NOT verified against the real API: no key yet. Unit tests cover the
   prompt, history trimming, request shape and reply parsing with a fake fetch.
+
+## 2026-10-24 (late night) — organization side: report, fewer words, more visuals
+
+- Rebuilt the organization's one-page report on real data (`/report`,
+  ReportView). It pops up right after each submission (ReportModal) with a
+  link to My report for printing / PDF.
+- Grants split into /grants (overview), /grants/check, /grants/write; the old
+  all-in-one GrantsView removed. `/api/grants/readiness` became
+  `/api/org-summary` (report + readiness).
+- Visuals: single brand hue, thin rounded bars with values at the tip,
+  tooltips; compact axis numbers (6K, 12K).
+- Not clicked through in the browser: the post-submit pop-up (the pane was
+  in use). Report, overview and check pages were checked visually.
