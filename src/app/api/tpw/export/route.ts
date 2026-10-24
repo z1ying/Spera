@@ -13,12 +13,12 @@ export async function GET() {
   const rows = (await loadRuns()).map((r) => [
     r.facilityName, r.yard ?? "", r.orgName, r.programName, r.status, day(r.startDate), day(r.endDate),
     n(r.totalHours), n(r.participants), n(r.completed), n(participantHours(r)), n(programYear(r)),
-    r.right3Target ? "yes" : "no", r.specialPopulations ? "yes" : "no",
+    r.underserved ? "yes" : "no", r.specialPopulations ? "yes" : "no", r.nonEnglishLanguage ?? "",
   ]);
   const headers = [
     "CDCR Facility", "Yard", "Organization Name", "Program Name", "Schedule Status", "Start Date", "End Date",
     "Total Programming hours", "Number of Participants", "Number of Participants Completed",
-    "CALC: Total Participant Programming hours", "CALC: Program Year", "RIGHT 3.0 target institution", "Serves RHU/EOP/MHCB",
+    "CALC: Total Participant Programming hours", "CALC: Program Year", "RIGHT 4.0 underserved institution", "Serves RHU/EOP/MHCB", "Language other than English",
   ];
   return new Response("﻿" + toCsv(headers, rows), {
     headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": 'attachment; filename="impactlink_program_runs.csv"' },

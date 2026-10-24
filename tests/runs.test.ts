@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hoursFromSchedule, missingFields, participantHours, programYear, right3Signals, totals, validateRun, type Run } from "../src/lib/runs";
+import { hoursFromSchedule, missingFields, participantHours, priorService, programYear, right4Signals, totals, validateRun, type Run } from "../src/lib/runs";
 
 const run = (o: Partial<Run>): Run => ({
   id: "r",
@@ -8,7 +8,7 @@ const run = (o: Partial<Run>): Run => ({
   programName: "P",
   facilityCode: "CTF",
   facilityName: "Correctional Training Facility (CTF)",
-  right3Target: false,
+  underserved: false,
   womens: false,
   yard: null,
   status: "Completed",
@@ -18,6 +18,7 @@ const run = (o: Partial<Run>): Run => ({
   participants: 45,
   completed: 35,
   specialPopulations: false,
+  nonEnglishLanguage: null,
   ...o,
 });
 
@@ -50,12 +51,28 @@ describe("totals", () => {
   });
 });
 
-describe("RIGHT 3.0 signals", () => {
-  it("counts target-institution and special-population runs, max +1.0", () => {
-    const s = right3Signals([run({ right3Target: true, facilityCode: "CCI" }), run({ specialPopulations: true }), run({ womens: true, right3Target: true, facilityCode: "CIW" })]);
-    expect(s.targetInstitutions).toEqual(["CCI", "CIW"]);
+describe("RIGHT 4.0 signals", () => {
+  it("counts underserved, special-population and non-English criteria, at most +1.0", () => {
+    const s = right4Signals([
+      run({ underserved: true, facilityCode: "CTF" }),
+      run({ specialPopulations: true }),
+      run({ womens: true, underserved: true, facilityCode: "CIW" }),
+    ]);
+    expect(s.underservedInstitutions).toEqual(["CIW", "CTF"]);
     expect(s.womensRuns).toBe(1);
     expect(s.additionalPoints).toBe(1);
+    expect(right4Signals([run({ nonEnglishLanguage: "Spanish" })]).additionalPoints).toBe(0.5);
+    expect(right4Signals([run({ underserved: true }), run({ specialPopulations: true }), run({ nonEnglishLanguage: "Spanish" })]).additionalPoints).toBe(1);
+  });
+});
+
+describe("RIGHT 4.0 prior service (2 of the 5 preceding years)", () => {
+  it("uses every year a run was active", () => {
+    const r = priorService([run({ startDate: new Date("2024-06-01"), endDate: new Date("2025-02-12") })], 2026);
+    expect(r.window).toEqual([2021, 2022, 2023, 2024, 2025]);
+    expect(r.yearsWithProgramming).toEqual([2024, 2025]);
+    expect(r.meets).toBe(true);
+    expect(priorService([run({ startDate: new Date("2025-03-01"), endDate: null })], 2026).meets).toBe(false);
   });
 });
 

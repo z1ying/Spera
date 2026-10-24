@@ -1,32 +1,32 @@
-code,name,right3_target,womens
-ASP,Avenal State Prison (ASP),0,0
-CCI,California Correctional Institution (CCI),1,0
+code,name,right4_underserved,womens
+ASP,Avenal State Prison (ASP),1,0
+CCI,California Correctional Institution (CCI),0,0
 CHCF,"California Health Care Facility (CHCF), Stockton",0,0
-CIM,California Institution for Men (CIM),1,0
+CIM,California Institution for Men (CIM),0,0
 CIW,California Institution for Women (CIW),1,1
 CMC,California Men’s Colony (CMC),0,0
 CMF,California Medical Facility (CMF),0,0
 CRC,California Rehabilitation Center (CRC),0,0
 COR,"California State Prison, Corcoran (COR)",0,0
 LAC,"California State Prison, Los Angeles County (LAC)",0,0
-SAC,"California State Prison, Sacramento (SAC)",0,0
+SAC,"California State Prison, Sacramento (SAC)",1,0
 SOL,"California State Prison, Solano (SOL)",0,0
-CAL,Calipatria State Prison (CAL),1,0
-CEN,"California State Prison, Centinela (CEN)",1,0
+CAL,Calipatria State Prison (CAL),0,0
+CEN,"California State Prison, Centinela (CEN)",0,0
 CCWF,Central California Women’s Facility (CCWF),1,1
-CTF,Correctional Training Facility (CTF),0,0
+CTF,Correctional Training Facility (CTF),1,0
 FSP,Folsom State Prison (FSP),0,0
 HDSP,High Desert State Prison (HDSP),0,0
 ISP,Ironwood State Prison (ISP),0,0
-KVSP,Kern Valley State Prison (KVSP),0,0
+KVSP,Kern Valley State Prison (KVSP),1,0
 MCSP,Mule Creek State Prison (MCSP),0,0
 NKSP,North Kern State Prison (NKSP),1,0
 PBSP,Pelican Bay State Prison (PBSP),0,0
-PVSP,Pleasant Valley State Prison (PVSP),1,0
+PVSP,Pleasant Valley State Prison (PVSP),0,0
 RJD,Richard J. Donovan Correctional Facility (RJD),0,0
-SVSP,Salinas Valley State Prison (SVSP),1,0
+SVSP,Salinas Valley State Prison (SVSP),0,0
 SQ,San Quentin Rehabilitation Center (SQ),0,0
-SCC,Sierra Conservation Center (SCC),1,0
+SCC,Sierra Conservation Center (SCC),0,0
 SATF,"Substance Abuse Treatment Facility and State Prison, Corcoran (SATF-CSP, Corcoran)",0,0
 VSP,Valley State Prison (VSP),0,0
-WSP,Wasco State Prison (WSP),1,0
+WSP,Wasco State Prison (WSP),0,0

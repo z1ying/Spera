@@ -1,0 +1,57 @@
+{
+  "verifiedOn": "2026-10-24",
+  "source": "CDCR Division of Rehabilitative Programs — Grant Programs page and RFA documents",
+  "sourceUrl": "https://www.cdcr.ca.gov/rehabilitation/grants/",
+  "grants": [
+    {
+      "id": "right-4",
+      "name": "RIGHT Grant 4.0",
+      "fullName": "Rehabilitative Investment Grants for Healing and Transformation (RIGHT) Grant 4.0",
+      "funder": "CDCR, Division of Rehabilitative Programs",
+      "status": "open",
+      "releasedOn": "2026-10-01",
+      "dueDate": "2026-11-30",
+      "dueTime": "11:59 p.m.",
+      "fundingPeriod": "July 1, 2027 – December 1, 2029",
+      "totalFunding": 19400000,
+      "howAwarded": "Every eligible organization gets qualifying points; the total is divided by all points awarded, so each point is worth the same amount.",
+      "eligibility": [
+        "Community-based 501(c)(3) nonprofit in good standing, or fiscally sponsored by one",
+        "Physical office in California",
+        "Provided rehabilitative programming inside a CDCR institution in at least 2 of the 5 years before applying",
+        "Currently providing an existing rehabilitative program",
+        "Programs do not need to be RAC approved (FAQ 71)"
+      ],
+      "points": [
+        "Budget under $250,000: 1 point · $250,000–$500,000: 2 points · over $500,000: 3 points",
+        "+0.5 for programming at an underserved institution (Attachment A, red font)",
+        "+0.5 for serving special populations (RHU, EOP/MHCB)",
+        "+0.5 for a program in a language other than English",
+        "At most two half-points (+1.0); maximum 4 points per organization"
+      ],
+      "documents": [
+        "IRS 501(c)(3) determination letter (or fiscal sponsor's) and fiscal sponsor agreement if any",
+        "Annual budget for FY 2024-25 and FY 2025-26, one PDF each",
+        "STD 204 Payee Data Record (STD 205 optional) and Supplement Payee Data Record",
+        "Office of Business Services forms 1000, 1500 and 1510",
+        "Certificate of Insurance; Workers' Compensation exemption if applicable; Contractor Certification Clauses",
+        "California Secretary of State certification",
+        "Program Summary (max 2 pages) and Attachment A – Institution Locations & Populations"
+      ],
+      "notes": [
+        "The packet includes a Generative AI (GenAI) reporting form: disclose any AI use in preparing the application.",
+        "Grantees submit an annual report within 60 days after each fiscal year."
+      ],
+      "links": [
+        { "label": "Request for Applications (PDF)", "url": "https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2026/09/RIGHT-4.0-RFA.pdf" },
+        { "label": "FAQ (PDF)", "url": "https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2026/10/RIGHT-4.0-FAQs-Final.pdf" }
+      ]
+    },
+    { "id": "right-3", "name": "RIGHT Grant 3.0", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2026 – December 1, 2028" },
+    { "id": "right-2", "name": "RIGHT Grant 2.0", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2023 – December 1, 2026" },
+    { "id": "vi", "name": "Victim Impact Grant", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2026 – June 30, 2028" },
+    { "id": "ipg", "name": "Innovative Programming Grant", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2025 – June 30, 2028" },
+    { "id": "care", "name": "California Reentry and Enrichment (CARE) Grant", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2025 – June 30, 2028" },
+    { "id": "rj", "name": "Restorative Justice Grant", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2024 – June 30, 2027" }
+  ]
+}

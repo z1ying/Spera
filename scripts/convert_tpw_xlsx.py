@@ -8,8 +8,9 @@ rows are skipped; "TBD" and blank numbers are kept as blanks (the dashboard
 lists them as incomplete rather than guessing).
 
 Facility flags come from published sources, not from the workbook:
-- right3_target: red-font "target institutions" in Attachment A of CDCR's
-  RIGHT Grant 3.0 RFA (released 2025-10-01) — worth +0.5 qualifying points.
+- right4_underserved: red-font "underserved institutions" in Attachment A of
+  CDCR's RIGHT Grant 4.0 RFA (released 2026-10-01, due 2026-11-30) — worth
+  +0.5 qualifying points.
 - womens: CDCR's women's institutions (CCWF, CIW).
 """
 import csv
@@ -20,7 +21,7 @@ import sys
 
 import openpyxl
 
-RIGHT3_TARGET = {"CAL", "CCI", "CCWF", "CEN", "CIM", "CIW", "NKSP", "PVSP", "SCC", "SVSP", "WSP"}
+RIGHT4_UNDERSERVED = {"ASP", "CCWF", "CIW", "CTF", "KVSP", "NKSP", "SAC"}
 WOMENS = {"CCWF", "CIW"}
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "real")
 
@@ -43,10 +44,10 @@ def main(path):
     facilities = [r[0] for r in wb["Constants"].iter_rows(min_row=2, values_only=True) if r and r[0]]
     with open(os.path.join(OUT, "facilities.csv"), "w", newline="") as f:
         w = csv.writer(f, lineterminator="\n")
-        w.writerow(["code", "name", "right3_target", "womens"])
+        w.writerow(["code", "name", "right4_underserved", "womens"])
         for name in facilities:
             c = code_of(name)
-            w.writerow([c, name.strip(), int(c in RIGHT3_TARGET), int(c in WOMENS)])
+            w.writerow([c, name.strip(), int(c in RIGHT4_UNDERSERVED), int(c in WOMENS)])
 
     rows = list(wb["Data Entry Sheet"].iter_rows(values_only=True))
     kept = skipped = 0

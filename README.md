@@ -25,9 +25,10 @@ that are not paid to report.
   programming hours, participants, participants completed, total participant
   programming hours (completed × hours) and program year — by year,
   organization and prison, plus a follow-up list of runs with missing numbers.
-- **Grant-ready**: each prison is flagged if it is a target institution in
-  CDCR's RIGHT Grant 3.0 RFA, which awards extra qualifying points for
-  programming there and for serving RHU/EOP/MHCB populations [3].
+- **Grants page for organizations**: CDCR's open RIGHT Grant 4.0 (due
+  Nov 30, 2026) — eligibility and points checked against the organization's
+  own reported programs, plus the numbers it can cite in its application [3].
+  Prisons are flagged when RIGHT 4.0 lists them as underserved.
 - **Nothing guessed**: a missing number stays missing and is flagged.
 
 ## Data
@@ -71,7 +72,7 @@ python3 -I scripts/convert_tpw_xlsx.py "TPW - Collective Impact Report.xlsx"
 
 [1] Hack for Social Impact 2026. Event and Justice Reform track description. https://luma.com/59t8euck
 [2] Transformative Programming Works. Official website. https://www.thetpw.org/
-[3] California Department of Corrections and Rehabilitation. *Request for Applications: Rehabilitative Investment Grants for Healing and Transformation (RIGHT) Grant 3.0*, released 2025-10-01. https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2025/10/FINAL-Right-3.0-RFA_updated-10-06-1.pdf
+[3] California Department of Corrections and Rehabilitation. *Request for Applications: Rehabilitative Investment Grants for Healing and Transformation (RIGHT) Grant 4.0*, released 2026-10-01. https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2026/09/RIGHT-4.0-RFA.pdf
 
 ## License
 

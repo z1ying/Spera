@@ -13,7 +13,7 @@ export function toRun(r: Row): Run {
     programName: r.program.name,
     facilityCode: r.facilityCode,
     facilityName: r.facility.name,
-    right3Target: r.facility.right3Target,
+    underserved: r.facility.underserved,
     womens: r.facility.womens,
     yard: r.yard,
     status: r.status,
@@ -23,6 +23,7 @@ export function toRun(r: Row): Run {
     participants: r.participants,
     completed: r.completed,
     specialPopulations: r.specialPopulations,
+    nonEnglishLanguage: r.nonEnglishLanguage,
   };
 }
 

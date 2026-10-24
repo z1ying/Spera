@@ -2,10 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { hoursFromSchedule, STATUSES, type RunInput } from "@/lib/runs";
+import SearchPick from "./SearchPick";
 
 interface Options {
   orgs: { name: string; programs: string[] }[];
-  facilities: { code: string; name: string; right3Target: boolean; womens: boolean }[];
+  facilities: { code: string; name: string; underserved: boolean; womens: boolean }[];
 }
 
 interface MyRun {
@@ -21,6 +22,7 @@ interface MyRun {
   participants: number | null;
   completed: number | null;
   specialPopulations: boolean;
+  nonEnglishLanguage: string | null;
   participantHours: number | null;
 }
 
@@ -57,6 +59,7 @@ const EMPTY: RunInput = {
   participants: null,
   completed: null,
   specialPopulations: false,
+  nonEnglishLanguage: "",
 };
 
 const num = (v: string) => (v === "" ? null : Number(v));
@@ -94,85 +97,6 @@ function Chip({ selected, onClick, children }: { selected: boolean; onClick: () 
     >
       {children}
     </button>
-  );
-}
-
-/**
- * Type-to-search picker for long lists (120 organizations, 31 prisons): shows
- * the chosen item with "Change", otherwise a search box with up to 8 matches.
- * With `onAdd`, a name that isn't in the list can be added as new.
- */
-function SearchPick<T>({
-  items,
-  label,
-  toText,
-  selected,
-  onPick,
-  onClear,
-  onAdd,
-  placeholder,
-  badge,
-}: {
-  items: T[];
-  label: (item: T) => string;
-  toText: (item: T) => string;
-  selected: T | null;
-  onPick: (item: T) => void;
-  onClear: () => void;
-  onAdd?: (name: string) => void;
-  placeholder: string;
-  badge?: (item: T) => React.ReactNode;
-}) {
-  const [q, setQ] = useState("");
-  const query = q.trim().toLowerCase();
-  const matches = items.filter((i) => !query || toText(i).toLowerCase().includes(query)).slice(0, 8);
-  const exact = items.some((i) => label(i).toLowerCase() === query);
-
-  if (selected)
-    return (
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="rounded-full bg-emerald-800 px-4 py-2 text-sm text-white">{label(selected)}</span>
-        {badge?.(selected)}
-        <button type="button" className="text-sm text-slate-600 underline" onClick={() => { setQ(""); onClear(); }}>
-          Change
-        </button>
-      </div>
-    );
-  return (
-    <div className="max-w-md">
-      <input
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            if (matches.length === 1) onPick(matches[0]);
-          }
-        }}
-        placeholder={placeholder}
-        aria-label={placeholder}
-        className="w-full rounded-lg border border-slate-300 px-3 py-2"
-      />
-      <ul className="mt-1 divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200 bg-white">
-        {matches.map((i) => (
-          <li key={label(i)}>
-            <button type="button" onClick={() => { setQ(""); onPick(i); }} className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-emerald-50">
-              <span>{label(i)}</span>
-              {badge?.(i)}
-            </button>
-          </li>
-        ))}
-        {matches.length === 0 && !onAdd && <li className="px-3 py-2 text-sm text-slate-500">No match — try another spelling.</li>}
-        {onAdd && query && !exact && (
-          <li>
-            <button type="button" onClick={() => { onAdd(q.trim()); setQ(""); }} className="w-full px-3 py-2 text-left text-sm font-medium text-emerald-800 hover:bg-emerald-50">
-              + Add &ldquo;{q.trim()}&rdquo; as a new organization
-            </button>
-          </li>
-        )}
-      </ul>
-      {!query && items.length > 8 && <p className="mt-1 text-xs text-slate-500">Showing 8 of {items.length} — type to narrow.</p>}
-    </div>
   );
 }
 
@@ -217,6 +141,7 @@ export default function RunForm() {
   const [busy, setBusy] = useState(false);
   const [thanks, setThanks] = useState<{ hours: number | null; people: number | null; program: string } | null>(null);
   const [mine, setMine] = useState<MyRun[]>([]);
+  const [otherLanguage, setOtherLanguage] = useState(false);
 
   const set = (patch: Partial<RunInput>) => setForm((f) => ({ ...f, ...patch }));
 
@@ -262,7 +187,9 @@ export default function RunForm() {
       participants: asEdit ? r.participants : null,
       completed: asEdit ? r.completed : null,
       specialPopulations: r.specialPopulations,
+      nonEnglishLanguage: r.nonEnglishLanguage ?? "",
     });
+    setOtherLanguage(!!r.nonEnglishLanguage);
     setSchedule((s) => ({ ...s, on: false }));
     setNewProgram(false);
     setThanks(null);
@@ -276,7 +203,7 @@ export default function RunForm() {
     e.preventDefault();
     setBusy(true);
     setProblems([]);
-    const body: RunInput = { ...form, totalHours: hours };
+    const body: RunInput = { ...form, totalHours: hours, nonEnglishLanguage: otherLanguage ? form.nonEnglishLanguage : "" };
     try {
       const res = editing
         ? await fetch(`/api/runs/${editing.id}`, { method: "PATCH", body: JSON.stringify({ ...body, editToken: editing.editToken }) })
@@ -290,6 +217,7 @@ export default function RunForm() {
       writeStore(LAST, { orgName: form.orgName, programName: form.programName });
       setThanks({ hours: participantHours, people: form.participants ?? null, program: form.programName });
       setForm({ ...EMPTY, orgName: form.orgName, programName: form.programName });
+      setOtherLanguage(false);
       setEditing(null);
         setNewProgram(false);
       setOpts(await (await fetch("/api/form-options")).json());
@@ -341,6 +269,7 @@ export default function RunForm() {
               onClear={() => set({ orgName: "", programName: "" })}
               onAdd={(name) => { setAddedOrgs((xs) => [...xs, name]); set({ orgName: name, programName: "" }); setNewProgram(true); }}
               placeholder="Type your organization's name"
+              addLabel="a new organization"
             />
           </Field>
 
@@ -380,7 +309,7 @@ export default function RunForm() {
                   onClear={() => set({ facilityCode: "" })}
                   placeholder="Type to search, e.g. San Quentin or SQ"
                   badge={(f) =>
-                    f.right3Target ? <span className="shrink-0 text-xs font-medium text-emerald-800">RIGHT grant target prison</span> : null
+                    f.underserved ? <span className="shrink-0 text-xs font-medium text-emerald-800">RIGHT 4.0 underserved prison</span> : null
                   }
                 />
                 <input
@@ -474,9 +403,25 @@ export default function RunForm() {
                   <input type="checkbox" checked={!!form.specialPopulations} onChange={(e) => set({ specialPopulations: e.target.checked })} className="mt-0.5 h-4 w-4 accent-emerald-800" />
                   <span>
                     Serves people in restricted housing or mental health programs (RHU, EOP or MHCB)
-                    <span className="block text-xs text-slate-500">Optional. Programs for these groups earn an extra point in CDCR&apos;s RIGHT grant.</span>
+                    <span className="block text-xs text-slate-500">Optional. Programs for these groups earn an extra half point in CDCR&apos;s RIGHT grant.</span>
                   </span>
                 </label>
+                <label className="mt-3 flex items-start gap-2 text-sm">
+                  <input type="checkbox" checked={otherLanguage} onChange={(e) => setOtherLanguage(e.target.checked)} className="mt-0.5 h-4 w-4 accent-emerald-800" />
+                  <span>
+                    Taught in a language other than English
+                    <span className="block text-xs text-slate-500">Optional. Also earns an extra half point in RIGHT 4.0.</span>
+                  </span>
+                </label>
+                {otherLanguage && (
+                  <input
+                    aria-label="Which language?"
+                    value={form.nonEnglishLanguage ?? ""}
+                    onChange={(e) => set({ nonEnglishLanguage: e.target.value })}
+                    placeholder="Which language? e.g. Spanish"
+                    className="ml-6 mt-2 w-56 rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                  />
+                )}
               </Field>
 
               {problems.length > 0 && (

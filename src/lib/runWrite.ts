@@ -53,6 +53,7 @@ async function checked(input: RunInput) {
     participants: numOrNull(input.participants),
     completed: input.status === "Completed" ? numOrNull(input.completed) : null,
     specialPopulations: !!input.specialPopulations,
+    nonEnglishLanguage: input.nonEnglishLanguage?.trim() || null,
   };
 }
 

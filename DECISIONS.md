@@ -200,3 +200,17 @@ Decisions:
 - Outdated planning docs (pitch, Devpost, handover, pilot, idea, brief,
   analysis) carry a banner instead of being deleted.
 - Paper records recorded as the main open problem (backlog).
+
+## 2026-10-24 (Sat night) — RIGHT 4.0, organization grants page
+
+- RIGHT 4.0 is open (due 2026-11-30, $19.4M). It adds +0.5 for programs in a
+  language other than English — correcting the earlier "no language points"
+  (that was RIGHT 3.0). Optional language field restored on the form.
+- Prison flag switched from RIGHT 3.0 targets to RIGHT 4.0 underserved
+  institutions (ASP, CCWF, CIW, CTF, KVSP, NKSP, SAC), read from the red font
+  in Attachment A. Column renamed right4_underserved.
+- `/grants` for organizations; grant content in `data/grants.json`
+  (hand-checked against CDCR pages on 2026-10-24).
+- Readiness and "numbers you can cite" are reachable by organization name
+  without sign-in (per-org private links remain on the roadmap).
+- Org header shows no dashboard; small "TPW staff" link only.

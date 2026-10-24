@@ -11,6 +11,6 @@ export async function GET() {
   ]);
   return NextResponse.json({
     orgs: orgs.map((o) => ({ name: o.name, programs: o.programs.map((p) => p.name) })),
-    facilities: facilities.map((f) => ({ code: f.code, name: f.name, right3Target: f.right3Target, womens: f.womens })),
+    facilities: facilities.map((f) => ({ code: f.code, name: f.name, underserved: f.underserved, womens: f.womens })),
   });
 }

@@ -38,8 +38,8 @@ model PartnerProgram {
 model Facility {
   code         String       @id
   name         String
-  /// Target ("underserved") institution in CDCR RIGHT Grant 3.0, Attachment A.
-  right3Target Boolean      @map("right3_target")
+  /// "Underserved institution" in CDCR RIGHT Grant 4.0, Attachment A (+0.5 point).
+  underserved  Boolean      @map("right4_underserved")
   womens       Boolean
   runs         ProgramRun[]
 
@@ -63,8 +63,10 @@ model ProgramRun {
   totalHours         Float?         @map("total_hours")
   participants       Int?
   completed          Int?
-  /// Serves RHU / EOP / MHCB (RIGHT 3.0 target populations).
+  /// Serves RHU / EOP / MHCB (RIGHT 4.0 special populations, +0.5 point).
   specialPopulations Boolean        @default(false) @map("special_populations")
+  /// Language other than English the run is delivered in; null = English (RIGHT 4.0, +0.5 point).
+  nonEnglishLanguage String?        @map("non_english_language")
   notes              String?
   /// "form" (submitted on ImpactLink) or "import:<file>#<row>".
   source             String

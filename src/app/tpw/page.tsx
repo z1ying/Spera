@@ -1,5 +1,5 @@
 import { loadRuns } from "@/lib/loadRuns";
-import { groupTotals, missingFields, programYear, right3Signals, totals, type Run, type Totals } from "@/lib/runs";
+import { groupTotals, missingFields, programYear, right4Signals, totals, type Run, type Totals } from "@/lib/runs";
 import { isTpwSignedIn } from "@/lib/tpwAuth";
 import LoginForm from "./LoginForm";
 
@@ -117,9 +117,9 @@ export default async function TpwDashboard() {
         <Table
           title="By organization"
           first="Organization"
-          extraHead={["RIGHT 3.0 signals"]}
+          extraHead={["RIGHT 4.0 signals"]}
           rows={orgs.map((o) => {
-            const s = right3Signals(o.runs);
+            const s = right4Signals(o.runs);
             return (
               <TotalsRow
                 key={o.key}
@@ -133,8 +133,9 @@ export default async function TpwDashboard() {
                 max={max(orgs)}
                 extra={
                   <td className="py-2 pl-3 text-xs text-slate-700">
-                    {s.targetInstitutionRuns > 0 ? `${s.targetInstitutionRuns} runs at target prisons (${s.targetInstitutions.join(", ")})` : "No target-prison runs"}
+                    {s.underservedRuns > 0 ? `${s.underservedRuns} runs at underserved prisons (${s.underservedInstitutions.join(", ")})` : "No underserved-prison runs"}
                     {s.specialPopulationRuns > 0 && ` · ${s.specialPopulationRuns} serving RHU/EOP/MHCB`}
+                    {s.languages.length > 0 && ` · offered in ${s.languages.join(", ")}`}
                     <span className="block font-medium text-emerald-900">+{s.additionalPoints} point evidence</span>
                   </td>
                 }
@@ -154,7 +155,7 @@ export default async function TpwDashboard() {
                 label={
                   <>
                     {f.facilityName}
-                    {f.right3Target && <span className="ml-2 rounded bg-emerald-100 px-1.5 py-0.5 text-[0.65rem] font-semibold text-emerald-900">RIGHT target</span>}
+                    {f.underserved && <span className="ml-2 rounded bg-emerald-100 px-1.5 py-0.5 text-[0.65rem] font-semibold text-emerald-900">RIGHT 4.0 underserved</span>}
                     {f.womens && <span className="ml-1 rounded bg-slate-100 px-1.5 py-0.5 text-[0.65rem] font-semibold text-slate-700">Women&apos;s</span>}
                   </>
                 }
@@ -182,9 +183,9 @@ export default async function TpwDashboard() {
       <footer className="mt-8 text-xs leading-relaxed text-slate-500">
         <p>
           Definitions follow TPW&apos;s Collective Impact Report: participant programming hours = participants completed × total
-          programming hours; program year = year of the start date. RIGHT 3.0 signals: CDCR&apos;s RIGHT Grant 3.0 RFA (released
-          Oct 1, 2025) awards +0.5 qualifying points for programming at target institutions (Attachment A) and +0.5 for target
-          populations (RHU, EOP/MHCB), in addition to 1–3 points by budget size, which is not collected here.
+          programming hours; program year = year of the start date. RIGHT 4.0 signals: CDCR&apos;s RIGHT Grant 4.0 RFA (released
+          Oct 1, 2026, due Nov 30, 2026) gives 1–3 points by budget plus up to two half-points for programming at an underserved
+          institution (Attachment A), serving RHU/EOP/MHCB, or offering a program in a language other than English.
         </p>
       </footer>
     </main>

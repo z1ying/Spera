@@ -19,7 +19,8 @@ export interface Run {
   programName: string;
   facilityCode: string;
   facilityName: string;
-  right3Target: boolean;
+  /** Underserved institution in CDCR RIGHT Grant 4.0 (Attachment A). */
+  underserved: boolean;
   womens: boolean;
   yard: string | null;
   status: string;
@@ -29,6 +30,8 @@ export interface Run {
   participants: number | null;
   completed: number | null;
   specialPopulations: boolean;
+  /** Language other than English; null = English. */
+  nonEnglishLanguage: string | null;
 }
 
 /** Completed × hours — TPW's "CALC: Total Participant Programming hours". */
@@ -94,21 +97,61 @@ export function groupTotals<K extends string | number>(runs: Run[], key: (r: Run
 }
 
 /**
- * RIGHT Grant 3.0 qualifying-point signals the data can show (RFA, Oct 2025):
- * +0.5 for programming at a target institution, +0.5 for serving target
- * populations (RHU/EOP/MHCB). Budget points (1–3) need the org's budget,
- * which is not collected here.
+ * CDCR RIGHT Grant 4.0 (RFA released 2026-10-01, due 2026-11-30):
+ * budget points 1–3, plus at most two half-points from three criteria —
+ * programming at an underserved institution, serving RHU/EOP/MHCB, or
+ * offering a program in a language other than English. Max 4 points.
  */
-export function right3Signals(runs: Run[]) {
-  const atTarget = runs.filter((r) => r.right3Target);
+export const RIGHT4 = {
+  name: "RIGHT Grant 4.0",
+  dueDate: "2026-11-30",
+  totalFunding: 19_400_000,
+  maxPoints: 4,
+} as const;
+
+export const BUDGET_TIERS = [
+  { label: "Under $250,000", points: 1 },
+  { label: "$250,000 – $500,000", points: 2 },
+  { label: "Over $500,000", points: 3 },
+] as const;
+
+export function right4Signals(runs: Run[]) {
+  const atUnderserved = runs.filter((r) => r.underserved);
+  const criteria = {
+    underserved: atUnderserved.length > 0,
+    specialPopulations: runs.some((r) => r.specialPopulations),
+    nonEnglish: runs.some((r) => !!r.nonEnglishLanguage),
+  };
+  const met = Object.values(criteria).filter(Boolean).length;
   return {
-    targetInstitutionRuns: atTarget.length,
-    targetInstitutions: [...new Set(atTarget.map((r) => r.facilityCode))].sort(),
+    underservedRuns: atUnderserved.length,
+    underservedInstitutions: [...new Set(atUnderserved.map((r) => r.facilityCode))].sort(),
     womensRuns: runs.filter((r) => r.womens).length,
     specialPopulationRuns: runs.filter((r) => r.specialPopulations).length,
-    /** Additional points the runs evidence (max 1.0), before budget points. */
-    additionalPoints: (atTarget.length > 0 ? 0.5 : 0) + (runs.some((r) => r.specialPopulations) ? 0.5 : 0),
+    languages: [...new Set(runs.map((r) => r.nonEnglishLanguage).filter((l): l is string => !!l))].sort(),
+    criteria,
+    /** Additional points the runs evidence: 0.5 per criterion met, at most 1.0. */
+    additionalPoints: Math.min(1, met * 0.5),
   };
+}
+
+/** Calendar years a run was active (start year through end year, or start year only). */
+export function yearsActive(r: Pick<Run, "startDate" | "endDate">): number[] {
+  if (!r.startDate) return [];
+  const from = r.startDate.getUTCFullYear();
+  const to = r.endDate ? Math.max(from, r.endDate.getUTCFullYear()) : from;
+  return Array.from({ length: to - from + 1 }, (_, i) => from + i);
+}
+
+/**
+ * RIGHT 4.0 prior-service requirement: programming inside a CDCR institution
+ * during at least two of the five years preceding the application.
+ */
+export function priorService(runs: Run[], applicationYear: number) {
+  const window = Array.from({ length: 5 }, (_, i) => applicationYear - 5 + i);
+  const active = new Set(runs.flatMap(yearsActive));
+  const yearsWithProgramming = window.filter((y) => active.has(y));
+  return { window, yearsWithProgramming, meets: yearsWithProgramming.length >= 2 };
 }
 
 // ---------- form input ----------
@@ -125,6 +168,8 @@ export interface RunInput {
   participants?: number | null;
   completed?: number | null;
   specialPopulations?: boolean;
+  /** Language other than English, if any. */
+  nonEnglishLanguage?: string;
 }
 
 /** Hours helper: "2 sessions a week, 3 hours each, for 12 weeks" = 72. */

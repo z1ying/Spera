@@ -22,7 +22,8 @@ A **program run** is one cohort of one program at one prison — for example, *D
 | Total programming hours | for counting | Hours one participant receives over the whole run. May be worked out from the schedule: sessions per week or month × hours per session × number of weeks or months |
 | Number of participants | for counting | |
 | Number of participants completed | when Completed | Not more than the number of participants |
-| Serves RHU / EOP / MHCB | no | RIGHT 3.0 target populations |
+| Serves RHU / EOP / MHCB | no | RIGHT 4.0 special populations |
+| Language other than English | no | Which language, if the program is taught in one (RIGHT 4.0 point) |
 
 ## 3. Calculated fields (TPW's formulas)
 
@@ -31,7 +32,7 @@ A **program run** is one cohort of one program at one prison — for example, *D
 
 ## 4. Flags joined from published sources (organizations don't enter these)
 
-- **RIGHT 3.0 target institution** — red-font institutions in Attachment A of CDCR's RIGHT Grant 3.0 RFA (released 2025-10-01): CAL, CCI, CCWF, CEN, CIM, CIW, NKSP, PVSP, SCC, SVSP, WSP. Programming there is worth +0.5 qualifying points; serving RHU/EOP/MHCB is worth another +0.5; budget size adds 1–3 points (max 4 per organization).
+- **RIGHT 4.0 underserved institution** — red-font institutions in Attachment A of CDCR's RIGHT Grant 4.0 RFA (released 2026-10-01, due 2026-11-30): ASP, CCWF, CIW, CTF, KVSP, NKSP, SAC. Budget size gives 1–3 points; programming at an underserved institution, serving RHU/EOP/MHCB, and teaching in a language other than English each give +0.5, at most +1.0 in total (max 4 per organization).
 - **Women's institution** — CCWF, CIW.
 
 ## 5. Missing values

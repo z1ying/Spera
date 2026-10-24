@@ -32,7 +32,7 @@ async function main() {
     data: read("facilities.csv").map((r) => ({
       code: r.code,
       name: r.name,
-      right3Target: r.right3_target === "1",
+      underserved: r.right4_underserved === "1",
       womens: r.womens === "1",
     })),
   });
