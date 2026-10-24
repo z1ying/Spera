@@ -129,3 +129,74 @@ model ImportJob {
 
   @@map("import_jobs")
 }
+
+// ---------------------------------------------------------------------------
+// Program-run reporting (design doc §27): what TPW actually collects today.
+// One row per program run (cohort) — aggregate counts only, no individuals,
+// no identifiers. These tables back the organization form and TPW dashboard.
+// ---------------------------------------------------------------------------
+
+/// A TPW member organization (real names, as organizations report them).
+model PartnerOrg {
+  id        String           @id
+  name      String           @unique
+  createdAt DateTime         @default(now()) @map("created_at")
+  programs  PartnerProgram[]
+  runs      ProgramRun[]
+
+  @@map("partner_orgs")
+}
+
+model PartnerProgram {
+  id    String       @id
+  orgId String       @map("org_id")
+  org   PartnerOrg   @relation(fields: [orgId], references: [id])
+  name  String
+  runs  ProgramRun[]
+
+  @@unique([orgId, name])
+  @@map("partner_programs")
+}
+
+/// CDCR institution, with flags from published sources (scripts/convert_tpw_xlsx.py).
+model Facility {
+  code         String       @id
+  name         String
+  /// Target ("underserved") institution in CDCR RIGHT Grant 3.0, Attachment A.
+  right3Target Boolean      @map("right3_target")
+  womens       Boolean
+  runs         ProgramRun[]
+
+  @@map("facilities")
+}
+
+model ProgramRun {
+  id                 String         @id
+  orgId              String         @map("org_id")
+  org                PartnerOrg     @relation(fields: [orgId], references: [id])
+  programId          String         @map("program_id")
+  program            PartnerProgram @relation(fields: [programId], references: [id])
+  facilityCode       String         @map("facility_code")
+  facility           Facility       @relation(fields: [facilityCode], references: [code])
+  yard               String?
+  /// Planned | In Progress | Completed
+  status             String
+  startDate          DateTime?      @map("start_date")
+  endDate            DateTime?      @map("end_date")
+  /// Total programming hours per participant ("Total Programming hours").
+  totalHours         Float?         @map("total_hours")
+  participants       Int?
+  completed          Int?
+  /// Serves RHU / EOP / MHCB (RIGHT 3.0 target populations).
+  specialPopulations Boolean        @default(false) @map("special_populations")
+  notes              String?
+  /// "form" (submitted on ImpactLink) or "import:<file>#<row>".
+  source             String
+  /// Secret returned to the submitting browser; required to edit a form run
+  /// (organizations don't log in — design doc §27). Null for imported rows.
+  editToken          String?        @map("edit_token")
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+
+  @@map("program_runs")
+}

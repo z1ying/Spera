@@ -677,7 +677,7 @@ function ReceiptStep({
         <button type="button" onClick={onNext} className="rounded-md bg-emerald-800 px-5 py-2 text-sm font-medium text-white hover:bg-emerald-900">
           Import the next file
         </button>
-        <Link href="/" className="rounded-md px-4 py-2 text-sm text-slate-700 hover:bg-slate-200">
+        <Link href="/future/overview" className="rounded-md px-4 py-2 text-sm text-slate-700 hover:bg-slate-200">
           Go to overview
         </Link>
       </div>

@@ -459,3 +459,20 @@ savings_capacity     = avoided_returns × return_years × avg_cost_year        (
 4. **持续追踪（第二季度自动映射）**：人工确认过的映射按表头签名存入 ImportJob；同格式的下一份文件自动套用（来源标"Mapping remembered"）。演示动线改为三段：Q1 西班牙语表（B 级）→ 外部结果表 D（匹配率上屏，升 A 级）→ Q2 同格式表（一键导入）。`demo_q1_spanish.csv` / `demo_q2_spanish.csv` 由样例表 C 按行序对半切分，**不是真实季度**。
 
 *文档版本：v1.9（2026-10-24 新增第 26 节）。*
+
+---
+
+## 27. 转向真实数据：机构填报 + TPW 仪表盘（v2.0，用户 2026-10-24 定，依据 TPW 回复）
+
+**TPW 回复（用户转述）**：TPW 不需要 ID；最看重五个字段——Total Programming hours、Number of Participants、Number of Participants Completed、CALC: Total Participant Programming hours（= 完成人数 × 课时）、CALC: Program Year（= 开始日期年份）。收集要可扩展、可增改字段；州 RFP 按机构规模、服务资源匮乏监狱、女子监狱等给分。
+
+**真实数据**：TPW《Collective Impact Report》工作簿——每行一期课程（汇总人数），无个人、无 ID、无结果数据。`scripts/convert_tpw_xlsx.py` 转成 `data/real/*.csv`（工作簿本身不进 git；用户确认真实数据可用）。跳过标注 "SAMPLE DATA" 的模板行；"TBD"/空白保留为缺失。
+
+**产品形态（已定）**
+1. **首页 = 机构填报一期课程**，不登录、以点选为主：机构 → 课程 → 监狱（可搜，目标监狱标注）→ 状态三选一 → 日期 → 课时（直接填或"每周/每月 × 每次小时 × 周/月数"自动算）→ 参加/完成人数（加减按钮）→ 选填"服务 RHU/EOP/MHCB"。参与者课时、课程年份自动算。提交后致谢并显示贡献；本浏览器提交过的期次可"更新/复制新一期"（凭提交时返回的编辑令牌，无需登录）。
+2. **TPW 仪表盘 `/tpw`**：右上角"TPW staff sign in"，口令（环境变量 `TPW_PASSCODE`，未配置则无人可进）。五字段总量、按年份/机构/监狱拆分、RIGHT 3.0 加分信号、"需跟进"清单（缺失字段逐条列出，不猜）、导出 CSV（TPW 原列名）。机构看不到仪表盘。
+3. **RIGHT Grant 3.0（CDCR，2025-10-01 发布）**：预算 1–3 分；目标监狱 +0.5（附件 A 红字：CAL、CCI、CCWF、CEN、CIM、CIW、NKSP、PVSP、SCC、SVSP、WSP——两所女子监狱均在内）；特殊人群 RHU/EOP/MHCB +0.5；单家上限 4 分。"非英语授课加分"在 RIGHT 3.0 中未找到，待 TPW 确认出处。
+4. **合成数据的再犯/join 演示**移至"Future: outcomes"（`/future/overview`、`/import`、`/report`），仅 TPW 登录可见，页面标明全部为合成数据。
+5. **Future（未做）**：每家机构专属链接（安全）、背景音乐（暂不考虑）、机构自身报告（基于真实数据）、TPW 可配置的附加字段。
+
+*文档版本：v2.0（2026-10-24 新增第 27 节）。*

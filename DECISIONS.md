@@ -165,3 +165,24 @@ Decisions:
 - Report chart uses a fixed width so printing is reliable; verified one page
   with headless Chrome PDF.
 - Docs: pilot plan, handover memo, Devpost draft; question sheet items 8–13.
+
+## 2026-10-24 (Sat evening) — pivot to real data (design doc §27)
+
+- TPW's real workbook converted to `data/real/facilities.csv` (31 CDCR
+  institutions, RIGHT 3.0 target + women's flags) and `data/real/program_runs.csv`
+  (36 runs; 1 "SAMPLE DATA" row skipped). Workbook (*.xlsx) git-ignored.
+- New tables: PartnerOrg, PartnerProgram, Facility, ProgramRun (aggregate,
+  no individuals). Seeded by `npm run seed` / `seed:demo` alongside the
+  synthetic tables (which now only back the Future pages).
+- Home `/` = organization form (no sign-in); `/tpw` = TPW dashboard behind
+  TPW_PASSCODE (fails closed). Future pages gated to TPW too.
+- Real totals (seeded, before any form entries): 36 runs, 2 organizations,
+  14 prisons, 1,441 participants, 739 completed, 103,064 participant
+  programming hours; 5 runs flagged for follow-up (TBD / blanks).
+- A workbook row with no status would be stored as "Planned" (none occur).
+- Org edit rights without login: random edit token kept in the submitting
+  browser (localStorage); lose the browser storage → TPW must correct it.
+- Verified in the browser: form submission, thank-you, "submitted from this
+  browser", TPW sign-in, dashboard tables, export 401 without sign-in.
+  Not verified: date entry by keyboard in a zh-locale browser (picker works
+  for users; automated typing did not) and phone layout.

@@ -1,3 +1,5 @@
+import { isTpwSignedIn } from "@/lib/tpwAuth";
+import LoginForm from "@/app/tpw/LoginForm";
 import Link from "next/link";
 import { Cite, References } from "@/components/Cite";
 import Funnel from "@/components/Funnel";
@@ -28,6 +30,7 @@ export default async function Report({
 }: {
   searchParams: Promise<{ baseline?: string; years?: string; org?: string }>;
 }) {
+  if (!(await isTpwSignedIn())) return <LoginForm />;
   const q = await searchParams;
   const baselineKey = q.baseline && F.baselines.options[q.baseline] ? q.baseline : F.baselines.default;
   const baseline = F.baselines.options[baselineKey];
@@ -53,8 +56,8 @@ export default async function Report({
     <main className="report-page mx-auto max-w-4xl px-6 py-8 print:max-w-none print:p-0">
       <div className="mb-6 flex flex-wrap items-center gap-3 print:hidden">
         <PrintButton />
-        <Link href="/" className="text-sm text-slate-700 hover:underline">
-          ← Back to overview
+        <Link href="/future/overview" className="text-sm text-slate-700 hover:underline">
+          ← Back to outcomes demo
         </Link>
         <span className="text-xs text-slate-500">
           Baseline: {baseline.label} · {returnYears.toFixed(1)} years per avoided return

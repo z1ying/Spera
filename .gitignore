@@ -8,3 +8,6 @@ data/*.db-journal
 .prisma-engines/
 *.tsbuildinfo
 next-env.d.ts
+
+# Partner workbooks stay out of git; data/real/*.csv is the converted seed.
+*.xlsx

@@ -4,43 +4,33 @@ export const metadata = { title: "How your data is used — ImpactLink" };
 
 /**
  * One-screen, plain-language data-use promise (backlog 1c; design doc §23).
- * Each promise says how it is kept: by the software itself, or by the pilot
- * agreement with TPW. Nothing here claims more than the code enforces.
+ * Each promise says how it is kept: by the software itself, or by agreement
+ * with TPW. Nothing here claims more than the code enforces (design doc §27).
  */
 const PROMISES: { promise: string; how: string; by: "software" | "agreement" }[] = [
   {
-    promise: "We never receive names, birth dates or case numbers.",
-    how: "The database has no place to store them.",
+    promise: "We collect counts, never people.",
+    how: "The form asks how many took part and how many completed — no names, ID numbers or birth dates, anywhere.",
     by: "software",
   },
   {
-    promise: "ID numbers are scrambled on your own computer before anything is sent.",
-    how: "Your browser turns each ID into a code using a key from TPW. Only the codes are uploaded.",
+    promise: "Only TPW staff can see the network dashboard.",
+    how: "It sits behind a TPW sign-in. Organizations submitting a program never see other organizations' numbers.",
     by: "software",
   },
   {
-    promise: "No one is identified from a number we publish.",
-    how: "Any group smaller than 10 people is shown as “<10”.",
-    by: "software",
-  },
-  {
-    promise: "Nothing you send is thrown away without telling you.",
-    how: "Every upload gets a receipt listing each row that needs attention, and why.",
-    by: "software",
-  },
-  {
-    promise: "We measure programs, never people.",
-    how: "There are no individual risk scores anywhere in ImpactLink.",
-    by: "software",
-  },
-  {
-    promise: "Your organization's own numbers are seen only by you and TPW.",
-    how: "Anything shared outside is a total across the whole network.",
+    promise: "Outside TPW, your numbers appear only as network totals.",
+    how: "Anything TPW shares publicly adds up all organizations together.",
     by: "agreement",
   },
   {
-    promise: "You get something back.",
-    how: "A one-page report on your own program, ready for your grant applications.",
+    promise: "Nothing you send is changed or guessed.",
+    how: "If a number is missing it stays missing and is flagged for a follow-up, instead of being filled in for you.",
+    by: "software",
+  },
+  {
+    promise: "You can fix what you sent.",
+    how: "Programs submitted from your browser can be updated later — for example, adding how many completed.",
     by: "software",
   },
 ];
@@ -49,23 +39,23 @@ export default function DataUse() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
       <h1 className="text-3xl font-semibold">How your data is used</h1>
-      <p className="mt-2 text-slate-600">In plain words — what ImpactLink promises every organization that shares data.</p>
+      <p className="mt-2 text-slate-600">In plain words — what ImpactLink promises every organization that reports a program.</p>
       <ul className="mt-8 space-y-4">
         {PROMISES.map((p) => (
           <li key={p.promise} className="rounded-lg border border-slate-200 bg-white p-4">
             <p className="font-medium">{p.promise}</p>
             <p className="mt-1 text-sm text-slate-600">{p.how}</p>
             <p className="mt-2 text-xs text-slate-500">
-              {p.by === "software" ? "Built into the software" : "Part of the pilot agreement with TPW"}
+              {p.by === "software" ? "Built into the software" : "Agreed with TPW"}
             </p>
           </li>
         ))}
       </ul>
       <p className="mt-8 text-sm text-slate-600">
-        Questions? Contact TPW. During the pilot, the ImpactLink team does your first upload with you.
+        Questions? Contact TPW.
       </p>
-      <Link href="/import" className="mt-6 inline-block rounded-md bg-emerald-800 px-5 py-2 text-sm font-medium text-white hover:bg-emerald-900">
-        Bring in your data
+      <Link href="/" className="mt-6 inline-block rounded-md bg-emerald-800 px-5 py-2 text-sm font-medium text-white hover:bg-emerald-900">
+        Report a program
       </Link>
     </main>
   );

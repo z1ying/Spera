@@ -59,7 +59,8 @@ npm run seed         # loads the validated synthetic demo dataset (full)
 npm run seed:demo    # same, but holds out org-07/08 so the live demo can import them
 npm run sanity       # verifies headline rate + credit-tier gradient vs anchors
 npm test             # metrics engine unit tests (§7.2 worked example)
-npm run dev          # http://localhost:3000
+npm run dev          # http://localhost:3000  (organization form)
+                     # http://localhost:3000/tpw  (TPW dashboard, passcode = TPW_PASSCODE in .env)
 ```
 
 > **Prisma engine note:** if `prisma generate` fails to download engines
@@ -71,6 +72,9 @@ npm run dev          # http://localhost:3000
 > copies live in `.prisma-engines/` (git-ignored). See DECISIONS.md.
 
 ## Data disclosure
+
+**Program-run data are real**: TPW's Collective Impact Report (aggregate counts per program run — no individuals, no identifiers), converted with `scripts/convert_tpw_xlsx.py` into `data/real/`. The outcome-linkage pages under "Future" use synthetic data, described below.
+
 
 **All bundled data are synthetic.** Real individual-level recidivism records
 cannot lawfully be handed out for a hackathon demo, so the demo dataset

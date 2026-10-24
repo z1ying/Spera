@@ -1,32 +1,53 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
+import { isTpwSignedIn } from "@/lib/tpwAuth";
 
 export const metadata: Metadata = {
-  title: "ImpactLink — TPW Impact Framework",
+  title: "ImpactLink — TPW program reporting",
   description:
-    "Joins community-program process data with recidivism outcomes, using CDCR's official metrics, to produce funder-ready impact evidence for TPW.",
+    "Community organizations report their prison programs in a minute; TPW sees programming hours, participants and completions across its network.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const tpw = await isTpwSignedIn();
   return (
     <html lang="en">
       <body>
         <header className="border-b border-slate-200 bg-white print:hidden">
-          <nav className="mx-auto flex max-w-5xl items-center gap-6 px-6 py-3 text-sm">
+          <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3 text-sm">
             <Link href="/" className="font-semibold text-emerald-900">
               ImpactLink
             </Link>
-            <Link href="/" className="text-slate-700 hover:text-slate-900">
-              Overview
-            </Link>
-            <Link href="/import" className="text-slate-700 hover:text-slate-900">
-              Import
-            </Link>
-            <Link href="/data-use" className="text-slate-700 hover:text-slate-900">
-              How data is used
-            </Link>
-            <span className="ml-auto text-xs text-slate-500">Demonstration data are synthetic</span>
+            {tpw ? (
+              <>
+                <Link href="/tpw" className="text-slate-700 hover:text-slate-900">
+                  Dashboard
+                </Link>
+                <Link href="/" className="text-slate-700 hover:text-slate-900">
+                  Organization form
+                </Link>
+                <Link href="/future/overview" className="text-slate-700 hover:text-slate-900">
+                  Future: outcomes
+                </Link>
+                <form action="/api/tpw/logout" method="post" className="ml-auto flex items-center gap-3">
+                  <span className="text-xs text-slate-500">Signed in as TPW staff</span>
+                  <button className="rounded-md border border-slate-300 px-3 py-1 text-slate-700 hover:bg-slate-50">Sign out</button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Link href="/" className="text-slate-700 hover:text-slate-900">
+                  Report a program
+                </Link>
+                <Link href="/data-use" className="text-slate-700 hover:text-slate-900">
+                  How data is used
+                </Link>
+                <Link href="/tpw" className="ml-auto rounded-md border border-slate-300 px-3 py-1 text-slate-700 hover:bg-slate-50">
+                  TPW staff sign in
+                </Link>
+              </>
+            )}
           </nav>
         </header>
         {children}

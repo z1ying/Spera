@@ -64,6 +64,10 @@ async function main() {
   console.log(`Seeding from ${DATA_DIR}`);
 
   // Wipe in FK-safe order (idempotent re-runs).
+  await prisma.programRun.deleteMany();
+  await prisma.partnerProgram.deleteMany();
+  await prisma.partnerOrg.deleteMany();
+  await prisma.facility.deleteMany();
   await prisma.outcome.deleteMany();
   await prisma.enrollment.deleteMany();
   await prisma.importJob.deleteMany();
@@ -184,7 +188,10 @@ async function main() {
     await prisma.organization.update({ where: { id: org.id }, data: { dataGrade: grade } });
   }
 
+  const real = await seedRealProgramRuns();
+
   const counts = {
+    ...real,
     organizations: await prisma.organization.count(),
     programs: await prisma.program.count(),
     participants: await prisma.participant.count(),
@@ -195,6 +202,57 @@ async function main() {
   };
   if (DEMO) console.log(`Demo mode: held out ${heldOutKeys.size} participants' records (${[...DEMO_HOLDOUT_ORGS].join(", ")})`);
   console.log("Seeded:", counts);
+}
+
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const REAL_DIR = path.resolve(process.cwd(), "data", "real");
+
+/**
+ * TPW's real program-run data (design doc §27), converted from its
+ * "Collective Impact Report" workbook by scripts/convert_tpw_xlsx.py.
+ * Aggregate counts per program run; no individuals, no identifiers.
+ */
+async function seedRealProgramRuns() {
+  const read = (name: string) => parseCsv(readFileSync(path.join(REAL_DIR, name), "utf8"));
+  const facilities = read("facilities.csv").map((r) => ({
+    code: r.code,
+    name: r.name,
+    right3Target: r.right3_target === "1",
+    womens: r.womens === "1",
+  }));
+  await prisma.facility.createMany({ data: facilities });
+
+  const runs = read("program_runs.csv");
+  const orgs = new Map<string, string>();
+  const programs = new Map<string, { id: string; orgId: string; name: string }>();
+  for (const r of runs) {
+    const orgId = slug(r.organization);
+    orgs.set(orgId, r.organization);
+    const pid = `${orgId}--${slug(r.program)}`;
+    programs.set(pid, { id: pid, orgId, name: r.program });
+  }
+  await prisma.partnerOrg.createMany({ data: [...orgs].map(([id, name]) => ({ id, name })) });
+  await prisma.partnerProgram.createMany({ data: [...programs.values()] });
+  const n = (v: string) => (v === "" ? null : Number(v));
+  await prisma.programRun.createMany({
+    data: runs.map((r) => ({
+      id: `run-import-${r.source_row}`,
+      orgId: slug(r.organization),
+      programId: `${slug(r.organization)}--${slug(r.program)}`,
+      facilityCode: r.facility_code,
+      yard: r.yard || null,
+      // A run with no status in the workbook is recorded as Planned (nothing to count yet).
+      status: r.status || "Planned",
+      startDate: r.start_date ? parseDate(r.start_date) : null,
+      endDate: r.end_date ? parseDate(r.end_date) : null,
+      totalHours: n(r.total_hours),
+      participants: n(r.participants),
+      completed: n(r.completed),
+      notes: r.notes || null,
+      source: `import:TPW Collective Impact Report#row${r.source_row}`,
+    })),
+  });
+  return { facilities: facilities.length, partnerOrgs: orgs.size, programRuns: runs.length };
 }
 
 main()
