@@ -14,7 +14,11 @@ Most organizations track attendance on **paper sign-in sheets**. Reporting means
 | Photo of the *tally* (not the sign-in sheet) read into the form for confirmation | Typing | Sign-in sheets carry names — never send those to an AI service |
 | TPW or a volunteer enters for small organizations during the pilot | All of it, for those orgs | Doesn't scale; good for the first months |
 
+Status: the form reduces the work (totals only, hours from schedule, update later) but does not solve paper. Recommended first step, on hold until TPW describes its sheets: a printable tally card mirroring the form + a QR code that opens the form pre-filled (org, program, prison).
+
 Ask TPW: what does a typical sheet look like, who fills it, and when?
+
+Also noted: TPW's participant-hours formula (completed × course length) is an estimate — completers may miss sessions; non-completers' partial hours count as 0. Kept for consistency with TPW's own figures.
 
 ## Next
 
