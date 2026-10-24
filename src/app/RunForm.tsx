@@ -97,6 +97,85 @@ function Chip({ selected, onClick, children }: { selected: boolean; onClick: () 
   );
 }
 
+/**
+ * Type-to-search picker for long lists (120 organizations, 31 prisons): shows
+ * the chosen item with "Change", otherwise a search box with up to 8 matches.
+ * With `onAdd`, a name that isn't in the list can be added as new.
+ */
+function SearchPick<T>({
+  items,
+  label,
+  toText,
+  selected,
+  onPick,
+  onClear,
+  onAdd,
+  placeholder,
+  badge,
+}: {
+  items: T[];
+  label: (item: T) => string;
+  toText: (item: T) => string;
+  selected: T | null;
+  onPick: (item: T) => void;
+  onClear: () => void;
+  onAdd?: (name: string) => void;
+  placeholder: string;
+  badge?: (item: T) => React.ReactNode;
+}) {
+  const [q, setQ] = useState("");
+  const query = q.trim().toLowerCase();
+  const matches = items.filter((i) => !query || toText(i).toLowerCase().includes(query)).slice(0, 8);
+  const exact = items.some((i) => label(i).toLowerCase() === query);
+
+  if (selected)
+    return (
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="rounded-full bg-emerald-800 px-4 py-2 text-sm text-white">{label(selected)}</span>
+        {badge?.(selected)}
+        <button type="button" className="text-sm text-slate-600 underline" onClick={() => { setQ(""); onClear(); }}>
+          Change
+        </button>
+      </div>
+    );
+  return (
+    <div className="max-w-md">
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (matches.length === 1) onPick(matches[0]);
+          }
+        }}
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className="w-full rounded-lg border border-slate-300 px-3 py-2"
+      />
+      <ul className="mt-1 divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200 bg-white">
+        {matches.map((i) => (
+          <li key={label(i)}>
+            <button type="button" onClick={() => { setQ(""); onPick(i); }} className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-emerald-50">
+              <span>{label(i)}</span>
+              {badge?.(i)}
+            </button>
+          </li>
+        ))}
+        {matches.length === 0 && !onAdd && <li className="px-3 py-2 text-sm text-slate-500">No match — try another spelling.</li>}
+        {onAdd && query && !exact && (
+          <li>
+            <button type="button" onClick={() => { onAdd(q.trim()); setQ(""); }} className="w-full px-3 py-2 text-left text-sm font-medium text-emerald-800 hover:bg-emerald-50">
+              + Add &ldquo;{q.trim()}&rdquo; as a new organization
+            </button>
+          </li>
+        )}
+      </ul>
+      {!query && items.length > 8 && <p className="mt-1 text-xs text-slate-500">Showing 8 of {items.length} — type to narrow.</p>}
+    </div>
+  );
+}
+
 function Stepper({ value, onChange, label, disabled }: { value: number | null; onChange: (v: number | null) => void; label: string; disabled?: boolean }) {
   const v = value ?? 0;
   return (
@@ -123,9 +202,9 @@ function Stepper({ value, onChange, label, disabled }: { value: number | null; o
 export default function RunForm() {
   const [opts, setOpts] = useState<Options | null>(null);
   const [form, setForm] = useState<RunInput>(EMPTY);
-  const [newOrg, setNewOrg] = useState(false);
+  /** Organizations typed in as new during this visit (not yet on the server). */
+  const [addedOrgs, setAddedOrgs] = useState<string[]>([]);
   const [newProgram, setNewProgram] = useState(false);
-  const [facilityQuery, setFacilityQuery] = useState("");
   const [schedule, setSchedule] = useState<{ on: boolean; per: "week" | "month"; sessions: string; hours: string; count: string }>({
     on: false,
     per: "week",
@@ -157,10 +236,10 @@ export default function RunForm() {
 
   const orgPrograms = opts?.orgs.find((o) => o.name === form.orgName)?.programs ?? [];
   const facility = opts?.facilities.find((f) => f.code === form.facilityCode);
-  const facilities = useMemo(() => {
-    const q = facilityQuery.trim().toLowerCase();
-    return (opts?.facilities ?? []).filter((f) => !q || f.name.toLowerCase().includes(q) || f.code.toLowerCase().includes(q));
-  }, [opts, facilityQuery]);
+  const allOrgs = useMemo(
+    () => [...(opts?.orgs ?? []), ...addedOrgs.filter((n) => !opts?.orgs.some((o) => o.name === n)).map((name) => ({ name, programs: [] }))],
+    [opts, addedOrgs],
+  );
 
   const scheduleHours = schedule.on
     ? hoursFromSchedule(Number(schedule.sessions) || 0, Number(schedule.hours) || 0, Number(schedule.count) || 0)
@@ -185,7 +264,6 @@ export default function RunForm() {
       specialPopulations: r.specialPopulations,
     });
     setSchedule((s) => ({ ...s, on: false }));
-    setNewOrg(false);
     setNewProgram(false);
     setThanks(null);
     setProblems([]);
@@ -213,8 +291,7 @@ export default function RunForm() {
       setThanks({ hours: participantHours, people: form.participants ?? null, program: form.programName });
       setForm({ ...EMPTY, orgName: form.orgName, programName: form.programName });
       setEditing(null);
-      setNewOrg(false);
-      setNewProgram(false);
+        setNewProgram(false);
       setOpts(await (await fetch("/api/form-options")).json());
       refreshMine();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -255,26 +332,16 @@ export default function RunForm() {
           )}
 
           <Field n={1} label="Your organization">
-            {!newOrg && opts.orgs.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {opts.orgs.map((o) => (
-                  <Chip key={o.name} selected={form.orgName === o.name} onClick={() => set({ orgName: o.name, programName: "" })}>
-                    {o.name}
-                  </Chip>
-                ))}
-                <Chip selected={false} onClick={() => { setNewOrg(true); set({ orgName: "", programName: "" }); setNewProgram(true); }}>
-                  + Not listed
-                </Chip>
-              </div>
-            ) : (
-              <input
-                autoFocus
-                value={form.orgName}
-                onChange={(e) => set({ orgName: e.target.value })}
-                placeholder="Organization name"
-                className="w-full max-w-md rounded-lg border border-slate-300 px-3 py-2"
-              />
-            )}
+            <SearchPick
+              items={allOrgs}
+              label={(o) => o.name}
+              toText={(o) => o.name}
+              selected={allOrgs.find((o) => o.name === form.orgName) ?? null}
+              onPick={(o) => { set({ orgName: o.name, programName: "" }); setNewProgram(false); }}
+              onClear={() => set({ orgName: "", programName: "" })}
+              onAdd={(name) => { setAddedOrgs((xs) => [...xs, name]); set({ orgName: name, programName: "" }); setNewProgram(true); }}
+              placeholder="Type your organization's name"
+            />
           </Field>
 
           {form.orgName && (
@@ -304,31 +371,18 @@ export default function RunForm() {
           {form.programName && (
             <>
               <Field n={3} label="Prison">
-                {facility ? (
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="rounded-full bg-emerald-800 px-4 py-2 text-sm text-white">{facility.name}</span>
-                    {facility.right3Target && <span className="text-xs font-medium text-emerald-800">RIGHT 3.0 target institution</span>}
-                    <button type="button" className="text-sm text-slate-600 underline" onClick={() => set({ facilityCode: "" })}>
-                      Change
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <input
-                      value={facilityQuery}
-                      onChange={(e) => setFacilityQuery(e.target.value)}
-                      placeholder="Type to search, e.g. San Quentin or SQ"
-                      className="w-full max-w-md rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                    <div className="mt-2 flex max-h-48 flex-wrap gap-2 overflow-y-auto">
-                      {facilities.map((f) => (
-                        <Chip key={f.code} selected={false} onClick={() => { set({ facilityCode: f.code }); setFacilityQuery(""); }}>
-                          {f.name}
-                        </Chip>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <SearchPick
+                  items={opts.facilities}
+                  label={(f) => f.name}
+                  toText={(f) => `${f.name} ${f.code}`}
+                  selected={facility ?? null}
+                  onPick={(f) => set({ facilityCode: f.code })}
+                  onClear={() => set({ facilityCode: "" })}
+                  placeholder="Type to search, e.g. San Quentin or SQ"
+                  badge={(f) =>
+                    f.right3Target ? <span className="shrink-0 text-xs font-medium text-emerald-800">RIGHT grant target prison</span> : null
+                  }
+                />
                 <input
                   value={form.yard ?? ""}
                   onChange={(e) => set({ yard: e.target.value })}
@@ -369,7 +423,7 @@ export default function RunForm() {
                 </div>
               </Field>
 
-              <Field n={6} label="Programming hours per participant" hint="The total hours one person gets if they attend the whole program.">
+              <Field n={6} label="Course length in hours" hint="Hours ONE person gets if they attend the whole program — e.g. 176 for “CEO of Your New Life”.">
                 <div className="flex gap-2 text-sm">
                   <Chip selected={!schedule.on} onClick={() => setSchedule({ ...schedule, on: false })}>
                     I know the total
@@ -405,7 +459,7 @@ export default function RunForm() {
                 )}
               </Field>
 
-              <Field n={7} label="People">
+              <Field n={7} label="Number of people" hint="Head counts, not hours.">
                 <div className="flex flex-wrap gap-6 text-sm">
                   <div>
                     <span className="mb-1 block text-slate-600">Took part</span>
@@ -416,9 +470,12 @@ export default function RunForm() {
                     <Stepper label="completed" disabled={!isCompleted} value={isCompleted ? form.completed ?? null : null} onChange={(v) => set({ completed: v })} />
                   </div>
                 </div>
-                <label className="mt-4 flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={!!form.specialPopulations} onChange={(e) => set({ specialPopulations: e.target.checked })} className="h-4 w-4 accent-emerald-800" />
-                  Serves people in RHU, EOP or MHCB
+                <label className="mt-4 flex items-start gap-2 text-sm">
+                  <input type="checkbox" checked={!!form.specialPopulations} onChange={(e) => set({ specialPopulations: e.target.checked })} className="mt-0.5 h-4 w-4 accent-emerald-800" />
+                  <span>
+                    Serves people in restricted housing or mental health programs (RHU, EOP or MHCB)
+                    <span className="block text-xs text-slate-500">Optional. Programs for these groups earn an extra point in CDCR&apos;s RIGHT grant.</span>
+                  </span>
                 </label>
               </Field>
 
@@ -431,16 +488,18 @@ export default function RunForm() {
               )}
 
               <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-5">
-                <p className="text-sm text-slate-600">
+                <div className="text-sm text-slate-600">
+                  <span className="block text-xs uppercase tracking-wide text-slate-500">Total participant programming hours</span>
                   {participantHours !== null ? (
-                    <>
-                      <strong className="tabular-nums text-slate-900">{fmt(participantHours)}</strong> participant programming hours
-                    </>
+                    <span>
+                      <strong className="text-xl tabular-nums text-slate-900">{fmt(participantHours)}</strong>{" "}
+                      = {fmt(form.completed ?? 0)} completed × {fmt(hours ?? 0)} hours
+                    </span>
                   ) : (
-                    "Participant hours are calculated for you"
+                    <span>Calculated for you: people completed × course length</span>
                   )}
-                  {year && <> · Program year {year}</>}
-                </p>
+                  {year && <span className="block text-xs text-slate-500">Program year {year}</span>}
+                </div>
                 <button
                   type="submit"
                   disabled={busy || !form.status || !form.facilityCode}
