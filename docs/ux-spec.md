@@ -53,3 +53,25 @@
   methodology footnote, sources on the page.
 - TPW's detailed business requirements will be appended here after
   the TPW interview; do not invent TPW-side features beyond this list.
+
+---
+
+## Org form fields (TPW-confirmed, 2026-10-24)
+
+The org upload collects AGGREGATES, not people. No ID fields anywhere
+on the org form — this is the single biggest adoption unlock.
+
+Fields, in order: program name, program type, program start date,
+total programming hours, number of participants,
+number of participants completed, cadence (weekly / monthly),
+org size, and three RFP flags: serves an underserved prison,
+delivered in a language other than English (which language),
+serves a women's prison.
+
+The form computes and shows, live, as the user types:
+- Total Participant Programming Hours =
+  Participants Completed × Total Programming Hours
+- Program Year = year of Program Start Date
+
+Field list is configurable (add/modify without code changes).
+TPW view adds a grant-readiness panel built from the RFP flags.

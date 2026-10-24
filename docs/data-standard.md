@@ -119,3 +119,31 @@ These numbers describe association plus a dose-response gradient, not proven cau
 ---
 
 TPW owns the standard; ImpactLink implements it. v0.1 drafted at Hack for Social Impact 2026, merging two team drafts. References [1]–[3] are listed in the README. 2026-10-24.
+
+---
+
+## 8. Aggregate program record (TPW-confirmed, 2026-10-24)
+
+Organizations submit aggregates only — no individual IDs leave their office.
+
+Fields: program_name, program_type, program_start_date,
+total_programming_hours, participants, participants_completed,
+cadence (weekly / monthly), org_size,
+serves_underserved_prison, non_english_language, serves_womens_prison.
+
+Calculated fields (TPW's own formulas):
+- total_participant_programming_hours =
+  participants_completed × total_programming_hours
+- program_year = year(program_start_date)
+
+RFP note: the state's newest RFP awards points for org size, service in
+underserved prisons, non-English delivery, women's prisons, and program
+type. These flags are therefore first-class fields, not metadata, and
+the report surfaces a grant-readiness view built from them.
+
+Field definitions are configuration: TPW can add or modify collected
+fields without code changes (config file now, admin UI later).
+
+Open follow-up: with no org-supplied IDs, person-level outcome linkage
+requires a TPW-held crosswalk or cohort-level aggregation — to be
+confirmed with TPW before real deployment.
