@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { hoursFromSchedule, STATUSES, type RunInput } from "@/lib/runs";
 import SearchPick from "./SearchPick";
-import ReportModal from "@/components/ReportModal";
+import ReportModal, { type SubmittedRun } from "@/components/ReportModal";
 import type { OrgSummary } from "@/lib/orgSummary";
 
 interface Options {
@@ -141,7 +141,7 @@ export default function RunForm() {
   const [editing, setEditing] = useState<{ id: string; editToken: string } | null>(null);
   const [problems, setProblems] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
-  const [report, setReport] = useState<{ summary: OrgSummary; added: number | null } | null>(null);
+  const [report, setReport] = useState<{ summary: OrgSummary; run: SubmittedRun } | null>(null);
   const [mine, setMine] = useState<MyRun[]>([]);
   const [otherLanguage, setOtherLanguage] = useState(false);
 
@@ -217,7 +217,22 @@ export default function RunForm() {
       if (!editing) writeStore(STORE, [...readStore<{ id: string; editToken: string }[]>(STORE, []), { id: out.id, editToken: out.editToken }]);
       writeStore(LAST, { orgName: form.orgName, programName: form.programName });
       const summary = (await (await fetch(`/api/org-summary?org=${encodeURIComponent(form.orgName)}`)).json()) as OrgSummary;
-      setReport({ summary, added: participantHours });
+      setReport({
+        summary,
+        run: {
+          orgName: form.orgName,
+          programName: form.programName,
+          facilityName: facility?.name ?? form.facilityCode,
+          underserved: !!facility?.underserved,
+          status: form.status,
+          programYear: year ? Number(year) : null,
+          totalHours: hours,
+          participants: form.participants ?? null,
+          completed: isCompleted ? form.completed ?? null : null,
+          participantHours,
+          updated: !!editing,
+        },
+      });
       setForm({ ...EMPTY, orgName: form.orgName, programName: form.programName });
       setOtherLanguage(false);
       setEditing(null);
@@ -234,7 +249,7 @@ export default function RunForm() {
   return (
     <div className="grid gap-8 lg:grid-cols-[3fr_2fr]">
       <div>
-        {report && <ReportModal s={report.summary} added={report.added} onClose={() => setReport(null)} />}
+        {report && <ReportModal s={report.summary} run={report.run} onClose={() => setReport(null)} />}
 
         <form onSubmit={submit} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           {editing && (
