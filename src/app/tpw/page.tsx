@@ -70,7 +70,7 @@ function Table({ title, first, rows, extraHead }: { title: string; first: string
   );
 }
 
-// TPW dashboard — design doc §27. Real data: TPW's program-run reports plus
+// TPW dashboard — design doc §28. Real data: TPW's program-run reports plus
 // form submissions. TPW staff only.
 export default async function TpwDashboard() {
   if (!(await isTpwSignedIn())) return <LoginForm />;

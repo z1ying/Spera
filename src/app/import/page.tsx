@@ -7,7 +7,7 @@ export const metadata = { title: "Import data — ImpactLink" };
 
 export const dynamic = "force-dynamic";
 
-// Future: person-level import for outcome linkage (synthetic demo) — TPW staff only (§27).
+// Future: person-level import for outcome linkage (synthetic demo) — TPW staff only (§28).
 export default async function ImportPage() {
   if (!(await isTpwSignedIn())) return <LoginForm />;
   return (

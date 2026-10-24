@@ -5,7 +5,7 @@ export const metadata = { title: "How your data is used — ImpactLink" };
 /**
  * One-screen, plain-language data-use promise (backlog 1c; design doc §23).
  * Each promise says how it is kept: by the software itself, or by agreement
- * with TPW. Nothing here claims more than the code enforces (design doc §27).
+ * with TPW. Nothing here claims more than the code enforces (design doc §28).
  */
 const PROMISES: { promise: string; how: string; by: "software" | "agreement" }[] = [
   {

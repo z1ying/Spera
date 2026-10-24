@@ -1,5 +1,5 @@
 /**
- * Program-run metrics — design doc §27. Pure functions, no I/O.
+ * Program-run metrics — design doc §28. Pure functions, no I/O.
  *
  * TPW's five core fields, per program run (one cohort of a program):
  *   Total Programming hours, Number of Participants, Number of Participants

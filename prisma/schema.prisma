@@ -131,7 +131,7 @@ model ImportJob {
 }
 
 // ---------------------------------------------------------------------------
-// Program-run reporting (design doc §27): what TPW actually collects today.
+// Program-run reporting (design doc §28): what TPW actually collects today.
 // One row per program run (cohort) — aggregate counts only, no individuals,
 // no identifiers. These tables back the organization form and TPW dashboard.
 // ---------------------------------------------------------------------------
@@ -193,7 +193,7 @@ model ProgramRun {
   /// "form" (submitted on ImpactLink) or "import:<file>#<row>".
   source             String
   /// Secret returned to the submitting browser; required to edit a form run
-  /// (organizations don't log in — design doc §27). Null for imported rows.
+  /// (organizations don't log in — design doc §28). Null for imported rows.
   editToken          String?        @map("edit_token")
   createdAt          DateTime       @default(now()) @map("created_at")
   updatedAt          DateTime       @updatedAt @map("updated_at")

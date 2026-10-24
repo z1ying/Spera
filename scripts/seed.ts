@@ -208,7 +208,7 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(
 const REAL_DIR = path.resolve(process.cwd(), "data", "real");
 
 /**
- * TPW's real program-run data (design doc §27), converted from its
+ * TPW's real program-run data (design doc §28), converted from its
  * "Collective Impact Report" workbook by scripts/convert_tpw_xlsx.py.
  * Aggregate counts per program run; no individuals, no identifiers.
  */

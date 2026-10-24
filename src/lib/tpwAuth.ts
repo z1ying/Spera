@@ -1,5 +1,5 @@
 /**
- * TPW staff sign-in (design doc §27). Organizations never sign in; only TPW
+ * TPW staff sign-in (design doc §28). Organizations never sign in; only TPW
  * staff, with a passcode from the TPW_PASSCODE environment variable, can see
  * the dashboard. Fails closed: with no passcode configured, nobody can sign in.
  * A real account system replaces this after the pilot starts.

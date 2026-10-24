@@ -4,7 +4,7 @@ import type { RunInput } from "@/lib/runs";
 
 export const runtime = "nodejs";
 
-/** An organization submits one program run. No sign-in (design doc §27). */
+/** An organization submits one program run. No sign-in (design doc §28). */
 export async function POST(req: Request) {
   try {
     return NextResponse.json(await createRun((await req.json()) as RunInput), { status: 201 });

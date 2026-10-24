@@ -1,5 +1,5 @@
 /**
- * Writing program runs from the organization form (design doc §27).
+ * Writing program runs from the organization form (design doc §28).
  * Organizations don't sign in: a new run returns a random edit token that
  * only the submitting browser keeps, and editing requires it.
  */

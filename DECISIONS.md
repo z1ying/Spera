@@ -166,7 +166,7 @@ Decisions:
   with headless Chrome PDF.
 - Docs: pilot plan, handover memo, Devpost draft; question sheet items 8–13.
 
-## 2026-10-24 (Sat evening) — pivot to real data (design doc §27)
+## 2026-10-24 (Sat evening) — pivot to real data (design doc §28)
 
 - TPW's real workbook converted to `data/real/facilities.csv` (31 CDCR
   institutions, RIGHT 3.0 target + women's flags) and `data/real/program_runs.csv`

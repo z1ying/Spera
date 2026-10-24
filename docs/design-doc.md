@@ -462,7 +462,44 @@ savings_capacity     = avoided_returns × return_years × avg_cost_year        (
 
 ---
 
-## 27. 转向真实数据：机构填报 + TPW 仪表盘（v2.0，用户 2026-10-24 定，依据 TPW 回复）
+## 27. TPW 现场确认的数据模型（v1.10，2026-10-24 TPW 访谈）
+
+**TPW 不需要机构提供个人 ID。** 机构侧只交聚合数据，不交学员身份。
+这消掉了机构交数据最大的心理障碍（挑战一的核心），也与 §25 的
+key 治理互补：个人级 join 的钥匙不经过机构，由 TPW（或中立匹配方）
+在结果侧持有与治理，机构只负责聚合上报。
+
+**机构聚合记录字段（org form）**：
+- program_name, program_type, program_start_date
+- total_programming_hours（项目总时长）
+- participants（参与人数）, participants_completed（完成人数）
+- cadence：weekly / monthly（每周/每月 × 小时）
+- org_size（机构规模）
+- RFP 加分属性：serves_underserved_prison（服务资源不足监狱）,
+  non_english_language（非英语授课语言）, serves_womens_prison（女子监狱）,
+  program_type（项目类型本身也加分）
+
+**TPW 的 CALC 公式（原样采用，写进指标引擎）**：
+- Total Participant Programming Hours = Participants Completed × Total Programming Hours
+- Program Year = Year of Program Start Date
+
+**RFP 视角（新增价值）**：州最新 RFP 按上述属性给申请加分。
+报告/仪表盘新增"grant readiness"视角：一个项目符合哪些加分项一目了然。
+这意味着报告不只证明影响，还直接服务 TPW 下一次申请拨款。
+
+**可扩展性要求**：收集字段必须能加、能改，不改代码。
+本周末实现：字段定义放配置文件（与 §26 的 config/frameworks 机制一致）；
+管理界面进 Phase 2。
+
+**待追问的诚实缺口**：机构不交个人 ID 后，个人级再犯 join 的钥匙从哪来？
+两个可能答案：TPW 持有 crosswalk，或结果数据按项目/队列聚合后 join。
+下次访谈必须确认这一题，pitch 里现阶段只讲"机构侧零身份信息"，不替 TPW 选答案。
+
+*文档版本：v1.10（2026-10-24 新增第 27 节：TPW 现场确认模型）。*
+
+---
+
+## 28. 转向真实数据：机构填报 + TPW 仪表盘（v2.0，用户 2026-10-24 定，依据 TPW 回复；与 §27、ux-spec 不一致处以本节为准）
 
 **TPW 回复（用户转述）**：TPW 不需要 ID；最看重五个字段——Total Programming hours、Number of Participants、Number of Participants Completed、CALC: Total Participant Programming hours（= 完成人数 × 课时）、CALC: Program Year（= 开始日期年份）。收集要可扩展、可增改字段；州 RFP 按机构规模、服务资源匮乏监狱、女子监狱等给分。
 
@@ -475,4 +512,4 @@ savings_capacity     = avoided_returns × return_years × avg_cost_year        (
 4. **合成数据的再犯/join 演示**移至"Future: outcomes"（`/future/overview`、`/import`、`/report`），仅 TPW 登录可见，页面标明全部为合成数据。
 5. **Future（未做）**：每家机构专属链接（安全）、背景音乐（暂不考虑）、机构自身报告（基于真实数据）、TPW 可配置的附加字段。
 
-*文档版本：v2.0（2026-10-24 新增第 27 节）。*
+*文档版本：v2.0（2026-10-24 新增第 28 节）。*

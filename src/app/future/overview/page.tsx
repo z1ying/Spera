@@ -32,7 +32,7 @@ function Card({ value, label, children }: { value: React.ReactNode; label: React
   );
 }
 
-// Future: outcome linkage demo on synthetic data — design doc §8 (M4), moved here in §27.
+// Future: outcome linkage demo on synthetic data — design doc §8 (M4), moved here in §28.
 export default async function FutureOverview() {
   if (!(await isTpwSignedIn())) return <LoginForm />;
   const { overview: o, lastImport } = await loadOverview();

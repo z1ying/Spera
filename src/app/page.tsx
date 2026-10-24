@@ -1,6 +1,6 @@
 import RunForm from "./RunForm";
 
-// Home = the organization form (design doc §27). Organizations are most of the
+// Home = the organization form (design doc §28). Organizations are most of the
 // users, so they land straight on it; no sign-in. TPW staff sign in top right.
 export default function Home() {
   return (
