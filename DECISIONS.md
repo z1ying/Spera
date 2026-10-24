@@ -119,3 +119,30 @@ Deviations / decisions:
    and says so. Successful Gemini answers are written to data/mapping_cache.json
    for DEMO_MODE replay.
 7. Vitest config renamed `.mts` (Node 22.7 cannot require() ESM vite).
+
+## 2026-10-24 (Sat) — M4 overview + M5 report
+
+- `/` overview: headline cards, credit-tier gradient (network vs CDCR published
+  [2]), person-level funnel, release-cohort maturity table, impact panel
+  (baseline switch + return_years 0.5–2.5), organization table (alphabetical,
+  not ranked; small-cell suppression; per-org report link).
+- `/report`: one page, §9 footnote verbatim, assumptions printed (baseline,
+  return_years), dual calibers, data grades, references [1]–[3]. `?org=` gives
+  one organization a report on its own program (incentive to share data).
+- After the live demo (seed:demo → Q1 → D → Q2): 4,946 participants, 38.6%
+  three-year conviction (full seed: 5,000 / 38.5%; 54 held back as problem rows).
+- `npm test` 36/36, sanity ALL PASS, build OK.
+
+Decisions:
+1. **No comparison group on screen.** Comparisons use the cited baselines only
+   (no-credit tier 45.6% [2] default, statewide 39.1% [1]); the synthetic
+   control group is uncalibrated. This also resolves the M3 note about
+   rejected rows contaminating "no enrollments".
+2. **"Avoided returns" is labelled "fewer convictions than the baseline rate
+   predicts"** with an association-not-causation note; formula unchanged (§7.1).
+3. **Seed computes data grades by the §6.1 rule** instead of the CSV presets,
+   which contradicted the records (B orgs with linked outcomes). All seeded
+   orgs are A; in seed:demo, org-07/08 are C until imported.
+4. Org conviction rate is shown only for grade A ("needs outcomes" otherwise).
+5. Not verified: that the report fits on one printed page in every browser
+   (checked on screen only); Gemini path (no key yet).

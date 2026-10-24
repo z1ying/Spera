@@ -25,6 +25,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { PrismaClient } from "@prisma/client";
+import { dataGrade } from "../src/lib/clean";
 import { parseCsv } from "../src/lib/csv";
 
 const prisma = new PrismaClient();
@@ -76,9 +77,8 @@ async function main() {
     name: r.name,
     programTypes: r.program_types,
     facilities: r.facilities,
-    // Held-out orgs have no records yet: grade C (critical data missing)
-    // until the live import brings them in.
-    dataGrade: DEMO && DEMO_HOLDOUT_ORGS.has(r.id) ? "C" : r.data_grade,
+    // Placeholder; computed from the records below by the §6.1 grade rule.
+    dataGrade: "C",
   }));
   await prisma.organization.createMany({ data: orgs });
 
@@ -156,6 +156,20 @@ async function main() {
     year: Number(r.year),
   }));
   await prisma.costParam.createMany({ data: costParams });
+
+  // Data grade by the same rule the importer applies (src/lib/clean.ts):
+  // A = outcomes linked, B = program data only, C = no records. The CSV's
+  // preset grades are not used — they contradicted the records (DECISIONS).
+  for (const org of orgs) {
+    const keys = enrollments.filter((e) => orgByProgram.get(e.programId) === org.id).map((e) => e.participantKey);
+    const withOutcomes = new Set(outcomes.map((o) => o.participantKey));
+    const grade = dataGrade({
+      hasEnrollments: keys.length > 0,
+      hasLinkedOutcomes: keys.some((k) => withOutcomes.has(k)),
+      rejectShare: 0,
+    });
+    await prisma.organization.update({ where: { id: org.id }, data: { dataGrade: grade } });
+  }
 
   const counts = {
     organizations: await prisma.organization.count(),

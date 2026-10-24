@@ -11,3 +11,17 @@ body {
     @apply bg-white;
   }
 }
+
+/* One-page report (design doc §9): US Letter, tight margins. */
+@page {
+  size: letter;
+  margin: 0.45in;
+}
+@media print {
+  html {
+    font-size: 11px;
+  }
+  .report-page {
+    break-inside: avoid;
+  }
+}
