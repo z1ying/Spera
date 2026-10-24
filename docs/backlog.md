@@ -6,7 +6,7 @@ Order = recommended build order. ✅ = done.
 
 ## Blocking first
 
-- [x] **Merge with the teammate's commits on origin/main and push.** Done 2026-10-24 (key reconciled: CDCR number or TPW-issued ID). Their design doc §23–§24 and `docs/data-standard.md` overlap ours; join-key and grade definitions differ. Needs a decision (see the chat on 2026-10-24).
+- [x] **Merge with the teammate's commits on origin/main and push.** Done 2026-10-24 (key reconciled: CDCR number or TPW-issued ID).
 
 ## Pain point 1 — why would a small organization share its data?
 
