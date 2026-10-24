@@ -22,6 +22,7 @@ export interface Grant {
   documents?: string[];
   notes?: string[];
   links?: { label: string; url: string }[];
+  programSummary?: { limit: string; mustInclude: string[]; ifNonEnglish: string };
 }
 
 export const GRANTS = data as { verifiedOn: string; source: string; sourceUrl: string; grants: Grant[] };

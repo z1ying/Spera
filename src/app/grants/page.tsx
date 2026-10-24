@@ -22,8 +22,8 @@ export default async function GrantsPage() {
       <p className="text-sm font-medium uppercase tracking-wide text-emerald-800">For TPW member organizations</p>
       <h1 className="mt-1 text-3xl font-semibold">Grants</h1>
       <p className="mt-2 max-w-2xl text-slate-600">
-        State funding for programs inside California prisons — what&apos;s open, whether you qualify, and the numbers you can put
-        in your application.
+        Write your application for state funding with an assistant that already knows your numbers and the grant&apos;s rules —
+        plus a quick check of whether you qualify.
       </p>
 
       {open && (
@@ -47,7 +47,7 @@ export default async function GrantsPage() {
               </div>
             )}
           </div>
-          <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-3">
+          <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-3">
             <div>
               <dt className="text-xs uppercase tracking-wide text-slate-500">Total funding</dt>
               <dd className="mt-1 text-lg font-semibold">${((open.totalFunding ?? 0) / 1e6).toFixed(1)} million</dd>
@@ -61,7 +61,9 @@ export default async function GrantsPage() {
               <dd className="mt-1">{open.howAwarded}</dd>
             </div>
           </dl>
-          <div className="mt-5 grid gap-6 text-sm md:grid-cols-2">
+          <details className="mt-5 text-sm">
+            <summary className="cursor-pointer font-medium text-emerald-900">Who can apply and how points work</summary>
+          <div className="mt-3 grid gap-6 md:grid-cols-2">
             <div>
               <h3 className="font-semibold">Who can apply</h3>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-700">
@@ -75,6 +77,7 @@ export default async function GrantsPage() {
               </ul>
             </div>
           </div>
+          </details>
           <div className="mt-5 flex flex-wrap gap-3">
             {open.links?.map((l) => (
               <a key={l.url} href={l.url} target="_blank" rel="noreferrer" className="rounded-lg border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50">

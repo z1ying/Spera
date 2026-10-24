@@ -214,3 +214,15 @@ Decisions:
 - Readiness and "numbers you can cite" are reachable by organization name
   without sign-in (per-org private links remain on the roadmap).
 - Org header shows no dashboard; small "TPW staff" link only.
+
+## 2026-10-24 (late) — grant-writing assistant
+
+- `/grants` is now centred on a chat assistant (Gemma via the Gemini API,
+  default model `gemma-4-31b-it`, env `GEMINI_API_KEY` / `GEMMA_MODEL`).
+  Local Gemma ruled out: this Mac has 8 GB RAM and ~5.5 GB free disk.
+- Grounding: the server recomputes the organization's facts from its runs;
+  the prompt forbids other numbers, uses [ADD: …] placeholders, and reminds
+  users of RIGHT 4.0's GenAI disclosure. History capped at 12 turns × 4,000
+  chars. Instructions go in the first user turn (Gemma has no system role).
+- NOT verified against the real API: no key yet. Unit tests cover the
+  prompt, history trimming, request shape and reply parsing with a fake fetch.

@@ -1,6 +1,6 @@
 {
   "verifiedOn": "2026-10-24",
-  "source": "CDCR Division of Rehabilitative Programs — Grant Programs page and RFA documents",
+  "source": "CDCR Division of Rehabilitative Programs \u2014 Grant Programs page and RFA documents",
   "sourceUrl": "https://www.cdcr.ca.gov/rehabilitation/grants/",
   "grants": [
     {
@@ -12,7 +12,7 @@
       "releasedOn": "2026-10-01",
       "dueDate": "2026-11-30",
       "dueTime": "11:59 p.m.",
-      "fundingPeriod": "July 1, 2027 – December 1, 2029",
+      "fundingPeriod": "July 1, 2027 \u2013 December 1, 2029",
       "totalFunding": 19400000,
       "howAwarded": "Every eligible organization gets qualifying points; the total is divided by all points awarded, so each point is worth the same amount.",
       "eligibility": [
@@ -23,7 +23,7 @@
         "Programs do not need to be RAC approved (FAQ 71)"
       ],
       "points": [
-        "Budget under $250,000: 1 point · $250,000–$500,000: 2 points · over $500,000: 3 points",
+        "Budget under $250,000: 1 point \u00b7 $250,000\u2013$500,000: 2 points \u00b7 over $500,000: 3 points",
         "+0.5 for programming at an underserved institution (Attachment A, red font)",
         "+0.5 for serving special populations (RHU, EOP/MHCB)",
         "+0.5 for a program in a language other than English",
@@ -36,22 +36,77 @@
         "Office of Business Services forms 1000, 1500 and 1510",
         "Certificate of Insurance; Workers' Compensation exemption if applicable; Contractor Certification Clauses",
         "California Secretary of State certification",
-        "Program Summary (max 2 pages) and Attachment A – Institution Locations & Populations"
+        "Program Summary (max 2 pages) and Attachment A \u2013 Institution Locations & Populations"
       ],
       "notes": [
         "The packet includes a Generative AI (GenAI) reporting form: disclose any AI use in preparing the application.",
         "Grantees submit an annual report within 60 days after each fiscal year."
       ],
       "links": [
-        { "label": "Request for Applications (PDF)", "url": "https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2026/09/RIGHT-4.0-RFA.pdf" },
-        { "label": "FAQ (PDF)", "url": "https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2026/10/RIGHT-4.0-FAQs-Final.pdf" }
-      ]
+        {
+          "label": "Request for Applications (PDF)",
+          "url": "https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2026/09/RIGHT-4.0-RFA.pdf"
+        },
+        {
+          "label": "FAQ (PDF)",
+          "url": "https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2026/10/RIGHT-4.0-FAQs-Final.pdf"
+        }
+      ],
+      "programSummary": {
+        "limit": "At most 2 pages; not scored, but required.",
+        "mustInclude": [
+          "The institution(s)/location(s) where the existing program is delivered",
+          "How the program specifically benefits the incarcerated population there",
+          "The type of program: correspondence, in-person, or hybrid",
+          "Program goals and objectives for participants",
+          "The current program schedule (frequency)",
+          "The current program capacity",
+          "The resources needed to deliver it (space, equipment)"
+        ],
+        "ifNonEnglish": "Name the language(s), how it is delivered (bilingual facilitators, certified interpreters, translated materials, etc.), any link between the language and the institution, and the organization's experience and capacity to deliver in that language."
+      }
     },
-    { "id": "right-3", "name": "RIGHT Grant 3.0", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2026 – December 1, 2028" },
-    { "id": "right-2", "name": "RIGHT Grant 2.0", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2023 – December 1, 2026" },
-    { "id": "vi", "name": "Victim Impact Grant", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2026 – June 30, 2028" },
-    { "id": "ipg", "name": "Innovative Programming Grant", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2025 – June 30, 2028" },
-    { "id": "care", "name": "California Reentry and Enrichment (CARE) Grant", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2025 – June 30, 2028" },
-    { "id": "rj", "name": "Restorative Justice Grant", "funder": "CDCR", "status": "awarded", "fundingPeriod": "July 1, 2024 – June 30, 2027" }
+    {
+      "id": "right-3",
+      "name": "RIGHT Grant 3.0",
+      "funder": "CDCR",
+      "status": "awarded",
+      "fundingPeriod": "July 1, 2026 \u2013 December 1, 2028"
+    },
+    {
+      "id": "right-2",
+      "name": "RIGHT Grant 2.0",
+      "funder": "CDCR",
+      "status": "awarded",
+      "fundingPeriod": "July 1, 2023 \u2013 December 1, 2026"
+    },
+    {
+      "id": "vi",
+      "name": "Victim Impact Grant",
+      "funder": "CDCR",
+      "status": "awarded",
+      "fundingPeriod": "July 1, 2026 \u2013 June 30, 2028"
+    },
+    {
+      "id": "ipg",
+      "name": "Innovative Programming Grant",
+      "funder": "CDCR",
+      "status": "awarded",
+      "fundingPeriod": "July 1, 2025 \u2013 June 30, 2028"
+    },
+    {
+      "id": "care",
+      "name": "California Reentry and Enrichment (CARE) Grant",
+      "funder": "CDCR",
+      "status": "awarded",
+      "fundingPeriod": "July 1, 2025 \u2013 June 30, 2028"
+    },
+    {
+      "id": "rj",
+      "name": "Restorative Justice Grant",
+      "funder": "CDCR",
+      "status": "awarded",
+      "fundingPeriod": "July 1, 2024 \u2013 June 30, 2027"
+    }
   ]
 }

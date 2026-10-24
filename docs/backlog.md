@@ -22,6 +22,8 @@ Also noted: TPW's participant-hours formula (completed × course length) is an e
 
 ## Next
 
+- [ ] Grant assistant: add GEMINI_API_KEY, test real Gemma answers, tune the prompt; consider streaming replies.
+
 - [ ] UI pass the user will specify (visual spec: `docs/design-style.md`).
 - [ ] Verify the form on a phone; date entry in non-English browser locales.
 - [ ] Rewrite pitch, Devpost, handover memo and pilot plan for the real-data product (marked outdated).

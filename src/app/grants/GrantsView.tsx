@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { Grant } from "@/lib/grants";
 import { BUDGET_TIERS } from "@/lib/runs";
 import SearchPick from "../SearchPick";
+import ChatPanel from "./ChatPanel";
 
 interface Readiness {
   org: string;
@@ -82,9 +83,12 @@ export default function GrantsView({ open, orgs }: { open: Grant; orgs: string[]
   const points = budgetPoints === null || !r ? null : Math.min(4, budgetPoints + r.signals.additionalPoints);
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="text-xl font-semibold">Check your organization for {open.name}</h2>
-      <p className="mt-1 text-sm text-slate-600">Uses the programs you&apos;ve reported. Nothing here is submitted anywhere.</p>
+    <div>
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 className="text-xl font-semibold">Your organization</h2>
+      <p className="mt-1 text-sm text-slate-600">
+        The assistant and the checks below use the programs you&apos;ve reported. Nothing is submitted to CDCR.
+      </p>
       <div className="mt-4">
         <SearchPick
           items={orgs}
@@ -97,12 +101,16 @@ export default function GrantsView({ open, orgs }: { open: Grant; orgs: string[]
         />
       </div>
 
+      </section>
+
       {orgName && !r && <p className="mt-4 text-sm text-slate-500">Loading…</p>}
 
       {r && (
-        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <div className="mt-6 grid items-start gap-6 lg:grid-cols-[3fr_2fr]">
+          <ChatPanel org={r.org} />
+          <div className="space-y-6 rounded-xl border border-slate-200 bg-white p-6">
           <div>
-            <h3 className="font-semibold">Eligibility</h3>
+            <h3 className="font-semibold">Eligibility check</h3>
             <ul className="mt-2 space-y-2 text-sm">
               <Check ok={r.priorService.meets}>
                 Programming in CDCR prisons in at least 2 of {r.priorService.window[0]}–{r.priorService.window[4]}:{" "}
@@ -163,7 +171,7 @@ export default function GrantsView({ open, orgs }: { open: Grant; orgs: string[]
             </p>
           </div>
 
-          <div>
+          <div className="border-t border-slate-100 pt-6">
             <h3 className="font-semibold">Numbers you can cite</h3>
             <dl className="mt-2 grid grid-cols-2 gap-3">
               {[
@@ -197,8 +205,9 @@ export default function GrantsView({ open, orgs }: { open: Grant; orgs: string[]
               Participant programming hours follow TPW&apos;s definition: participants completed × course length.
             </p>
           </div>
+          </div>
         </div>
       )}
-    </section>
+    </div>
   );
 }
