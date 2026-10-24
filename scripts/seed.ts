@@ -6,7 +6,15 @@
  *
  * Loads the CLEAN CSVs (organizations, programs, participants, enrollments,
  * outcomes, cost_params) from ../hsi-demo-data/ via Prisma into SQLite.
- * Idempotent: wipes the six tables first, then bulk-inserts.
+ * Idempotent: wipes the tables first, then bulk-inserts.
+ *
+ *   npm run seed:demo   (= seed.ts --demo)
+ *
+ * Demo mode (design doc §23) holds back the enrollments and outcomes of
+ * DEMO_HOLDOUT_ORGS so the live demo can bring them back in two steps:
+ * sample_import_C_spanish.csv (process half) then
+ * sample_import_D_outcomes_external.csv (outcome half). The participant
+ * registry (release cohorts) stays complete — it is the join target.
  *
  * Two source-data adaptations (logged in DECISIONS.md):
  *  - enrollments.csv splits credits into credits_mcc/racc/emc columns;
@@ -17,52 +25,14 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { PrismaClient } from "@prisma/client";
+import { parseCsv } from "../src/lib/csv";
 
 const prisma = new PrismaClient();
+const DEMO = process.argv.includes("--demo");
+/** Organizations whose records arrive live in the demo (both are in sample C). */
+const DEMO_HOLDOUT_ORGS = new Set(["org-07", "org-08"]);
 const DATA_DIR =
   process.env.SEED_DATA_DIR ?? path.resolve(process.cwd(), "data", "demo-data");
-
-/** Minimal RFC-4180 CSV parser (handles quoted fields, embedded commas/quotes). */
-function parseCsv(text: string): Record<string, string>[] {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let field = "";
-  let inQuotes = false;
-  const src = text.replace(/\r\n/g, "\n");
-  for (let i = 0; i < src.length; i++) {
-    const ch = src[i];
-    if (inQuotes) {
-      if (ch === '"') {
-        if (src[i + 1] === '"') {
-          field += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        field += ch;
-      }
-    } else if (ch === '"') {
-      inQuotes = true;
-    } else if (ch === ",") {
-      row.push(field);
-      field = "";
-    } else if (ch === "\n") {
-      row.push(field);
-      field = "";
-      rows.push(row);
-      row = [];
-    } else {
-      field += ch;
-    }
-  }
-  if (field.length > 0 || row.length > 0) {
-    row.push(field);
-    rows.push(row);
-  }
-  const [header, ...body] = rows.filter((r) => r.length > 1 || (r.length === 1 && r[0] !== ""));
-  return body.map((r) => Object.fromEntries(header.map((h, i) => [h, r[i] ?? ""])));
-}
 
 function readCsv(name: string): Record<string, string>[] {
   return parseCsv(readFileSync(path.join(DATA_DIR, name), "utf8"));
@@ -95,6 +65,7 @@ async function main() {
   await prisma.outcome.deleteMany();
   await prisma.enrollment.deleteMany();
   await prisma.importJob.deleteMany();
+  await prisma.programAlias.deleteMany();
   await prisma.program.deleteMany();
   await prisma.participant.deleteMany();
   await prisma.organization.deleteMany();
@@ -105,7 +76,9 @@ async function main() {
     name: r.name,
     programTypes: r.program_types,
     facilities: r.facilities,
-    dataGrade: r.data_grade,
+    // Held-out orgs have no records yet: grade C (critical data missing)
+    // until the live import brings them in.
+    dataGrade: DEMO && DEMO_HOLDOUT_ORGS.has(r.id) ? "C" : r.data_grade,
   }));
   await prisma.organization.createMany({ data: orgs });
 
@@ -120,6 +93,15 @@ async function main() {
   }));
   await prisma.program.createMany({ data: programs });
 
+  // Per-org program-name dictionaries (derived from the generator's labels).
+  const aliases = readCsv("program_aliases.csv").map((r) => ({
+    orgId: r.org_id,
+    label: r.label,
+    programId: r.program_id,
+  }));
+  await prisma.programAlias.createMany({ data: aliases });
+  const orgByProgram = new Map(programs.map((p) => [p.id, p.orgId]));
+
   // participants.csv = 5,000 program participants + the 2,000-person
   // synthetic control group (control members have no enrollments; §5.2).
   const participants = readCsv("participants.csv").map((r) => ({
@@ -131,7 +113,17 @@ async function main() {
   }));
   await chunked(participants, 1000, (b) => prisma.participant.createMany({ data: b }));
 
-  const enrollments = readCsv("enrollments.csv").map((r) => ({
+  const allEnrollments = readCsv("enrollments.csv");
+  const heldOutKeys = new Set(
+    DEMO
+      ? allEnrollments
+          .filter((r) => DEMO_HOLDOUT_ORGS.has(orgByProgram.get(r.program_id) ?? ""))
+          .map((r) => r.participant_key)
+      : [],
+  );
+  const enrollments = allEnrollments
+    .filter((r) => !heldOutKeys.has(r.participant_key))
+    .map((r) => ({
     id: r.id,
     participantKey: r.participant_key,
     programId: r.program_id,
@@ -146,7 +138,9 @@ async function main() {
   }));
   await chunked(enrollments, 1000, (b) => prisma.enrollment.createMany({ data: b }));
 
-  const outcomes = readCsv("outcomes.csv").map((r) => ({
+  const outcomes = readCsv("outcomes.csv")
+    .filter((r) => !heldOutKeys.has(r.participant_key))
+    .map((r) => ({
     id: r.id,
     participantKey: r.participant_key,
     eventType: r.event_type,
@@ -170,7 +164,9 @@ async function main() {
     enrollments: await prisma.enrollment.count(),
     outcomes: await prisma.outcome.count(),
     costParams: await prisma.costParam.count(),
+    programAliases: await prisma.programAlias.count(),
   };
+  if (DEMO) console.log(`Demo mode: held out ${heldOutKeys.size} participants' records (${[...DEMO_HOLDOUT_ORGS].join(", ")})`);
   console.log("Seeded:", counts);
 }
 

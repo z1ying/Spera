@@ -1,0 +1,29 @@
+{
+  "id": "example-county-reentry",
+  "name": "Example — county jail reentry nonprofit (template, values not filled)",
+  "sharedIdentifier": {
+    "name": "County booking number",
+    "description": "Whatever identifier both the nonprofit's records and the county's outcome system record. Replace with the local equivalent."
+  },
+  "outcomeEvents": ["arrest", "conviction", "return_to_custody"],
+  "primaryMeasure": {
+    "eventType": "return_to_custody",
+    "followUpYears": 1,
+    "label": "Return to county custody within one year of release",
+    "citation": null
+  },
+  "latestMatureCohortYear": null,
+  "credits": [],
+  "tierAnchors": {},
+  "baselines": {
+    "default": "local",
+    "options": {
+      "local": { "value": null, "label": "Local comparison rate — supply from a published county source", "citation": null }
+    }
+  },
+  "costs": {
+    "marginal": { "value": null, "label": "Marginal jail cost per person-year — supply from a published county source", "citation": null },
+    "average": { "value": null, "label": "Average jail cost per person-year — supply from a published county source", "citation": null }
+  },
+  "smallCellThreshold": 10
+}

@@ -9,53 +9,51 @@
  * from rates (and counted), never silently averaged in (§7.4).
  */
 
-/** LAO 2025-26 per-person-year incarceration costs (§7.1, seeded in CostParam). */
+import { DEFAULT_FRAMEWORK as F, tiersOf, type FrameworkConfig } from "./framework";
+
+// The constants below are read from the active framework file
+// (config/frameworks/tpw-california.json) so that no jurisdiction-specific
+// number lives in code. Names are kept for existing callers.
+
+/** LAO 2025-26 per-person-year incarceration costs (§7.1). */
 export const COSTS = {
-  marginalCostYear: 21534,
-  avgCostYear: 127788,
+  marginalCostYear: F.costs.marginal.value!,
+  avgCostYear: F.costs.average.value!,
 } as const;
 
 /** Switchable baselines (§7.1): no-credit tier rate vs statewide rate. */
 export const BASELINES = {
   /** CDCR 2020-21: conviction rate for people who earned no program credits. Default. */
-  noCreditTier: 0.456,
+  noCreditTier: F.baselines.options.noCreditTier.value!,
   /** CDCR FY2019-20: statewide 3-year conviction rate. */
-  statewide: 0.391,
+  statewide: F.baselines.options.statewide.value!,
 } as const;
 
-/** Cohorts released after this year lack a complete 3-year follow-up (§7.4). */
-export const MAX_COHORT_YEAR = 2023;
+/** Cohorts released after this year lack a complete follow-up (§7.4). */
+export const MAX_COHORT_YEAR = F.latestMatureCohortYear!;
 
-/** Mutually exclusive credit tiers, highest first (§5.2 / generator rule). */
-export type CreditTier = "none" | "any" | "emc" | "racc";
+/** Mutually exclusive credit tiers, lowest participation first. */
+export type CreditTier = string;
 
-export const CREDIT_TIERS: CreditTier[] = ["none", "any", "emc", "racc"];
+export const CREDIT_TIERS: CreditTier[] = tiersOf(F);
 
-/** Published CDCR anchors each tier must reproduce within ±2pp (§5.4). */
-export const TIER_ANCHORS: Record<CreditTier, number> = {
-  none: 0.456,
-  any: 0.392,
-  emc: 0.261,
-  racc: 0.211,
-};
+/** Published anchors each tier must reproduce within ±2pp (§5.4). */
+export const TIER_ANCHORS: Record<CreditTier, number> = Object.fromEntries(
+  Object.entries(F.tierAnchors).map(([tier, v]) => [tier, v.value!]),
+);
 
-export interface Credits {
-  MCC: boolean;
-  RACC: boolean;
-  EMC: boolean;
-}
+/** Credit codes earned, keyed by the framework's canonical code (e.g. "RACC"). */
+export type Credits = Record<string, boolean>;
 
-export const NO_CREDITS: Credits = { MCC: false, RACC: false, EMC: false };
+export const NO_CREDITS: Credits = Object.fromEntries(F.credits.map((c) => [c.code, false]));
 
 /**
- * Highest credit tier for a participant (§5.2): RACC outranks EMC, which
- * outranks any other credit (MCC). Buckets are mutually exclusive so tier
- * rates can be compared against the published anchors.
+ * Highest credit tier for a participant: the framework lists credit codes
+ * highest-ranked first (TPW: RACC > EMC > MCC, §5.2). Buckets are mutually
+ * exclusive so tier rates can be compared against the published anchors.
  */
-export function creditTier(credits: Credits): CreditTier {
-  if (credits.RACC) return "racc";
-  if (credits.EMC) return "emc";
-  if (credits.MCC) return "any";
+export function creditTier(credits: Credits, framework: FrameworkConfig = F): CreditTier {
+  for (const c of framework.credits) if (credits[c.code]) return c.tier;
   return "none";
 }
 
@@ -67,7 +65,7 @@ export interface ParticipantRecord {
 
 export interface OutcomeRecord {
   participantKey: string;
-  /** arrest | conviction | return_to_custody */
+  /** One of the framework's outcome events (see OUTCOME_EVENT_TYPES). */
   eventType: string;
   eventDate: Date;
 }
@@ -86,6 +84,8 @@ export interface RateResult {
 export interface ConvictionRateOptions {
   /** Restrict to one credit tier. Omit for the whole cohort. */
   tier?: CreditTier;
+  /** Outcome event that counts. Defaults to the framework's primary measure (TPW: conviction). */
+  eventType?: string;
   /** Follow-up window in years. CDCR standard is 3. */
   followUpYears?: number;
   /** Cohorts released after this year are excluded as incomplete. */
@@ -106,7 +106,8 @@ export function convictionRate(
   outcomes: OutcomeRecord[],
   opts: ConvictionRateOptions = {},
 ): RateResult {
-  const followUpYears = opts.followUpYears ?? 3;
+  const followUpYears = opts.followUpYears ?? F.primaryMeasure.followUpYears;
+  const eventType = opts.eventType ?? F.primaryMeasure.eventType;
   const maxCohortYear = opts.maxCohortYear ?? MAX_COHORT_YEAR;
 
   const inTier = opts.tier
@@ -121,7 +122,7 @@ export function convictionRate(
 
   const convictedKeys = new Set<string>();
   for (const o of outcomes) {
-    if (o.eventType !== "conviction") continue;
+    if (o.eventType !== eventType) continue;
     if (!eligibleKeys.has(o.participantKey) || convictedKeys.has(o.participantKey)) continue;
     const releaseYear = releaseYearByKey.get(o.participantKey)!;
     const start = Date.UTC(releaseYear, 0, 1);

@@ -24,6 +24,7 @@ model Organization {
   dataGrade    String      @map("data_grade")
   programs     Program[]
   importJobs   ImportJob[]
+  aliases      ProgramAlias[]
 
   @@map("organizations")
 }
@@ -39,6 +40,7 @@ model Program {
   startDate    DateTime     @map("start_date")
   endDate      DateTime     @map("end_date")
   enrollments  Enrollment[]
+  aliases      ProgramAlias[]
 
   @@map("programs")
 }
@@ -66,7 +68,7 @@ model Enrollment {
   /// enrolled | completed | dropped
   status         String
   completionDate DateTime?   @map("completion_date")
-  /// JSON: {"MCC": boolean, "RACC": boolean, "EMC": boolean}
+  /// JSON: {"<credit code>": boolean}, codes from the framework file (TPW: MCC, RACC, EMC)
   credits        String
 
   @@map("enrollments")
@@ -76,11 +78,12 @@ model Outcome {
   id             String      @id
   participantKey String      @map("participant_key")
   participant    Participant @relation(fields: [participantKey], references: [participantKey])
-  /// arrest | conviction | return_to_custody
+  /// arrest | conviction | return_to_custody | parole_violation | parole_discharge
+  /// (the framework file chooses which are tracked; src/lib/framework.ts)
   eventType      String      @map("event_type")
   eventDate      DateTime    @map("event_date")
-  /// felony | misdemeanor
-  offenseLevel   String      @map("offense_level")
+  /// felony | misdemeanor; null for events that are not offenses (parole_discharge)
+  offenseLevel   String?     @map("offense_level")
 
   @@map("outcomes")
 }
@@ -94,10 +97,28 @@ model CostParam {
   @@map("cost_params")
 }
 
-model ImportJob {
-  id           String       @id
+/// An organization's own name for one of its programs (§6.1 step 4: program
+/// names are normalized through a per-org dictionary; unmatched names go to a
+/// manual classification queue and the answer is saved here as the template).
+model ProgramAlias {
   orgId        String       @map("org_id")
   organization Organization @relation(fields: [orgId], references: [id])
+  label        String
+  programId    String       @map("program_id")
+  program      Program      @relation(fields: [programId], references: [id])
+
+  @@id([orgId, label])
+  @@map("program_aliases")
+}
+
+model ImportJob {
+  id           String        @id
+  /// Null when one file spans several organizations, or for an outcome file
+  /// from an external system (orgs touched are recorded in `mapping`).
+  orgId        String?       @map("org_id")
+  organization Organization? @relation(fields: [orgId], references: [id])
+  /// enrollments | outcomes
+  kind         String        @default("enrollments")
   fileName     String       @map("file_name")
   status       String
   /// JSON: confirmed column mapping (§6.1). Null until confirmed.
