@@ -72,3 +72,50 @@ Remaining for Saturday (unchanged from §11): M3 import wizard + Gemini
 mapping, M4 dashboard, M5 report page, M6 polish + §17 anti-graveyard list.
 
 - 2026-10-23: Demo data vendored into `data/demo-data/` so the repo is self-contained; seed default path updated (SEED_DATA_DIR still overrides). Docs (design doc v1.3, prep, analysis brief #01) added under `docs/`. First push to github.com/z1ying/impacklink via repo deploy key.
+
+## 2026-10-24 (Sat) — v1.6 join credibility, v1.7 framework, M3 import wizard
+
+Design changes (written into the design doc first: §4.1, §6.1, §23, §24):
+- participant_key = HMAC-SHA256(network key, normalized CDCR number). The old
+  org-local-ID + org-salt key could never match outcome systems.
+- Every import receipt shows the match rate; outcome files split it into
+  "linked to a program participant" vs "no enrollment on file".
+- Pitch/briefs: synthetic calibration patterns ("dropouts ≈ never enrolled")
+  are no longer presented as findings.
+- Framework config (`config/frameworks/*.json`): identifier, events (adds
+  parole_violation / parole_discharge), measure, credits, anchors, baselines,
+  costs. Validator rejects any number without a citation. `docs/data-standard.md` added.
+
+M3 acceptance (§11: "3 sample sheets import and receipt lists issues") — PASS:
+- Q1 (Spanish, half of C) → 824 rows, 221 new, 14 dupes merged, 510 already on
+  file (org-01), 79 held back and listed; 100% match; Comunidad Fuerte and
+  Liberty Learning Lab C → B.
+- D (external outcomes) → 2,863 rows, 192 new, 2,671 already on file; 100%
+  match (1,823 participants / 1,040 no enrollment on file); both orgs B → A.
+- Q2 (same headers) → mapping source "template"; 259 new, 83 held back; grades A.
+- A (English) and B (abbreviated) map fully by rules; 0 unresolved program
+  names, 0 unparseable dates.
+- `npm test` 31/31, `npm run sanity` ALL PASS, `npm run build` OK.
+
+Deviations / decisions:
+1. **Schema**: added `ProgramAlias(org_id, label, program_id)` (§6.1 step 4 per-org
+   dictionary); `ImportJob.org_id` optional (multi-org and outcome files) plus
+   `kind`; `Outcome.offense_level` optional (parole discharges carry none).
+2. **Rejected rows**: rows missing start date or completion status, or ending
+   before they start, are held back and listed (no guessing). ~10% of each
+   sample's rows. Consequence for M4: after the live demo, ~54 of the 534
+   held-out participants have no enrollment on file, so "no enrollments" can
+   no longer define the comparison group — M4 must define it explicitly.
+3. **Blank credits** read as "no credits" (indistinguishable from missing);
+   printed on every receipt as an assumption.
+4. **Grade C threshold**: > 20% of an org's rows rejected for critical fields,
+   or no records. Grades are recomputed only for orgs an import touches.
+   Seeded CSV grades (some B) disagree with the rule because synthetic
+   outcomes exist for every org; importing A/B flips those orgs to A.
+5. **Match rate is 100%** on all demo files because the synthetic outcome file
+   was generated from the same keys. Real data will be lower; say so if asked.
+6. **Gemini**: wired (REST, `x-goog-api-key` header, JSON response, sample keys
+   masked) but NOT verified — no key yet. Without a key the wizard uses rules
+   and says so. Successful Gemini answers are written to data/mapping_cache.json
+   for DEMO_MODE replay.
+7. Vitest config renamed `.mts` (Node 22.7 cannot require() ESM vite).

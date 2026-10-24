@@ -399,3 +399,14 @@ savings_capacity     = avoided_returns × return_years × avg_cost_year        (
 **合成数据纪律**：合成数据按学分层校准，其中的模式（如"辍学≈未报名"）是校准产物，不得作为发现讲述（pitch-script 已改）。
 
 *文档版本：v1.6（2026-10-24 新增第 23 节；§4.1、§6.1 同步修订）。*
+
+---
+
+## 24. 框架化：面向"nonprofits generally"（v1.7，用户 2026-10-24 定）
+
+1. **假释事件**：结果事件扩为 arrest / conviction / return_to_custody / **parole_violation / parole_discharge**（赛题点名 parole data）。parole_discharge 无罪名等级（offense_level 可空）。主指标不变（CDCR 三年定罪率）。
+2. **口径配置化**：共享标识名、跟踪的结果事件、主指标与随访窗、学分体系与层级、校准锚、基线、成本全部移入 `config/frameworks/<id>.json`；`metrics.ts` 从配置读取。每个数值必须带引用编号，否则为 null——校验器拒绝无出处的数字（§18 引用纪律进代码）。附 `example-county-reentry.json` 模板（数值留空，不编造）。
+3. **数据标准**：`docs/data-standard.md`——不依赖本软件也能执行的规则：两半数据 + 登记表、join key、文件字段、回执、数据等级、口径、隐私、他处采用步骤。
+4. **持续追踪（第二季度自动映射）**：人工确认过的映射按表头签名存入 ImportJob；同格式的下一份文件自动套用（来源标"Mapping remembered"）。演示动线改为三段：Q1 西班牙语表（B 级）→ 外部结果表 D（匹配率上屏，升 A 级）→ Q2 同格式表（一键导入）。`demo_q1_spanish.csv` / `demo_q2_spanish.csv` 由样例表 C 按行序对半切分，**不是真实季度**。
+
+*文档版本：v1.7（2026-10-24 新增第 24 节）。*

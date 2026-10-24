@@ -28,7 +28,8 @@
     "sanity": "tsx scripts/sanity_check.ts",
     "seed": "tsx scripts/seed.ts",
     "start": "next start",
-    "test": "vitest run"
+    "test": "vitest run",
+    "seed:demo": "tsx scripts/seed.ts --demo"
   },
   "version": "0.1.0"
 }

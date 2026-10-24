@@ -34,3 +34,8 @@
 ## 免责（演示时必须说）
 
 全部为合成数据，不得标注为真实数据。真实部署时替换为机构真实记录。
+
+## 派生文件（2026-10-24 新增，非生成器输出）
+
+- `program_aliases.csv` — 由生成器中的 `PROG_LABELS` 与 `programs.csv` 推导的各机构项目名词典（org_id, label, program_id），seed 入库。
+- `demo_q1_spanish.csv` / `demo_q2_spanish.csv` — `sample_import_C_spanish.csv` 按行序对半切分，用于演示"同格式下一份文件自动套用映射"。**不是真实季度。**

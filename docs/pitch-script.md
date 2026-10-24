@@ -28,12 +28,13 @@ That is the question ImpactLink lets TPW answer.”
 
 **[1:35–3:00｜切到 live demo，操作者同步动作]**
 “This is ImpactLink.
-[导入西班牙语样例表] A program manager drops in her spreadsheet — Spanish headers, three different date formats, duplicates.
+[导入西班牙语 Q1 表] A program manager drops in her spreadsheet — Spanish headers, three different date formats, duplicates.
 [映射确认页] The system proposes the mapping, she confirms it — she never fills in a new form.
 [校验回执] Duplicates merged. Problem rows listed, not hidden. Her organizations are grade B: process data only.
 [导入结果表 D] Now the other half — an export from a different system, different column names, different date formats.
 [匹配率] Every record is linked by a keyed hash of the CDCR number. No name, no birth date ever reaches our database.
 Match rate on screen — and every record that didn't match is listed. Her organizations move to grade A.
+[导入 Q2 表，"Mapping remembered"] Next quarter, same spreadsheet: it maps itself. One click. That is how impact gets tracked, not just measured once.
 [切到总览页，梯度图动画] Both halves of the evidence, in one place.
 In this demonstration data the gradient reads forty-six, thirty-eight, twenty-five, twenty-two —
 calibrated to CDCR's published 45.6 to 21.1. [2] With real records, this is the chart TPW has never been able to draw.
@@ -45,6 +46,8 @@ Both cost figures are printed — the conservative one first. [3]”
 Conviction rates follow CDCR's primary measure: conviction within three years of release. [1]
 Costs come from the Legislative Analyst's Office.
 We report the marginal cost — $21,534 — as the headline saving, because that is the honest number for next year's budget. [3]”
+
+（框架一句，可放在 3:00 段落末尾）“And none of this is hard-coded to California. The join rules, the measures, the cost figures live in one framework file — any nonprofit can write its own. The software refuses any number without a source.”
 
 **[3:35–4:00｜Slide 5：试点请求]**
 “We are asking TPW for five pilot organizations and ninety days.

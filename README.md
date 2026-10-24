@@ -55,7 +55,8 @@ npm install
 cp .env.example .env
 npm run db:generate
 npm run db:push      # creates data/impactlink.db
-npm run seed         # loads the validated synthetic demo dataset
+npm run seed         # loads the validated synthetic demo dataset (full)
+npm run seed:demo    # same, but holds out org-07/08 so the live demo can import them
 npm run sanity       # verifies headline rate + credit-tier gradient vs anchors
 npm test             # metrics engine unit tests (§7.2 worked example)
 npm run dev          # http://localhost:3000
@@ -96,6 +97,8 @@ generated report carries one of these citation numbers (design doc §18).
 
 - Design document (frozen, agent-executable): `../hsi-tpw-design-doc.md`
 - Strategy prep doc: `../hsi-tpw-prep.md`
+- Data standard (the framework, usable without this software): `docs/data-standard.md`
+- Framework files (measures, baselines, costs — every number cited): `config/frameworks/`
 - Decision log: `DECISIONS.md`
 - Demo dataset + validation report: `../hsi-demo-data/`
 
