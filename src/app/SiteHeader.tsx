@@ -102,7 +102,7 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
             ) : (
               <>
                 {ORG_LINKS.map((l) => link(l.href, l.label))}
-                <Link href="/tpw" className="rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-600 hover:border-brand-700 hover:text-brand-900">
+                <Link href="/tpw" className="px-3 py-1.5 text-slate-800 underline decoration-sun-400 decoration-2 underline-offset-8 hover:text-slate-950">
                   TPW
                 </Link>
               </>
