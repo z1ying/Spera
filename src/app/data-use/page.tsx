@@ -29,9 +29,9 @@ const PROMISES: { promise: string; how: string; by: "software" | "agreement" }[]
     by: "software",
   },
   {
-    promise: "You can fix what you sent.",
-    how: "Programs submitted from your browser can be updated later — for example, adding how many completed.",
-    by: "software",
+    promise: "Mistakes can be fixed.",
+    how: "Contact TPW and they will correct a program you reported.",
+    by: "agreement",
   },
 ];
 

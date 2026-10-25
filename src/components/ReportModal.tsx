@@ -18,7 +18,6 @@ export interface SubmittedRun {
   participants: number | null;
   completed: number | null;
   participantHours: number | null;
-  updated: boolean;
 }
 
 const show = (v: number | null) => (v === null ? "—" : fmt(v));
@@ -51,7 +50,7 @@ export default function ReportModal({ s, run, onClose }: { s: OrgSummary; run: S
       >
         <div className="flex items-start justify-between gap-3 px-6 pt-6 sm:px-8">
           <div>
-            <p className="text-sm font-medium text-emerald-800">✓ {run.updated ? "Updated" : "Thank you — your program is in"}</p>
+            <p className="text-sm font-medium text-emerald-800">✓ Thank you — your program is in</p>
             <h2 id="run-report-title" className="mt-1 text-2xl font-semibold">
               {run.programName}
             </h2>

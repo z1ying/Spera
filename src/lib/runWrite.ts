@@ -1,9 +1,8 @@
 /**
  * Writing program runs from the organization form (design doc §28).
- * Organizations don't sign in: a new run returns a random edit token that
- * only the submitting browser keeps, and editing requires it.
+ * Organizations don't sign in; corrections to a submitted run go through TPW.
  */
-import { randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { prisma } from "./db";
 import { validateRun, type RunInput } from "./runs";
 
@@ -59,21 +58,8 @@ async function checked(input: RunInput) {
 
 export async function createRun(input: RunInput) {
   const data = await checked(input);
-  const editToken = randomBytes(18).toString("base64url");
   const run = await prisma.programRun.create({
-    data: { id: `run-${randomUUID()}`, ...data, source: "form", editToken },
+    data: { id: `run-${randomUUID()}`, ...data, source: "form" },
   });
-  return { id: run.id, editToken };
-}
-
-export function tokenMatches(stored: string | null, given: string | undefined): boolean {
-  if (!stored || !given || stored.length !== given.length) return false;
-  return timingSafeEqual(Buffer.from(stored), Buffer.from(given));
-}
-
-export async function updateRun(id: string, editToken: string | undefined, input: RunInput) {
-  const existing = await prisma.programRun.findUnique({ where: { id } });
-  if (!existing || !tokenMatches(existing.editToken, editToken)) return false;
-  await prisma.programRun.update({ where: { id }, data: await checked(input) });
-  return true;
+  return { id: run.id };
 }

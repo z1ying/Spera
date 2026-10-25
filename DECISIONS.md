@@ -249,3 +249,11 @@ Decisions:
 - TPW sign-in already gated the dashboard; the user saw no prompt because
   this browser still held the 12-hour cookie from earlier testing. Cookie is
   now session-only, and the org-side link reads "TPW staff sign in".
+
+## 2026-10-25 — removed "Submitted from this browser"
+
+- User found the per-browser list confusing; removed it together with the edit
+  flow (`/api/runs/[id]`, `/api/runs/mine`, `editToken` column). Corrections now
+  go through TPW (data-use page updated). Form is a single centred column.
+- Test submissions cleared with `npm run seed` (36 real runs, 0 form runs).
+- The form restores the last organization/program only if they still exist.

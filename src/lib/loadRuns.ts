@@ -32,8 +32,3 @@ export async function loadRuns(): Promise<Run[]> {
   const rows = await prisma.programRun.findMany({ include, orderBy: [{ startDate: "desc" }, { id: "asc" }] });
   return rows.map(toRun);
 }
-
-export async function loadRunsByIds(ids: string[]): Promise<(Run & { editToken: string | null })[]> {
-  const rows = await prisma.programRun.findMany({ where: { id: { in: ids } }, include });
-  return rows.map((r) => ({ ...toRun(r), editToken: r.editToken }));
-}

@@ -11,24 +11,7 @@ interface Options {
   facilities: { code: string; name: string; underserved: boolean; womens: boolean }[];
 }
 
-interface MyRun {
-  id: string;
-  orgName: string;
-  programName: string;
-  facilityCode: string;
-  yard: string | null;
-  status: string;
-  startDate: string | null;
-  endDate: string | null;
-  totalHours: number | null;
-  participants: number | null;
-  completed: number | null;
-  specialPopulations: boolean;
-  nonEnglishLanguage: string | null;
-  participantHours: number | null;
-}
 
-const STORE = "impactlink.myRuns";
 const LAST = "impactlink.last";
 
 // Browser storage is a convenience only (remembered choices, this browser's
@@ -184,27 +167,24 @@ export default function RunForm() {
     hours: "2",
     count: "12",
   });
-  const [editing, setEditing] = useState<{ id: string; editToken: string } | null>(null);
   const [problems, setProblems] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [report, setReport] = useState<{ summary: OrgSummary; run: SubmittedRun } | null>(null);
-  const [mine, setMine] = useState<MyRun[]>([]);
   const [otherLanguage, setOtherLanguage] = useState(false);
 
   const set = (patch: Partial<RunInput>) => setForm((f) => ({ ...f, ...patch }));
 
-  async function refreshMine() {
-    const items = readStore<{ id: string; editToken: string }[]>(STORE, []);
-    if (items.length === 0) return setMine([]);
-    const res = await fetch("/api/runs/mine", { method: "POST", body: JSON.stringify({ items }) });
-    if (res.ok) setMine(await res.json());
-  }
-
   useEffect(() => {
-    fetch("/api/form-options").then((r) => r.json()).then(setOpts).catch(() => setOpts({ orgs: [], facilities: [] }));
-    const last = readStore<Partial<RunInput>>(LAST, {});
-    if (last.orgName) setForm((f) => ({ ...f, orgName: last.orgName!, programName: last.programName ?? "" }));
-    refreshMine();
+    fetch("/api/form-options")
+      .then((r) => r.json())
+      .then((o: Options) => {
+        setOpts(o);
+        // Restore the last organization/program only if they still exist.
+        const last = readStore<Partial<RunInput>>(LAST, {});
+        const org = o.orgs.find((x) => x.name === last.orgName);
+        if (org) setForm((f) => ({ ...f, orgName: org.name, programName: org.programs.includes(last.programName ?? "") ? last.programName! : "" }));
+      })
+      .catch(() => setOpts({ orgs: [], facilities: [] }));
   }, []);
 
   const orgPrograms = opts?.orgs.find((o) => o.name === form.orgName)?.programs ?? [];
@@ -222,45 +202,18 @@ export default function RunForm() {
   const participantHours = isCompleted && hours !== null && form.completed != null ? hours * form.completed : null;
   const year = form.startDate ? form.startDate.slice(0, 4) : null;
 
-  function copyRun(r: MyRun, asEdit: boolean) {
-    setForm({
-      orgName: r.orgName,
-      programName: r.programName,
-      facilityCode: r.facilityCode,
-      yard: r.yard ?? "",
-      status: asEdit ? r.status : "",
-      startDate: asEdit && r.startDate ? `${r.startDate.slice(0, 7)}-01` : "",
-      endDate: asEdit && r.endDate ? `${r.endDate.slice(0, 7)}-01` : "",
-      totalHours: r.totalHours,
-      participants: asEdit ? r.participants : null,
-      completed: asEdit ? r.completed : null,
-      specialPopulations: r.specialPopulations,
-      nonEnglishLanguage: r.nonEnglishLanguage ?? "",
-    });
-    setOtherLanguage(!!r.nonEnglishLanguage);
-    setSchedule((s) => ({ ...s, on: false }));
-    setNewProgram(false);
-    setProblems([]);
-    const token = readStore<{ id: string; editToken: string }[]>(STORE, []).find((i) => i.id === r.id)?.editToken;
-    setEditing(asEdit && token ? { id: r.id, editToken: token } : null);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setProblems([]);
     const body: RunInput = { ...form, totalHours: hours, nonEnglishLanguage: otherLanguage ? form.nonEnglishLanguage : "" };
     try {
-      const res = editing
-        ? await fetch(`/api/runs/${editing.id}`, { method: "PATCH", body: JSON.stringify({ ...body, editToken: editing.editToken }) })
-        : await fetch("/api/runs", { method: "POST", body: JSON.stringify(body) });
+      const res = await fetch("/api/runs", { method: "POST", body: JSON.stringify(body) });
       const out = await res.json();
       if (!res.ok) {
         setProblems(out.problems ?? ["Something went wrong. Please try again."]);
         return;
       }
-      if (!editing) writeStore(STORE, [...readStore<{ id: string; editToken: string }[]>(STORE, []), { id: out.id, editToken: out.editToken }]);
       writeStore(LAST, { orgName: form.orgName, programName: form.programName });
       const summary = (await (await fetch(`/api/org-summary?org=${encodeURIComponent(form.orgName)}`)).json()) as OrgSummary;
       setReport({
@@ -276,15 +229,12 @@ export default function RunForm() {
           participants: form.participants ?? null,
           completed: isCompleted ? form.completed ?? null : null,
           participantHours,
-          updated: !!editing,
         },
       });
       setForm({ ...EMPTY, orgName: form.orgName, programName: form.programName });
       setOtherLanguage(false);
-      setEditing(null);
         setNewProgram(false);
       setOpts(await (await fetch("/api/form-options")).json());
-      refreshMine();
     } finally {
       setBusy(false);
     }
@@ -293,20 +243,10 @@ export default function RunForm() {
   if (!opts) return <p className="text-slate-500">Loading…</p>;
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[3fr_2fr]">
-      <div>
+    <div className="max-w-3xl">
         {report && <ReportModal s={report.summary} run={report.run} onClose={() => setReport(null)} />}
 
         <form onSubmit={submit} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          {editing && (
-            <p className="mb-4 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-900">
-              Updating a program you submitted.{" "}
-              <button type="button" className="underline" onClick={() => { setEditing(null); setForm({ ...EMPTY, orgName: form.orgName }); }}>
-                Cancel
-              </button>
-            </p>
-          )}
-
           <Field n={1} label="Your organization">
             <SearchPick
               items={allOrgs}
@@ -492,47 +432,18 @@ export default function RunForm() {
                   disabled={busy || !form.status || !form.facilityCode}
                   className="rounded-lg bg-emerald-800 px-6 py-3 font-medium text-white hover:bg-emerald-900 disabled:opacity-40"
                 >
-                  {busy ? "Saving…" : editing ? "Save changes" : "Submit program"}
+                  {busy ? "Saving…" : "Submit program"}
                 </button>
               </div>
             </>
           )}
         </form>
-      </div>
-
-      <aside>
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Submitted from this browser</h2>
-        {mine.length === 0 ? (
-          <p className="mt-2 text-sm text-slate-500">Programs you submit appear here, so you can copy or update them later.</p>
-        ) : (
-          <ul className="mt-3 space-y-2">
-            {mine.map((r) => (
-              <li key={r.id} className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
-                <div className="font-medium">{r.programName}</div>
-                <div className="text-xs text-slate-500">
-                  {r.facilityCode} · {r.status}
-                  {r.startDate ? ` · ${r.startDate.slice(0, 7)}` : ""}
-                  {r.participantHours !== null ? ` · ${fmt(r.participantHours)} participant hours` : ""}
-                </div>
-                <div className="mt-2 flex gap-3 text-xs">
-                  <button type="button" onClick={() => copyRun(r, true)} className="font-medium text-emerald-800 underline">
-                    {r.status === "Completed" ? "Edit" : "Update"}
-                  </button>
-                  <button type="button" onClick={() => copyRun(r, false)} className="text-slate-600 underline">
-                    New run like this
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-        <p className="mt-6 text-xs text-slate-500">
-          Spera collects counts only — never names or ID numbers.{" "}
-          <a href="/data-use" className="underline">
-            How your data is used
-          </a>
-        </p>
-      </aside>
+      <p className="mt-4 text-xs text-slate-500">
+        Spera collects counts only — never names or ID numbers.{" "}
+        <a href="/data-use" className="underline">
+          How your data is used
+        </a>
+      </p>
     </div>
   );
 }
