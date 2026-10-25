@@ -7,7 +7,7 @@ const ORG_LINKS = [
   { href: "/", label: "Report a program" },
   { href: "/report", label: "My report" },
   { href: "/grants", label: "Grants" },
-  { href: "/data-use", label: "How data is used" },
+  { href: "/data-use", label: "About & Privacy" },
 ];
 
 /**
@@ -32,14 +32,15 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
 
   return (
     <header className="border-b border-slate-200 bg-white print:hidden">
-      <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3 text-sm">
-        <Link href={tpwArea ? "/tpw" : "/"} className="font-semibold text-emerald-900">
-          Spera{tpwArea && <span className="ml-1 font-normal text-slate-500">· TPW</span>}
+      <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-4 text-sm">
+        <Link href={tpwArea ? "/tpw" : "/"} className="flex items-baseline gap-3">
+          <span className="text-2xl font-bold tracking-tight text-emerald-900">Spera</span>
+          <span className="hidden text-sm text-slate-500 sm:inline">{tpwArea ? "TPW staff" : "From attendance to evidence"}</span>
         </Link>
         {tpwArea ? (
           <>
-            {tpwSignedIn && link("/tpw", "Dashboard")}
-            <span className="ml-auto flex items-center gap-4">
+            <span className="ml-auto flex items-center gap-6">
+              {tpwSignedIn && link("/tpw", "Dashboard")}
               <Link href="/" className="text-slate-600 hover:text-slate-900">
                 Organization view
               </Link>
@@ -51,15 +52,15 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
             </span>
           </>
         ) : (
-          <>
+          <span className="ml-auto flex flex-wrap items-center gap-x-6 gap-y-2">
             {ORG_LINKS.map((l) => link(l.href, l.label))}
             <Link
               href="/tpw"
-              className="ml-auto rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:border-slate-400 hover:text-slate-800"
+              className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:border-slate-400 hover:text-slate-800"
             >
               {tpwSignedIn ? "TPW dashboard" : "TPW staff sign in"}
             </Link>
-          </>
+          </span>
         )}
       </nav>
     </header>

@@ -441,7 +441,7 @@ export default function RunForm() {
       <p className="mt-4 text-xs text-slate-500">
         Spera collects counts only — never names or ID numbers.{" "}
         <a href="/data-use" className="underline">
-          How your data is used
+          About &amp; Privacy
         </a>
       </p>
     </div>

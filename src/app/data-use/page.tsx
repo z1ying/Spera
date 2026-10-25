@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const metadata = { title: "How your data is used — Spera" };
+export const metadata = { title: "About & Privacy — Spera" };
 
 /**
  * One-screen, plain-language data-use promise (backlog 1c; design doc §23).
@@ -38,8 +38,11 @@ const PROMISES: { promise: string; how: string; by: "software" | "agreement" }[]
 export default function DataUse() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
-      <h1 className="text-3xl font-semibold">How your data is used</h1>
-      <p className="mt-2 text-slate-600">In plain words — what Spera promises every organization that reports a program.</p>
+      <h1 className="text-3xl font-semibold">About &amp; Privacy</h1>
+      <p className="mt-2 text-slate-600">
+        <strong>Spera</strong> — from attendance to evidence. Community organizations report the programs they run in California
+        prisons; TPW turns those counts into evidence for funding. Here is what we promise about your data.
+      </p>
       <ul className="mt-8 space-y-4">
         {PROMISES.map((p) => (
           <li key={p.promise} className="rounded-lg border border-slate-200 bg-white p-4">
