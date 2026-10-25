@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Sans, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { isTpwSignedIn } from "@/lib/tpwAuth";
+import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <SiteHeader tpwSignedIn={tpw} />
         {children}
+        <SiteFooter />
       </body>
     </html>
   );

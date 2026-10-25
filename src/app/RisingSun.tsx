@@ -5,8 +5,8 @@ import { useEffect, useRef } from "react";
 /**
  * A soft yellow half-ring standing on a horizon line, behind the content. As
  * the page scrolls down, ring and line drift down with it — slower than the
- * content — so they keep the user company and come to rest at the bottom of
- * the page. Scroll-linked, updated once per frame; still under
+ * content — so they keep the user company and come to rest on the footer
+ * line at the bottom of the page. Scroll-linked, updated once per frame; still under
  * prefers-reduced-motion.
  */
 export default function RisingSun() {
@@ -19,10 +19,17 @@ export default function RisingSun() {
     const update = () => {
       frame = 0;
       if (!box.current || !art.current) return;
-      // How far the art may travel before it would pass the end of the page.
       const start = box.current.getBoundingClientRect().top + window.scrollY;
-      const room = document.documentElement.scrollHeight - start - art.current.offsetHeight - 24;
-      const y = Math.max(0, Math.min(window.scrollY * 0.7, room));
+      // Come to rest with the horizon line on the footer's top edge.
+      const footer = document.getElementById("spera-footer");
+      const end = footer ? footer.getBoundingClientRect().top + window.scrollY : document.documentElement.scrollHeight;
+      // The art hangs from the box's bottom edge, so that edge is where the line sits.
+      const room = end - start - box.current.offsetHeight;
+      // Travel in step with scroll progress, so the line lands on the footer
+      // exactly when the page reaches its end, whatever the window height.
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 1;
+      const y = Math.max(0, room * progress);
       art.current.style.transform = `translate3d(0, ${y}px, 0)`;
     };
     const onScroll = () => {

@@ -35,6 +35,17 @@ export default function Home() {
           <EntryTabs />
         </div>
       </section>
+
+      <section className="mx-auto max-w-4xl px-6 pb-40 pt-12">
+        <blockquote className="border-l-4 border-sun-400 pl-6">
+          <p className="font-serif text-2xl italic leading-relaxed text-slate-900 sm:text-[1.7rem]">
+            &ldquo;I spent 38 years in prison. I know what works. Now I help others transform their lives.&rdquo;
+          </p>
+          <footer className="mt-3 text-sm text-slate-600">
+            Kenneth Hartman, Executive Director, Transformative Programming Works — from TPW&apos;s 2026 one-pager.
+          </footer>
+        </blockquote>
+      </section>
     </main>
   );
 }
