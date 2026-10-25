@@ -6,6 +6,8 @@ import RisingSun from "./RisingSun";
 export default function Home() {
   return (
     <main>
+      {/* fixed behind the content: stays in view while scrolling */}
+      <RisingSun />
       <section className="px-6 pb-6 pt-24 text-center">
         <p className="mx-auto max-w-5xl font-serif text-4xl italic leading-snug text-slate-900 sm:text-[3.4rem] sm:leading-[1.4]">
           Every hour of programming you log becomes evidence that rehabilitation works.
@@ -27,8 +29,7 @@ export default function Home() {
             </svg>
             Never upload names and case numbers.
           </div>
-          {/* the sun rises from a horizon line as you scroll */}
-          <RisingSun />
+          <div className="mb-3 h-1.5 w-full" aria-hidden />
         </div>
 
         <div className="mt-8">
