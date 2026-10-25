@@ -257,3 +257,14 @@ Decisions:
   go through TPW (data-use page updated). Form is a single centred column.
 - Test submissions cleared with `npm run seed` (36 real runs, 0 form runs).
 - The form restores the last organization/program only if they still exist.
+
+## 2026-10-25 — grants overview: five CDCR grant programs as cards
+
+- `/grants` starts with a horizontally scrolling strip of CDCR's five grant
+  programs (RIGHT, Victim Impact, Innovative Programming, CARE, Restorative
+  Justice), each with a simple line illustration of our own (CDCR's page has
+  no images per grant). Selecting one shows it below; RIGHT is the default
+  and shows the open RIGHT 4.0 round with the countdown and the three actions.
+  Others show description, who can apply and their funded rounds with links.
+  The separate "Other CDCR grants" list is gone.
+- `data/grants.json` gains `types`; every round has a `typeId`.

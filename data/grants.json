@@ -64,49 +64,129 @@
           "The resources needed to deliver it (space, equipment)"
         ],
         "ifNonEnglish": "Name the language(s), how it is delivered (bilingual facilitators, certified interpreters, translated materials, etc.), any link between the language and the institution, and the organization's experience and capacity to deliver in that language."
-      }
+      },
+      "typeId": "right"
     },
     {
       "id": "right-3",
       "name": "RIGHT Grant 3.0",
       "funder": "CDCR",
       "status": "awarded",
-      "fundingPeriod": "July 1, 2026 \u2013 December 1, 2028"
+      "fundingPeriod": "July 1, 2026 \u2013 December 1, 2028",
+      "typeId": "right",
+      "links": [
+        {
+          "label": "RIGHT 3.0 recipients",
+          "url": "https://www.grants.ca.gov/grants/rehabilitative-investment-grants-for-healing-and-transformation-right-grant-3-0/"
+        }
+      ]
     },
     {
       "id": "right-2",
       "name": "RIGHT Grant 2.0",
       "funder": "CDCR",
       "status": "awarded",
-      "fundingPeriod": "July 1, 2023 \u2013 December 1, 2026"
+      "fundingPeriod": "July 1, 2023 \u2013 December 1, 2026",
+      "typeId": "right",
+      "links": [
+        {
+          "label": "RIGHT 2.0 recipients",
+          "url": "https://www.cdcr.ca.gov/rehabilitation/rehabilitative-investment-grants-for-healing-and-transformation-right-2-0-recipients/"
+        }
+      ]
     },
     {
       "id": "vi",
-      "name": "Victim Impact Grant",
+      "name": "Victim Impact Grant 2026\u20132028",
       "funder": "CDCR",
       "status": "awarded",
-      "fundingPeriod": "July 1, 2026 \u2013 June 30, 2028"
+      "fundingPeriod": "July 1, 2026 \u2013 June 30, 2028",
+      "typeId": "vi",
+      "links": [
+        {
+          "label": "Recipients",
+          "url": "https://www.grants.ca.gov/grants/victim-impact-grant-fiscal-years-2026-2028/"
+        }
+      ]
     },
     {
       "id": "ipg",
-      "name": "Innovative Programming Grant",
+      "name": "Innovative Programming Grant 2025\u20132028",
       "funder": "CDCR",
       "status": "awarded",
-      "fundingPeriod": "July 1, 2025 \u2013 June 30, 2028"
+      "fundingPeriod": "July 1, 2025 \u2013 June 30, 2028",
+      "typeId": "ipg",
+      "links": [
+        {
+          "label": "Awards",
+          "url": "https://www.cdcr.ca.gov/rehabilitation/innovative-programming-grant-ipg-2025%e2%80%912028-awards/"
+        }
+      ]
     },
     {
       "id": "care",
-      "name": "California Reentry and Enrichment (CARE) Grant",
+      "name": "CARE Grant 2025\u20132028",
       "funder": "CDCR",
       "status": "awarded",
-      "fundingPeriod": "July 1, 2025 \u2013 June 30, 2028"
+      "fundingPeriod": "July 1, 2025 \u2013 June 30, 2028",
+      "typeId": "care",
+      "links": [
+        {
+          "label": "Awards",
+          "url": "https://www.cdcr.ca.gov/rehabilitation/california-reentry-and-enrichment-care-grant-2025-2028-awards/"
+        }
+      ]
     },
     {
       "id": "rj",
-      "name": "Restorative Justice Grant",
+      "name": "Restorative Justice Grant 2024\u20132027",
       "funder": "CDCR",
       "status": "awarded",
-      "fundingPeriod": "July 1, 2024 \u2013 June 30, 2027"
+      "fundingPeriod": "July 1, 2024 \u2013 June 30, 2027",
+      "typeId": "rj",
+      "links": [
+        {
+          "label": "Recipients",
+          "url": "https://www.cdcr.ca.gov/rehabilitation/2022-2025-restorative-justice-rj-grant-recipients/"
+        }
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "right",
+      "short": "RIGHT",
+      "name": "Rehabilitative Investment Grants for Healing and Transformation",
+      "description": "Supports community-based nonprofits delivering trauma-informed, rehabilitative and/or restorative justice programming in CDCR institutions.",
+      "whoCanApply": "Community-based nonprofit organizations"
+    },
+    {
+      "id": "vi",
+      "short": "Victim Impact",
+      "name": "Victim Impact (VI) Grant",
+      "description": "Funds victim-focused, restorative justice programs delivered at one or more CDCR institutions.",
+      "whoCanApply": "Eligible nonprofit organizations"
+    },
+    {
+      "id": "ipg",
+      "short": "Innovative Programming",
+      "name": "Innovative Programming Grant (IPG)",
+      "description": "Helps nonprofits expand programs they already run in other California state institutions, focused on responsibility and restorative justice principles.",
+      "whoCanApply": "Nonprofits, including those with correctional programming experience"
+    },
+    {
+      "id": "care",
+      "short": "CARE",
+      "name": "California Reentry and Enrichment (CARE) Grant",
+      "description": "Funds insight-oriented, restorative justice programs that increase empathy and accountability among participants.",
+      "whoCanApply": "Nonprofits that show, or will produce, positive outcomes in correctional settings"
+    },
+    {
+      "id": "rj",
+      "short": "Restorative Justice",
+      "name": "Restorative Justice (RJ) Grant",
+      "description": "Funds nonprofit organizations to provide restorative justice programming in CDCR institutions.",
+      "whoCanApply": "Nonprofit organizations identified in an assembly bill"
     }
   ]
 }
