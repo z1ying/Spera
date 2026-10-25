@@ -72,7 +72,7 @@ export default function UploadSheet() {
           read(e.dataTransfer.files[0]);
         }}
         className={`flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 text-center transition-colors ${
-          over ? "border-brand-700 bg-brand-50" : "border-slate-300 bg-white hover:border-brand-300"
+          over ? "border-brand-700 bg-brand-50" : "border-slate-300 hover:border-brand-300"
         }`}
       >
         <svg viewBox="0 0 24 24" className="h-10 w-10 text-brand-700" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
@@ -94,7 +94,7 @@ export default function UploadSheet() {
       {error && <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-900">{error}</p>}
 
       {sheet && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="rounded-2xl border border-slate-200 p-5">
           {sheet.missingColumns.length > 0 && (
             <p className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">Missing columns: {sheet.missingColumns.join(", ")}</p>
           )}

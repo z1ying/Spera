@@ -18,7 +18,7 @@ export default function GrantTabs() {
           key={t.href}
           href={t.href}
           aria-current={path === t.href ? "page" : undefined}
-          className={`rounded-full px-4 py-1.5 ${path === t.href ? "bg-white font-medium text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"}`}
+          className={`rounded-full px-4 py-1.5 ${path === t.href ? "bg-sun-200 font-medium text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"}`}
         >
           {t.label}
         </Link>

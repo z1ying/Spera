@@ -62,7 +62,7 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
       key={href}
       href={href}
       aria-current={active(href) ? "page" : undefined}
-      className={active(href) ? "text-brand-900 underline decoration-sun-400 decoration-2 underline-offset-8" : "text-slate-600 hover:text-slate-900"}
+      className={`rounded-lg px-3 py-1.5 ${active(href) ? "bg-sun-200 font-medium text-slate-900" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"}`}
     >
       {label}
     </Link>
@@ -85,7 +85,7 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
             <span className="hidden text-sm text-slate-500 md:inline">From attendance to evidence</span>
             {tpwArea && <span className="rounded bg-brand-100 px-2 py-0.5 text-xs font-semibold text-brand-900">TPW</span>}
           </Link>
-          <span className="ml-auto flex flex-wrap items-center gap-x-8 gap-y-2 text-[0.95rem]">
+          <span className="ml-auto flex flex-wrap items-center gap-x-2 gap-y-2 text-[0.95rem]">
             {tpwArea ? (
               <>
                 {tpwSignedIn && link("/tpw", "Dashboard")}

@@ -12,14 +12,20 @@ export default function Home() {
         current={
           <>
             <section className="px-6 pb-6 pt-14 text-center">
-              <p className="mx-auto max-w-5xl font-serif text-4xl italic leading-snug text-slate-900 sm:text-[3.4rem] sm:leading-[1.4]">
+              <p className="mx-auto max-w-4xl font-serif text-3xl italic leading-snug text-slate-900 sm:text-[2.5rem] sm:leading-[1.35]">
                 Every hour of programming you log becomes evidence that rehabilitation works.
               </p>
+              <figure className="mx-auto mt-8 max-w-2xl">
+                <blockquote className="font-serif text-lg italic text-slate-700">
+                  &ldquo;I began to experience hope, and rediscover something to live for.&rdquo;
+                </blockquote>
+                <figcaption className="mt-1 text-sm text-slate-500">— Participant in a TPW member program</figcaption>
+              </figure>
             </section>
 
             <section className="mx-auto max-w-6xl px-6 pb-16 pt-10">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">For program staff</p>
-              <h1 className="mt-3 text-4xl font-semibold leading-tight text-slate-900 sm:text-5xl">Log your program in under a minute</h1>
+              <h1 className="mt-3 text-3xl font-semibold leading-tight text-slate-900 sm:text-4xl">Log your program in under a minute</h1>
               <p className="mt-3 text-base text-slate-600">
                 Tap the answers that fit. Estimates are fine. If you already keep a spreadsheet, upload it instead.
               </p>

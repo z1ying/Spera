@@ -188,8 +188,8 @@ export default function PastRecords() {
 
   return (
     <section className="mx-auto max-w-6xl px-6 pb-16 pt-10">
-      <h1 className="font-serif text-5xl font-semibold tracking-tight text-slate-900">Add past records</h1>
-      <p className="mt-3 text-lg text-slate-600">Only estimates by year. Never upload names and case numbers.</p>
+      <h1 className="font-serif text-4xl font-semibold tracking-tight text-slate-900">Add past records</h1>
+      <p className="mt-3 text-base text-slate-600">Only estimates by year. Never upload names and case numbers.</p>
       <RisingSun horizon={false} />
 
       <p className="mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Organization</p>
@@ -212,8 +212,8 @@ export default function PastRecords() {
 
             {step === 0 && (
               <>
-                <h2 className="mt-4 font-serif text-4xl">Which years would you like to add?</h2>
-                <p className="mt-3 text-lg text-slate-600">Select one or more years. Answer from what you know; &ldquo;Not sure&rdquo; is always an option.</p>
+                <h2 className="mt-4 font-serif text-3xl">Which years would you like to add?</h2>
+                <p className="mt-3 text-base text-slate-600">Select one or more years. Answer from what you know; &ldquo;Not sure&rdquo; is always an option.</p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   {YEAR_CHOICES.map((y) => (
                     <YearTile key={y} selected={years.includes(y)} onFile={onFile.has(y)} onClick={() => toggleYear(y)}>
@@ -243,8 +243,8 @@ export default function PastRecords() {
 
             {year !== null && (
               <>
-                <h2 className="mt-4 font-serif text-4xl">What did you run in {year}?</h2>
-                <p className="mt-3 text-lg text-slate-600">One line per program and prison. Rough numbers are fine; leave a box empty if you&apos;re not sure.</p>
+                <h2 className="mt-4 font-serif text-3xl">What did you run in {year}?</h2>
+                <p className="mt-3 text-base text-slate-600">One line per program and prison. Rough numbers are fine; leave a box empty if you&apos;re not sure.</p>
                 <datalist id="past-programs">
                   {orgPrograms.map((p) => (
                     <option key={p} value={p} />
@@ -252,7 +252,7 @@ export default function PastRecords() {
                 </datalist>
                 <div className="mt-8 space-y-5">
                   {list.map((e, i) => (
-                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-6">
+                    <div key={i} className="rounded-2xl border border-slate-200 p-6">
                       <div className="grid gap-5 sm:grid-cols-2">
                         <div>
                           <p className="text-sm text-slate-700">Program</p>
@@ -325,12 +325,12 @@ export default function PastRecords() {
 
             {step === chosen.length + 1 && step > 0 && (
               <>
-                <h2 className="mt-4 font-serif text-4xl">Check and save</h2>
+                <h2 className="mt-4 font-serif text-3xl">Check and save</h2>
                 {filled.length === 0 ? (
-                  <p className="mt-3 text-lg text-slate-600">You skipped every year, so there is nothing to save. Go back to add one, or come back when you find old records.</p>
+                  <p className="mt-3 text-base text-slate-600">You skipped every year, so there is nothing to save. Go back to add one, or come back when you find old records.</p>
                 ) : (
                   <>
-                    <p className="mt-3 text-lg text-slate-600">These are saved as estimates for each year, so everyone can tell them apart from exact records.</p>
+                    <p className="mt-3 text-base text-slate-600">These are saved as estimates for each year, so everyone can tell them apart from exact records.</p>
                     <div className="mt-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
                       <table className="w-full min-w-[36rem] text-left">
                         <thead className="text-xs uppercase tracking-wide text-slate-500">

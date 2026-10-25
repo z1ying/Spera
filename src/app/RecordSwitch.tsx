@@ -16,7 +16,7 @@ export default function RecordSwitch({ current }: { current: React.ReactNode }) 
       role="tab"
       aria-selected={mode === id}
       onClick={() => setMode(id)}
-      className={`rounded-xl px-6 py-2.5 text-lg ${mode === id ? "bg-sun-200 font-medium text-slate-900 shadow-sm" : "text-slate-800 hover:text-slate-950"}`}
+      className={`rounded-xl px-5 py-2 text-base ${mode === id ? "bg-sun-200 font-medium text-slate-900 shadow-sm" : "text-slate-800 hover:text-slate-950"}`}
     >
       {label}
     </button>

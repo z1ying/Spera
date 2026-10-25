@@ -9,7 +9,7 @@ export default function MyReport() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-10 print:max-w-none print:p-0">
       <div className="print:hidden">
-        <h1 className="text-4xl font-semibold">My report</h1>
+        <h1 className="text-3xl font-semibold">My report</h1>
         <p className="mt-1 text-slate-600">One page on what your organization delivered — ready for grants and your board.</p>
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
           <div className="w-full max-w-md flex-1">
