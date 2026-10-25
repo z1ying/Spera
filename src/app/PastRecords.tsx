@@ -99,7 +99,6 @@ export default function PastRecords() {
 
   const onFile = new Set(summary?.byYear.map((y) => y.year) ?? []);
   const chosen = [...years].sort();
-  const totalSteps = chosen.length + 2;
   const year = step >= 1 && step <= chosen.length ? chosen[step - 1] : null;
   const list = year === null ? [] : (entries[year] ?? [NEW_ENTRY]);
   const orgPrograms = useMemo(() => {
@@ -111,6 +110,17 @@ export default function PastRecords() {
   const setEntry = (i: number, patch: Partial<Entry>) =>
     setEntries((all) => ({ ...all, [year!]: list.map((e, j) => (j === i ? { ...e, ...patch } : e)) }));
   const ready = (e: Entry) => !!e.program.trim() && !!e.facility && (e.participants === null || e.completed === null || e.completed <= e.participants);
+  // Progress grows with each answer: the years, then per entry its program,
+  // prison and three numbers. Full only on the last (check and save) step.
+  const questions = 1 + chosen.reduce((n, y) => n + 5 * (entries[y] ?? [NEW_ENTRY]).length, 0);
+  const answered =
+    (chosen.length > 0 ? 1 : 0) +
+    chosen.reduce(
+      (n, y) =>
+        n + (entries[y] ?? []).reduce((m, e) => m + [e.program, e.facility, e.participants, e.completed, e.hours].filter((v) => v !== "" && v !== null).length, 0),
+      0,
+    );
+  const progress = step > 0 && step === chosen.length + 1 ? 1 : Math.max(0.02, Math.min(0.95, answered / questions));
   const filled = chosen.flatMap((y) => (entries[y] ?? []).filter(ready).map((e) => ({ year: y, ...e })));
 
   function toggleYear(y: number) {
@@ -172,7 +182,7 @@ export default function PastRecords() {
     <section className="mx-auto max-w-6xl px-6 pb-16 pt-10">
       <h1 className="font-serif text-5xl font-semibold tracking-tight text-slate-900">Add past records</h1>
       <p className="mt-3 text-lg text-slate-600">Only estimates by year. Never upload names and case numbers.</p>
-      <RisingSun />
+      <RisingSun horizon={false} />
 
       <p className="mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Organization</p>
       <div className="mt-3 max-w-md">
@@ -183,7 +193,7 @@ export default function PastRecords() {
         <>
           <p className="mt-8 text-slate-500">About 5 minutes</p>
           <div className="mt-3 h-1.5 rounded-full bg-slate-200">
-            <div className="h-full rounded-full bg-brand-800 transition-all" style={{ width: `${((step + 1) / totalSteps) * 100}%` }} />
+            <div className="h-full rounded-full bg-brand-800 transition-all" style={{ width: `${progress * 100}%` }} />
           </div>
 
           <section className="mt-12">
