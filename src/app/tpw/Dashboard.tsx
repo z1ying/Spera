@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { filterRuns, NO_FILTERS, SAVINGS_INPUTS, savingsEstimate, timeliness, yearTrend, type Filters } from "@/lib/dashboard";
 import { groupTotals, missingFields, participantHours, programYear, right4Signals, totals, type Run, type Totals } from "@/lib/runs";
+import AiSummary from "./AiSummary";
 import MultiSelect from "./MultiSelect";
 
 /** A run as it crosses from the server: dates as ISO strings. */
@@ -29,8 +30,8 @@ const Cite = ({ n, href }: { n: number; href: string }) => (
 
 function Icon({ d }: { d: React.ReactNode }) {
   return (
-    <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-800">
-      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-800">
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         {d}
       </svg>
     </span>
@@ -66,13 +67,13 @@ const ICONS = {
 
 function Kpi({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-7">
-      <div className="flex items-center gap-5">
-        <Icon d={icon} />
-        <span className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">{label}</span>
+    <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white px-5 py-4">
+      <Icon d={icon} />
+      <div className="min-w-0">
+        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{label}</div>
+        <div className="font-serif text-2xl tabular-nums text-slate-900">{value}</div>
+        {sub && <div className="truncate text-xs text-brand-800">{sub}</div>}
       </div>
-      <div className="mt-6 font-serif text-5xl tabular-nums text-slate-900">{value}</div>
-      <div className="mt-2 h-6 text-lg text-brand-800">{sub}</div>
     </div>
   );
 }
@@ -81,13 +82,13 @@ function FunnelBar({ label, value, of }: { label: string; value: number; of: num
   const share = of ? value / of : 0;
   return (
     <div>
-      <div className="flex justify-between text-lg">
+      <div className="flex justify-between text-sm">
         <span>{label}</span>
         <span className="font-medium tabular-nums">
           {fmt(value)} · {pct(share)}
         </span>
       </div>
-      <div className="mt-2 h-4 rounded-full bg-slate-100">
+      <div className="mt-1.5 h-3 rounded-full bg-slate-100">
         <div className="h-full rounded-full bg-brand-800" style={{ width: `${share * 100}%` }} />
       </div>
     </div>
@@ -127,7 +128,7 @@ const RIGHT_ALIGNED = 6;
 function Table({ title, first, rows, extraHead }: { title: string; first: string; rows: React.ReactNode; extraHead?: string[] }) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-6">
-      <h3 className="text-lg font-semibold">{title}</h3>
+      <h3 className="text-base font-semibold">{title}</h3>
       <div className="mt-3 overflow-x-auto">
         <table className="w-full min-w-[40rem] text-sm">
           <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
@@ -149,13 +150,13 @@ function Table({ title, first, rows, extraHead }: { title: string; first: string
 
 function Timely({ title, sub, rows, max }: { title: string; sub: string; rows: { org: string; days: number }[]; max: number }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-8">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">{title}</p>
-      <p className="mt-2 text-lg text-slate-600">{sub}</p>
-      <ul className="mt-8 space-y-6">
+    <div className="rounded-xl border border-slate-200 bg-white p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">{title}</p>
+      <p className="mt-1 text-sm text-slate-600">{sub}</p>
+      <ul className="mt-4 space-y-4">
         {rows.map((r) => (
           <li key={r.org}>
-            <div className="flex justify-between text-lg">
+            <div className="flex justify-between text-sm">
               <span>{r.org}</span>
               <span className="font-semibold tabular-nums">{fmt(r.days)} days</span>
             </div>
@@ -215,53 +216,55 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
   const chart = trend.map((y) => ({ ...y, label: y.openRuns ? `${y.year}*` : String(y.year) }));
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-12 print:max-w-none print:p-0">
+    <main className="mx-auto max-w-7xl px-6 py-8 print:max-w-none print:p-0">
       <div className="flex flex-wrap items-start justify-between gap-6">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-600">For TPW management</p>
-          <h1 className="mt-3 font-serif text-5xl font-semibold tracking-tight text-slate-900">Network dashboard</h1>
-          <p className="mt-4 text-xl text-slate-600">Process data reported by member organizations.</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">For TPW management</p>
+          <h1 className="mt-2 font-serif text-3xl font-semibold tracking-tight text-slate-900">Network dashboard</h1>
+          <p className="mt-1 text-slate-600">Process data reported by member organizations.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 print:hidden">
-          <a href="/api/tpw/export" className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-slate-700 hover:bg-slate-50">
+          <a href="/api/tpw/export" className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
             Download runs (CSV)
           </a>
-          <button type="button" onClick={() => window.print()} className="rounded-xl bg-brand-800 px-6 py-3 text-lg font-medium text-white hover:bg-brand-900">
+          <button type="button" onClick={() => window.print()} className="rounded-lg bg-brand-800 px-4 py-2 text-sm font-medium text-white hover:bg-brand-900">
             Generate report
           </button>
         </div>
       </div>
 
-      <section aria-label="Filters" className="mt-12 print:hidden">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <section aria-label="Filters" className="mt-6 print:hidden">
+        <div className="grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]">
           <MultiSelect label="Facility" options={options.facilities} value={f.facilities} onChange={(v) => setF({ ...f, facilities: v })} />
           <MultiSelect label="Organization" options={options.orgs} value={f.orgs} onChange={(v) => setF({ ...f, orgs: v })} />
           <MultiSelect label="Program" options={options.programs} value={f.programs} onChange={(v) => setF({ ...f, programs: v })} />
           <MultiSelect label="Year" options={options.years} value={f.years} onChange={(v) => setF({ ...f, years: v })} />
+          <button
+            type="button"
+            onClick={() => setF(NO_FILTERS)}
+            disabled={!filtered}
+            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100 disabled:text-slate-400 disabled:hover:bg-transparent"
+          >
+            Reset
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => setF(NO_FILTERS)}
-          disabled={!filtered}
-          className="mt-4 rounded-lg px-4 py-2 font-medium text-slate-800 hover:bg-slate-100 disabled:text-slate-400 disabled:hover:bg-transparent"
-        >
-          Reset
-        </button>
       </section>
 
-      <section aria-label="Core numbers" className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <section aria-label="Core numbers" className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi icon={ICONS.people} label="Participants" value={fmt(t.participants)} sub={`${t.inProgressRuns + t.plannedRuns} runs still open`} />
         <Kpi icon={ICONS.cap} label="Completed" value={fmt(t.completed)} sub={t.completionRate === null ? undefined : `${pct(t.completionRate)} of finished runs`} />
         <Kpi icon={ICONS.building} label="Organizations" value={fmt(orgs.length)} sub={`${t.runs} program cohorts`} />
         <Kpi icon={ICONS.clock} label="Participant hours" value={fmt(t.participantHours)} sub="completed × programming hours" />
       </section>
 
-      <section className="mt-16">
-        <h2 className="font-serif text-4xl text-slate-900">{trend.length > 1 ? "Participation over time" : "Participation funnel"}</h2>
+      <AiSummary filters={f} />
+
+      <section className="mt-10">
+        <h2 className="font-serif text-2xl text-slate-900">{trend.length > 1 ? "Participation over time" : "Participation funnel"}</h2>
         {trend.length > 1 ? (
           <>
-            <p className="mt-3 text-lg text-slate-600">Enrolled and completed by program year (year a cohort started).</p>
-            <div className="mt-6 flex gap-6 text-sm">
+            <p className="mt-1 text-sm text-slate-600">Enrolled and completed by program year (year a cohort started).</p>
+            <div className="mt-3 flex gap-6 text-xs">
               <span className="flex items-center gap-2">
                 <span className="h-1 w-6 rounded" style={{ background: BRAND }} /> Enrolled
               </span>
@@ -269,7 +272,7 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
                 <span className="h-1 w-6 rounded" style={{ background: SUN }} /> Completed
               </span>
             </div>
-            <div className="mt-3 h-80 rounded-2xl border border-slate-200 bg-white p-4 pt-6">
+            <div className="mt-2 h-64 rounded-xl border border-slate-200 bg-white p-4 pt-6">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chart} margin={{ top: 8, right: 24, bottom: 0, left: 0 }}>
                   <CartesianGrid stroke="#e2e8f0" vertical={false} />
@@ -292,7 +295,7 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
             )}
           </>
         ) : (
-          <div className="mt-8 space-y-8">
+          <div className="mt-4 space-y-5">
             <FunnelBar label="Enrolled" value={t.participants} of={t.participants} />
             <FunnelBar label="Completed" value={t.completed} of={t.participants} />
             {trend.length === 1 && <p className="text-sm text-slate-500">One program year selected — pick more years to see the trend.</p>}
@@ -300,20 +303,20 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
         )}
       </section>
 
-      <section className="mt-16 border-t border-slate-200 pt-12">
-        <h2 className="font-serif text-4xl text-slate-900">Estimated savings from avoided returns</h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          <div className="rounded-2xl bg-sun-200 p-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-800">Conservative (marginal cost)</p>
-            <p className="mt-4 font-serif text-5xl tabular-nums text-slate-900">{money(savings.conservative)}</p>
-            <p className="mt-3 text-lg text-slate-800">
+      <section className="mt-10 border-t border-slate-200 pt-8">
+        <h2 className="font-serif text-2xl text-slate-900">Estimated savings from avoided returns</h2>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl bg-sun-200 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-800">Conservative (marginal cost)</p>
+            <p className="mt-2 font-serif text-3xl tabular-nums text-slate-900">{money(savings.conservative)}</p>
+            <p className="mt-1 text-sm text-slate-800">
               at {money(SAVINGS_INPUTS.marginalCost)} per person-year <Cite n={3} href={SOURCES.lao} />
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">Long-run capacity (average cost)</p>
-            <p className="mt-4 font-serif text-5xl tabular-nums text-slate-900">{money(savings.capacity)}</p>
-            <p className="mt-3 text-lg text-slate-600">
+          <div className="rounded-xl border border-slate-200 bg-white p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Long-run capacity (average cost)</p>
+            <p className="mt-2 font-serif text-3xl tabular-nums text-slate-900">{money(savings.capacity)}</p>
+            <p className="mt-1 text-sm text-slate-600">
               at {money(SAVINGS_INPUTS.averageCost)} per person-year <Cite n={3} href={SOURCES.lao} />
             </p>
           </div>
@@ -326,17 +329,11 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
         </p>
       </section>
 
-      <section className="mt-16">
-        <h2 className="font-serif text-4xl text-slate-900">Reporting timeliness</h2>
-        <p className="mt-3 text-lg text-slate-600">How long organizations take to report data after a program ends. This measures timing, not program results.</p>
-        {timely.length === 0 ? (
-          <p className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-8 text-slate-600">
-            Nothing to show yet. Timing starts with programs organizations report on Spera after they end — the records imported from
-            TPW&apos;s spreadsheet and past-year estimates don&apos;t say when they were reported.
-          </p>
-        ) : (
-          <>
-            <div className="mt-8 grid gap-6 md:grid-cols-2">
+      {timely.length > 0 && (
+      <section className="mt-10">
+        <h2 className="font-serif text-2xl text-slate-900">Reporting timeliness</h2>
+        <p className="mt-1 text-sm text-slate-600">How long organizations take to report data after a program ends. This measures timing, not program results.</p>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
               {fastest.length > 0 && slowest.length > 0 ? (
                 <>
                   <Timely title="Most timely reports" sub="Shortest time between program end and report" rows={fastest} max={slowestDays} />
@@ -350,13 +347,12 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
               Timeliness is the median number of days between a program&apos;s end date and the date the organization submitted it on Spera.
               Imported records and past-year estimates are excluded.
             </p>
-          </>
-        )}
       </section>
+      )}
 
-      <section className="mt-16 border-t border-slate-200 pt-12">
-        <h2 className="font-serif text-4xl text-slate-900">Details</h2>
-        <div className="mt-8 grid gap-6">
+      <section className="mt-10 border-t border-slate-200 pt-8">
+        <h2 className="font-serif text-2xl text-slate-900">Details</h2>
+        <div className="mt-4 grid gap-4">
           <Table
             title="By organization"
             first="Organization"
@@ -388,7 +384,7 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
           />
 
           <section className="rounded-2xl border border-slate-200 bg-white p-6">
-            <h3 className="text-lg font-semibold">Each organization, by program year</h3>
+            <h3 className="text-base font-semibold">Each organization, by program year</h3>
             <p className="mt-1 text-sm text-slate-600">Program year = year of the start date.</p>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full min-w-[44rem] text-sm">
@@ -445,7 +441,7 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
           />
 
           <details className="rounded-2xl border border-slate-200 bg-white p-6">
-            <summary className="cursor-pointer text-lg font-semibold">All program runs ({runs.length})</summary>
+            <summary className="cursor-pointer text-base font-semibold">All program runs ({runs.length})</summary>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full min-w-[60rem] text-sm">
                 <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
@@ -494,7 +490,7 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
 
           {incomplete.length > 0 && (
             <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6">
-              <h3 className="text-lg font-semibold">Needs a follow-up ({incomplete.length})</h3>
+              <h3 className="text-base font-semibold">Needs a follow-up ({incomplete.length})</h3>
               <p className="mt-1 text-sm text-slate-700">Runs with missing numbers are counted only where the number is known — nothing is guessed.</p>
               <ul className="mt-3 space-y-1 text-sm">
                 {incomplete.map((r) => (

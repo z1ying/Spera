@@ -145,8 +145,9 @@ export async function askGemma(
   let res = await call(true);
   // A model that doesn't accept the thinking setting: ask again without it.
   if (res.status === 400) res = await call(false);
-  // The service is briefly busy (503) or rate-limited (429): one retry.
-  if (res.status === 503 || res.status === 429) {
+  // The service is briefly busy (503), rate-limited (429) or hit a passing
+  // server error (500): one retry.
+  if (res.status === 503 || res.status === 429 || res.status === 500) {
     await new Promise((r) => setTimeout(r, retryDelayMs));
     res = await call(true);
   }

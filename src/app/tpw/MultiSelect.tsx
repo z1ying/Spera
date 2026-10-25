@@ -42,19 +42,19 @@ export default function MultiSelect({
 
   return (
     <div ref={box} className="relative">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">{label}</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{label}</p>
       <button
         type="button"
         aria-label={`${label}: ${summary}`}
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen(!open)}
-        className={`mt-2 flex w-full items-center justify-between gap-2 rounded-xl border bg-white px-4 py-3 text-left text-lg shadow-sm ${
+        className={`mt-1 flex w-full items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2 text-left text-sm shadow-sm ${
           value.length ? "border-brand-800 text-brand-900" : "border-slate-300 text-slate-900"
         }`}
       >
         <span className="truncate">{summary}</span>
-        <svg viewBox="0 0 20 20" className="h-5 w-5 shrink-0 text-slate-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+        <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-slate-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
           <path d="M5 8l5 5 5-5" />
         </svg>
       </button>
