@@ -7,6 +7,24 @@ export const metadata = { title: "About & privacy — Spera" };
  * what the software does today, or says plainly where it doesn't yet.
  */
 
+/** A small smiling sun beside the participant's words about hope. */
+function SmilingSun() {
+  const rays = Array.from({ length: 16 }, (_, i) => (i * 360) / 16);
+  return (
+    <svg viewBox="0 0 64 64" className="h-16 w-16 shrink-0" aria-hidden>
+      {rays.map((deg, i) => (
+        <line key={deg} x1="32" y1={i % 2 ? 6 : 3} x2="32" y2="12" stroke="#f0c14b" strokeWidth="2.5" strokeLinecap="round" transform={`rotate(${deg} 32 32)`} />
+      ))}
+      <circle cx="32" cy="32" r="15" fill="#f6d04d" />
+      <circle cx="27" cy="29.5" r="1.4" fill="#26286f" />
+      <circle cx="37" cy="29.5" r="1.4" fill="#26286f" />
+      <circle cx="24" cy="34" r="2.2" fill="#f4a3a3" opacity="0.7" />
+      <circle cx="40" cy="34" r="2.2" fill="#f4a3a3" opacity="0.7" />
+      <path d="M28.5 35c1.8 2 5.2 2 7 0" fill="none" stroke="#26286f" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function AboutPrivacy() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-16">
@@ -18,11 +36,14 @@ export default function AboutPrivacy() {
           rehabilitation programs collect their program data easily, apply for grants, and show lawmakers what those programs
           deliver. It turns attendance records into evidence that funders and lawmakers can use.
         </p>
-        <figure className="border-l-4 border-sun-400 pl-5">
+        <figure className="flex items-center gap-5">
+          <SmilingSun />
+          <div>
           <blockquote className="font-serif text-xl italic text-slate-800">
             &ldquo;I began to experience hope, and rediscover something to live for.&rdquo;
           </blockquote>
           <figcaption className="mt-1 text-sm text-slate-500">— Participant in a TPW member program. That hope is where Spera&apos;s name comes from.</figcaption>
+          </div>
         </figure>
         <p>
           Spera was first designed for{" "}
