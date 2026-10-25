@@ -70,10 +70,12 @@ python3 -I scripts/convert_tpw_xlsx.py "TPW - Collective Impact Report.xlsx"
 
 ## References
 
-[1] Hack for Social Impact 2026. Event and Justice Reform track description. https://luma.com/59t8euck
-[2] Transformative Programming Works. Official website. https://www.thetpw.org/
-[3] California Department of Corrections and Rehabilitation. *Request for Applications: Rehabilitative Investment Grants for Healing and Transformation (RIGHT) Grant 4.0*, released 2026-10-01. https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2026/09/RIGHT-4.0-RFA.pdf
+[1] Hack for Social Impact 2026. Event and Justice Reform track description. https://luma.com/59t8euck 
+
+[2] Transformative Programming Works. Official website. https://www.thetpw.org/ 
+
+[3] California Department of Corrections and Rehabilitation. *Request for Applications: Rehabilitative Investment Grants for Healing and Transformation (RIGHT) Grant 4.0*, released 2026-10-01. https://www.cdcr.ca.gov/rehabilitation/wp-content/uploads/sites/173/2026/09/RIGHT-4.0-RFA.pdf 
 
 ## License
 
-MIT.
+MIT
