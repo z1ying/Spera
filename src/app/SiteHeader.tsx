@@ -56,7 +56,7 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
     if (tpwArea || !tpwSignedIn) return;
     fetch("/api/tpw/logout", { method: "POST", headers: { "x-spera-silent": "1" } }).finally(() => router.refresh());
   }, [tpwArea, tpwSignedIn, router]);
-  const active = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+  const active = (href: string) => (href === "/" || href === "/tpw" ? path === href : path.startsWith(href));
   const link = (href: string, label: string) => (
     <Link
       key={href}
@@ -89,6 +89,7 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
             {tpwArea ? (
               <>
                 {tpwSignedIn && link("/tpw", "Dashboard")}
+                {tpwSignedIn && link("/tpw/data", "Data explorer")}
                 <Link href="/" className="text-slate-600 hover:text-slate-900">
                   Organization view
                 </Link>

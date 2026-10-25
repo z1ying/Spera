@@ -43,7 +43,7 @@ export default function AiSummary({ filters }: { filters: Filters }) {
   const stale = summary && forKey !== key;
 
   return (
-    <section aria-label="AI summary" className="mt-6 rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-sun-100 p-6">
+    <section aria-label="AI summary" className="mt-8 rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-sun-100 p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-800 text-white">
