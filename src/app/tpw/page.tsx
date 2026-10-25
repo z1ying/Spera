@@ -1,4 +1,3 @@
-import { prisma } from "@/lib/db";
 import { loadRuns } from "@/lib/loadRuns";
 import { isTpwSignedIn } from "@/lib/tpwAuth";
 import Dashboard from "./Dashboard";
@@ -12,6 +11,5 @@ export const metadata = { title: "TPW dashboard — Spera" };
 // check; filtering and charts run in the browser (Dashboard).
 export default async function TpwDashboard() {
   if (!(await isTpwSignedIn())) return <LoginForm />;
-  const [runs, facilities] = await Promise.all([loadRuns(), prisma.facility.findMany({ orderBy: { code: "asc" } })]);
-  return <Dashboard wire={toWire(runs)} facilities={facilities} />;
+  return <Dashboard wire={toWire(await loadRuns())} />;
 }

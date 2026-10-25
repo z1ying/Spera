@@ -8,13 +8,6 @@ import MultiSelect from "./MultiSelect";
 /** A run as it crosses from the server: dates as ISO strings. */
 export type WireRun = Omit<Run, "startDate" | "endDate" | "submittedAt"> & { startDate: string | null; endDate: string | null; submittedAt: string | null };
 
-export interface FacilityInfo {
-  code: string;
-  name: string;
-  underserved: boolean;
-  womens: boolean;
-}
-
 const date = (s: string | null) => (s ? new Date(s) : null);
 
 /** All runs (dates restored), the filters, and the runs that pass them — shared by the dashboard and the data explorer. */

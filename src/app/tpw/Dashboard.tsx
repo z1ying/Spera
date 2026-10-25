@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { SAVINGS_INPUTS, savingsEstimate, timeliness, yearTrend } from "@/lib/dashboard";
 import { groupTotals, totals } from "@/lib/runs";
 import AiSummary from "./AiSummary";
-import FilterBar, { useFilteredRuns, type FacilityInfo, type WireRun } from "./FilterBar";
+import FilterBar, { useFilteredRuns, type WireRun } from "./FilterBar";
 
 const BRAND = "#2f3190";
 const SUN = "#e3a92a";
@@ -115,7 +115,7 @@ function Timely({ title, sub, rows, max }: { title: string; sub: string; rows: {
 // TPW dashboard — design doc §28. Real data only: TPW's program-run reports
 // plus what organizations submit on Spera. TPW staff only. The full tables
 // live in the data explorer (/tpw/data).
-export default function Dashboard({ wire, facilities }: { wire: WireRun[]; facilities: FacilityInfo[] }) {
+export default function Dashboard({ wire }: { wire: WireRun[] }) {
   const { all, runs, filters: f, setFilters } = useFilteredRuns(wire);
 
   const t = totals(runs);
@@ -129,14 +129,20 @@ export default function Dashboard({ wire, facilities }: { wire: WireRun[]; facil
   const orgCount = new Set(runs.map((r) => r.orgName)).size;
   const chart = trend.map((y) => ({ ...y, label: y.openRuns ? `${y.year}*` : String(y.year) }));
 
-  // Where programming happens: participants per prison, RIGHT 4.0 underserved prisons picked out.
-  const fac = new Map(facilities.map((x) => [x.code, x]));
-  const prisons = groupTotals(runs, (r) => r.facilityCode)
-    .map((p) => ({ code: p.key, participants: p.totals.participants, underserved: !!fac.get(p.key)?.underserved, name: fac.get(p.key)?.name ?? p.key }))
+  // Each program: completion in finished runs and programming hours per person who completed.
+  const programs = groupTotals(runs, (r) => `${r.programName}\u0000${r.orgName}`)
+    .map((p) => {
+      const [name, org] = p.key.split("\u0000");
+      return {
+        name,
+        org,
+        participants: p.totals.participants,
+        rate: p.totals.completionRate,
+        hours: p.totals.completed ? p.totals.participantHours / p.totals.completed : null,
+      };
+    })
     .sort((a, b) => b.participants - a.participants);
-  const underservedAll = facilities.filter((x) => x.underserved);
-  const underservedReached = underservedAll.filter((x) => prisons.some((p) => p.code === x.code));
-  const shownPrisons = prisons.slice(0, 10);
+  const maxHours = Math.max(0, ...programs.map((p) => p.hours ?? 0));
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-8 print:max-w-none print:p-0">
@@ -235,42 +241,41 @@ export default function Dashboard({ wire, facilities }: { wire: WireRun[]; facil
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-serif text-xl text-slate-900">Where programming happens</h2>
-          <div className="mt-1 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-600">
-            <span>
-              {prisons.length} of {facilities.length} prisons reached · {underservedReached.length} of {underservedAll.length} RIGHT 4.0 underserved
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-sm" style={{ background: SUN }} /> Underserved
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-sm" style={{ background: BRAND }} /> Other
-            </span>
+          <h2 className="font-serif text-xl text-slate-900">Programs: completion and dose</h2>
+          <p className="mt-1 text-xs text-slate-600">
+            Completion in finished runs · programming hours per person who completed · network completion {pct(t.completionRate)}
+          </p>
+          <div className="mt-4 grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <span>Program</span>
+            <span>Completion</span>
+            <span>Hours per completer</span>
           </div>
-          <div className="mt-3" style={{ height: Math.max(160, shownPrisons.length * 24 + 20) }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={shownPrisons} layout="vertical" margin={{ top: 0, right: 40, bottom: 0, left: 0 }} barCategoryGap={4}>
-                <XAxis type="number" hide />
-                <YAxis type="category" dataKey="code" tickLine={false} axisLine={false} tick={{ fill: "#334155", fontSize: 12 }} width={52} />
-                <Tooltip formatter={(v) => [fmt(Number(v)), "Participants"]} labelFormatter={(_, p) => (p?.[0]?.payload as { name?: string } | undefined)?.name ?? ""} />
-                <Bar dataKey="participants" radius={[0, 4, 4, 0]} maxBarSize={16} label={{ position: "right", fill: "#475569", fontSize: 11, formatter: (v: unknown) => fmt(Number(v)) }}>
-                  {shownPrisons.map((p) => (
-                    <Cell key={p.code} fill={p.underserved ? SUN : BRAND} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          {underservedAll.length > underservedReached.length && (
-            <p className="mt-2 text-xs text-slate-600">
-              No programs yet at underserved{" "}
-              {underservedAll
-                .filter((x) => !underservedReached.includes(x))
-                .map((x) => x.code)
-                .join(", ")}
-              {prisons.length > shownPrisons.length && ` · top ${shownPrisons.length} prisons shown`}
-            </p>
-          )}
+          <ul className="mt-2 space-y-3">
+            {programs.map((p) => (
+              <li key={`${p.name}|${p.org}`} className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)] items-center gap-x-4 text-sm">
+                <span className="min-w-0">
+                  <span className="block truncate font-medium text-slate-900">{p.name}</span>
+                  <span className="block truncate text-xs text-slate-500">
+                    {p.org} · {fmt(p.participants)} participants{p.participants < 20 ? " · small group" : ""}
+                  </span>
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="h-2.5 flex-1 rounded-full bg-slate-100">
+                    <span className="block h-full rounded-full" style={{ width: `${(p.rate ?? 0) * 100}%`, background: BRAND }} />
+                  </span>
+                  <span className="w-12 text-right tabular-nums">{pct(p.rate)}</span>
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="h-2.5 flex-1 rounded-full bg-slate-100">
+                    <span className="block h-full rounded-full" style={{ width: `${maxHours && p.hours ? (p.hours / maxHours) * 100 : 0}%`, background: SUN }} />
+                  </span>
+                  <span className="w-12 text-right tabular-nums">{p.hours === null ? "—" : fmt(p.hours)}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          {programs.length === 0 && <p className="mt-4 text-sm text-slate-500">No programs in this view.</p>}
+          <p className="mt-4 text-xs text-slate-500">Groups under 20 participants are too small to compare.</p>
         </section>
       </div>
 
@@ -300,8 +305,7 @@ export default function Dashboard({ wire, facilities }: { wire: WireRun[]; facil
       <footer className="mt-12 space-y-2 text-xs leading-relaxed text-slate-500">
         <p>
           Definitions follow TPW&apos;s Collective Impact Report: participant programming hours = participants completed × total
-          programming hours; program year = year of the start date. RIGHT 4.0 underserved institutions are from CDCR&apos;s RIGHT Grant 4.0
-          RFA, Attachment A.
+          programming hours; program year = year of the start date. Hours per completer = total participant programming hours ÷ participants completed.
         </p>
         <p>
           [2] CDCR, &ldquo;CDCR Recidivism Report Finds Recidivism Rates Drop,&rdquo; Feb 13, 2024 — three-year conviction rate 45.6% with
