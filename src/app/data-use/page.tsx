@@ -9,39 +9,21 @@ export const metadata = { title: "About & privacy — Spera" };
 const PROMISES: { title: string; body: React.ReactNode }[] = [
   {
     title: "We count programs, not people.",
-    body: (
-      <>
-        We never ask for names, birth dates, CDCR numbers or case numbers — not even in scrambled or hashed form, and there is
-        no place in Spera to store them. We only ask for the shape of your program: hours, how many took part and finished,
-        and where and when. Every result describes a program, never a person — there are no individual risk scores.
-      </>
-    ),
+    body: <>No names, birth dates, CDCR or case numbers — ever. Only hours, how many took part and finished, where and when.</>,
   },
   {
-    title: "Anything shared outside the network is a total.",
-    body: (
-      <>
-        TPW staff sign in to see the whole network, and anything TPW shares publicly adds up all organizations together. One
-        honest note while Spera is a pilot: organization reports are open, so any visitor can view any organization&apos;s
-        one-page report. Our next step is a private link for each organization, so only you and TPW see your numbers.
-      </>
-    ),
+    title: "Outside TPW, only totals.",
+    body: <>TPW shares network totals only. In this pilot anyone can still open an organization&apos;s report; private links come next.</>,
   },
   {
     title: "We only report what you told us.",
-    body: (
-      <>
-        If a number is missing, it stays missing and is flagged for a follow-up — we never estimate it. The grant writing
-        assistant sees only your program totals and the grant&apos;s rules; its drafts are a starting point that your team
-        reviews, and CDCR asks you to disclose AI-assisted text.
-      </>
-    ),
+    body: <>Missing numbers stay missing, never guessed. The grant assistant sees only your totals — review its drafts and disclose AI use to CDCR.</>,
   },
   {
     title: "You stay in control.",
     body: (
       <>
-        If something you reported is wrong, or you&apos;d like it removed, TPW will correct or delete it. Just reach out at{" "}
+        To fix or remove anything, email{" "}
         <a href="mailto:info@thetpw.org" className="text-brand-800 underline">
           info@thetpw.org
         </a>
