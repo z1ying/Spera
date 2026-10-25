@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { fmt } from "@/lib/orgSummary";
 import { participantHours } from "@/lib/runs";
 import { readSheet, type Facility, type SheetResult } from "@/lib/sheetImport";
-import { writeLast } from "./useOrg";
 
 /**
  * "Upload a spreadsheet" (design doc §28): drop the CSV you already keep —
@@ -51,8 +50,6 @@ export default function UploadSheet() {
       const out = await res.json();
       if (!res.ok) throw new Error(out.error ?? "Import failed.");
       setDone(out);
-      // Remember whose data this browser just sent, so "My report" shows it.
-      if (out.created > 0 && good[0]) writeLast(good[0].input.orgName);
       setSheet(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Import failed.");
