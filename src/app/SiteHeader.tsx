@@ -35,7 +35,7 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-4 text-sm">
         <Link href={tpwArea ? "/tpw" : "/"} className="flex items-baseline gap-3">
           <span className="text-2xl font-bold tracking-tight text-emerald-900">Spera</span>
-          <span className="hidden text-sm text-slate-500 sm:inline">{tpwArea ? "TPW staff" : "From attendance to evidence"}</span>
+          <span className="hidden text-sm text-slate-500 sm:inline">{tpwArea ? "TPW" : "From attendance to evidence"}</span>
         </Link>
         {tpwArea ? (
           <>
@@ -58,7 +58,7 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
               href="/tpw"
               className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:border-slate-400 hover:text-slate-800"
             >
-              {tpwSignedIn ? "TPW dashboard" : "TPW staff sign in"}
+              TPW
             </Link>
           </span>
         )}

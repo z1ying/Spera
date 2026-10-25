@@ -22,7 +22,7 @@ export default function LoginForm() {
         else setError((await res.json()).error ?? "Sign-in failed.");
       }}
     >
-      <h1 className="text-xl font-semibold">TPW staff sign in</h1>
+      <h1 className="text-xl font-semibold">TPW sign in</h1>
       <p className="mt-1 text-sm text-slate-600">The dashboard shows every organization&apos;s numbers, so it is for TPW staff only.</p>
       <label className="mt-5 block text-sm">
         <span className="font-medium">Passcode</span>
