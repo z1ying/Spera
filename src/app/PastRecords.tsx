@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { RunInput } from "@/lib/runs";
-import { OrgPicker, useOrgSummary } from "../../useOrg";
-import SearchPick from "../../SearchPick";
+import { OrgPicker, useOrgSummary } from "./useOrg";
+import RisingSun from "./RisingSun";
+import SearchPick from "./SearchPick";
 
 /**
- * "Add past records" (design doc §28): years with no data yet, filled in as
+ * "Past records (retroactive)" on Submit data (design doc §28): years with no data yet, filled in as
  * estimates — one simple screen per year, then a check before saving. Each
  * entry becomes a completed program run for that year, marked as an estimate.
  */
@@ -64,7 +65,7 @@ function Estimate({ label, value, onChange }: { label: string; value: number | n
   );
 }
 
-export default function AddPastRecords() {
+export default function PastRecords() {
   const { orgs, org, setOrg, summary } = useOrgSummary();
   const [programs, setPrograms] = useState<Record<string, string[]>>({});
   const [facilities, setFacilities] = useState<Facility[]>([]);
@@ -168,14 +169,12 @@ export default function AddPastRecords() {
   );
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-10">
-      <Link href="/report" className="text-sm text-slate-600 hover:text-slate-900">
-        ← My report
-      </Link>
-      <h1 className="mt-3 font-serif text-5xl font-semibold tracking-tight">Add past records</h1>
+    <section className="mx-auto max-w-6xl px-6 pb-16 pt-10">
+      <h1 className="font-serif text-5xl font-semibold tracking-tight text-slate-900">Add past records</h1>
       <p className="mt-3 text-lg text-slate-600">Only estimates by year. Never upload names and case numbers.</p>
+      <RisingSun />
 
-      <p className="mt-10 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Organization</p>
+      <p className="mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Organization</p>
       <div className="mt-3 max-w-md">
         <OrgPicker orgs={orgs} org={org} setOrg={setOrg} />
       </div>
@@ -371,6 +370,6 @@ export default function AddPastRecords() {
           </div>
         </div>
       )}
-    </main>
+    </section>
   );
 }
