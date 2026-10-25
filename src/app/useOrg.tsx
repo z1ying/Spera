@@ -14,7 +14,7 @@ function readLast(): string {
     return "";
   }
 }
-function writeLast(orgName: string) {
+export function writeLast(orgName: string) {
   try {
     const prev = JSON.parse(localStorage.getItem(LAST) ?? "{}");
     localStorage.setItem(LAST, JSON.stringify({ ...prev, orgName }));
@@ -29,13 +29,17 @@ export function useOrgSummary() {
   const [found, setFound] = useState(true);
   const [summary, setSummary] = useState<OrgSummary | null>(null);
   const [loading, setLoading] = useState(false);
+  /** True once we know which organization (if any) this browser submitted for. */
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const last = readLast();
-    if (last)
-      lookupOrg(last).then((m) => {
+    if (!last) return setReady(true);
+    lookupOrg(last)
+      .then((m) => {
         if (m.found) setOrgState(m.name);
-      });
+      })
+      .finally(() => setReady(true));
   }, []);
 
   useEffect(() => {
@@ -54,7 +58,7 @@ export function useOrgSummary() {
     setFound(m?.found ?? true);
     setOrgState(m?.name ?? "");
   };
-  return { org, found, setOrg, summary, loading };
+  return { org, found, setOrg, summary, loading, ready };
 }
 
 export function OrgPicker({ org, found, setOrg }: { org: string; found: boolean; setOrg: (m: OrgMatch | null) => void }) {
