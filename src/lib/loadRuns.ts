@@ -24,6 +24,8 @@ export function toRun(r: Row): Run {
     completed: r.completed,
     specialPopulations: r.specialPopulations,
     nonEnglishLanguage: r.nonEnglishLanguage,
+    source: r.source,
+    submittedAt: r.createdAt,
   };
 }
 

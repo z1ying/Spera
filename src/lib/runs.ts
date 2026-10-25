@@ -32,6 +32,10 @@ export interface Run {
   specialPopulations: boolean;
   /** Language other than English; null = English. */
   nonEnglishLanguage: string | null;
+  /** "form", "estimate" or "import:<file>#<row>". */
+  source?: string;
+  /** When the run was saved on Spera. */
+  submittedAt?: Date | null;
 }
 
 /** Completed × hours — TPW's "CALC: Total Participant Programming hours". */
