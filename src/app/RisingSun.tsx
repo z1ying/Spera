@@ -1,16 +1,46 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 /**
- * A soft yellow half-ring on a horizon line, fixed to the bottom of the
- * screen behind the content, so it stays in view while the page scrolls.
+ * A long, low yellow sun-dome on the horizon line under the privacy note. It
+ * drifts with the page as you scroll (a parallax: slower than the content),
+ * so it moves along instead of sitting still. Updated once per frame; stays
+ * put under prefers-reduced-motion.
  */
 export default function RisingSun() {
+  const sun = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const y = Math.min(window.scrollY * 0.35, 420);
+      if (sun.current) sun.current.style.transform = `translate3d(0, ${y}px, 0)`;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 print:hidden" aria-hidden>
-      <div className="relative mx-auto h-44 max-w-6xl">
-        <svg viewBox="0 0 400 200" className="absolute bottom-1 right-10 h-full w-[22rem]">
-          <path d="M28 200A172 172 0 0 1 372 200" fill="none" stroke="#f6d77e" strokeWidth="26" opacity="0.55" />
-        </svg>
-        <div className="absolute bottom-0 right-0 h-1.5 w-[34rem] max-w-full rounded-full bg-slate-200/80" />
-      </div>
+    <div className="relative h-12" aria-hidden>
+      <svg
+        ref={sun}
+        viewBox="0 0 640 110"
+        preserveAspectRatio="none"
+        className="pointer-events-none absolute bottom-1 left-[30%] -z-10 h-16 w-[40rem] max-w-[70%] will-change-transform"
+      >
+        <path d="M0 110C120 8 520 8 640 110Z" fill="#f6d77e" opacity="0.5" />
+      </svg>
+      <div className="absolute bottom-0 right-0 h-1.5 w-3/4 rounded-full bg-slate-200" />
     </div>
   );
 }
