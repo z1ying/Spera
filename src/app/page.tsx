@@ -52,11 +52,11 @@ export default function Home() {
 
       <section className="mx-auto max-w-4xl px-6 pb-40 pt-12">
         <blockquote className="border-l-4 border-sun-400 pl-6">
-          <p className="font-serif text-2xl italic leading-relaxed text-slate-900 sm:text-[1.7rem]">
-            &ldquo;I spent 38 years in prison. I know what works. Now I help others transform their lives.&rdquo;
+          <p className="font-serif text-xl italic leading-relaxed text-slate-900 sm:text-2xl">
+            &ldquo;The class gave me something to wake up for. I finished it, and I finished my GED the same year.&rdquo;
           </p>
           <footer className="mt-3 text-sm text-slate-600">
-            Kenneth Hartman, Executive Director, Transformative Programming Works — from TPW&apos;s 2026 one-pager.
+            A program participant, anonymized. Illustrative quote for demonstration; not from a real interview.
           </footer>
         </blockquote>
       </section>
