@@ -56,7 +56,7 @@ export default function Home() {
             &ldquo;The class gave me something to wake up for. I finished it, and I finished my GED the same year.&rdquo;
           </p>
           <footer className="mt-3 text-sm text-slate-600">
-            A program participant (illustrative)
+            — A program participant (illustrative)
           </footer>
         </blockquote>
       </section>
