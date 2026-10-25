@@ -5,10 +5,10 @@ import { useState } from "react";
 import type { Grant, GrantType } from "@/lib/grants";
 
 /** Simple line illustrations, one per grant type (CDCR's page has no images to reuse). */
-function Art({ id }: { id: string }) {
-  const common = { fill: "none", stroke: "white", strokeWidth: 3, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+function Art({ id, color }: { id: string; color: string }) {
+  const common = { fill: "none", stroke: color, strokeWidth: 5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
   return (
-    <svg viewBox="0 0 120 80" className="h-20 w-full" aria-hidden>
+    <svg viewBox="16 6 88 72" className="h-12 w-14 shrink-0" aria-hidden>
       {id === "right" && (
         // sunrise over a horizon: healing and transformation
         <g {...common}>
@@ -47,7 +47,7 @@ function Art({ id }: { id: string }) {
           {[0, 72, 144, 216, 288].map((a) => {
             const x = 60 + 30 * Math.cos(((a - 90) * Math.PI) / 180);
             const y = 42 + 30 * Math.sin(((a - 90) * Math.PI) / 180);
-            return <circle key={a} cx={x} cy={y} r="5" fill="white" stroke="none" />;
+            return <circle key={a} cx={x} cy={y} r="6" fill={color} stroke="none" />;
           })}
         </g>
       )}
@@ -55,13 +55,36 @@ function Art({ id }: { id: string }) {
   );
 }
 
-const COLORS: Record<string, string> = {
-  right: "from-emerald-700 to-emerald-900",
-  vi: "from-rose-500 to-rose-700",
-  ipg: "from-amber-500 to-amber-700",
-  care: "from-sky-600 to-sky-800",
-  rj: "from-violet-600 to-violet-800",
+/**
+ * Logo-style marks, one per program: an icon plus the program's acronym as a
+ * two-tone wordmark (our own design — not CDCR's official artwork).
+ */
+const MARKS: Record<string, { acronym: string; accent: string; ink: string; tagline: string }> = {
+  right: { acronym: "RIGHT", accent: "#047857", ink: "#64748b", tagline: "Healing & Transformation" },
+  vi: { acronym: "VI", accent: "#e11d48", ink: "#64748b", tagline: "Victim Impact" },
+  ipg: { acronym: "IPG", accent: "#f59e0b", ink: "#64748b", tagline: "Innovative Programming" },
+  care: { acronym: "CARE", accent: "#0284c7", ink: "#64748b", tagline: "Reentry & Enrichment" },
+  rj: { acronym: "RJ", accent: "#7c3aed", ink: "#64748b", tagline: "Restorative Justice" },
 };
+
+function Mark({ id }: { id: string }) {
+  const m = MARKS[id] ?? { acronym: id.toUpperCase(), accent: "#334155", ink: "#64748b", tagline: "" };
+  return (
+    <div className="flex h-28 flex-col justify-center bg-white px-4">
+      <div className="flex items-center gap-2">
+        <Art id={id} color={m.accent} />
+        <span className={`${m.acronym.length > 3 ? "text-3xl" : "text-4xl"} font-black leading-none tracking-tight`}>
+          <span style={{ color: m.accent }}>{m.acronym[0]}</span>
+          <span style={{ color: m.ink }}>{m.acronym.slice(1)}</span>
+        </span>
+      </div>
+      <div className="mt-2 h-1 w-full rounded-full" style={{ background: m.accent }} />
+      <div className="mt-1.5 text-[0.7rem] font-semibold uppercase tracking-wide" style={{ color: m.accent }}>
+        {m.tagline}
+      </div>
+    </div>
+  );
+}
 
 const ACTIONS = [
   { href: "/grants/check", icon: "✓", title: "Do we qualify?", text: "Eligibility and estimated points." },
@@ -82,7 +105,6 @@ export default function GrantExplorer({ items }: { items: TypeWithRounds[] }) {
   return (
     <>
       <h1 className="text-2xl font-semibold">CDCR grant programs</h1>
-      <p className="mt-1 text-sm text-slate-500">Tap a program to see it below. Hover to pause.</p>
 
       {/* Auto-scrolling strip: the cards are drawn twice and the track slides by half its width, so it loops seamlessly. */}
       <div className="marquee -mx-3 mt-2 overflow-hidden px-3 py-3" role="tablist" aria-label="Grant programs">
@@ -104,10 +126,8 @@ export default function GrantExplorer({ items }: { items: TypeWithRounds[] }) {
                     active ? "ring-4 ring-emerald-700 ring-offset-2" : "ring-1 ring-slate-200 hover:-translate-y-0.5 hover:shadow"
                   }`}
                 >
-                  <div className={`bg-gradient-to-br ${COLORS[type.id] ?? "from-slate-600 to-slate-800"} px-4 pt-4`}>
-                    <Art id={type.id} />
-                  </div>
-                  <div className="p-4">
+                  <Mark id={type.id} />
+                  <div className="border-t border-slate-100 p-4">
                     <div className="font-semibold">{type.short}</div>
                     <div className={`mt-1 text-xs font-medium ${isOpen ? "text-emerald-800" : "text-slate-500"}`}>
                       {isOpen ? "● Open now" : "Awarded · next round TBA"}
