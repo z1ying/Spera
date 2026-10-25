@@ -298,3 +298,11 @@ Decisions:
 - Still a pilot: someone who knows an organization's exact name can open its
   report. Privacy page says so; per-organization private links remain planned.
 - Privacy section merged from seven points into four.
+
+## 2026-10-25 — reverted exact-name entry and auto "My report"
+
+- User preferred the earlier behaviour: the organization picker lists all
+  organizations and any report can be opened (good for the demo). Reverted
+  9757db7 and the code of cf6da47. Kept: "My report" naming and the
+  four-point privacy section, with the visibility point reworded to say reports
+  are open during the pilot and private per-organization links are the next step.

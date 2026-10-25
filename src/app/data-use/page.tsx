@@ -18,13 +18,12 @@ const PROMISES: { title: string; body: React.ReactNode }[] = [
     ),
   },
   {
-    title: "Your numbers stay between you and TPW.",
+    title: "Anything shared outside the network is a total.",
     body: (
       <>
-        Spera never shows you a list of other organizations, and you only see your own organization&apos;s programs and report.
-        TPW staff sign in to see the whole network, and anything TPW shares publicly is a total across all organizations. While
-        Spera is a pilot, the page opens for whoever types your organization&apos;s exact name; before real deployment, each
-        organization will get its own private link.
+        TPW staff sign in to see the whole network, and anything TPW shares publicly adds up all organizations together. One
+        honest note while Spera is a pilot: organization reports are open, so any visitor can view any organization&apos;s
+        one-page report. Our next step is a private link for each organization, so only you and TPW see your numbers.
       </>
     ),
   },

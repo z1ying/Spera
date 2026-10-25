@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { OrgSummary } from "@/lib/orgSummary";
-import OrgEntry, { lookupOrg, type OrgMatch } from "./OrgEntry";
+import SearchPick from "./SearchPick";
 
 const LAST = "impactlink.last";
 
@@ -23,24 +23,28 @@ function writeLast(orgName: string) {
   }
 }
 
-/** This browser's organization + its summary, shared by the report and grants pages. */
+/** Remembered organization + its summary, shared by the report and grants pages. */
 export function useOrgSummary() {
-  const [org, setOrgState] = useState("");
-  const [found, setFound] = useState(true);
+  const [orgs, setOrgs] = useState<string[]>([]);
+  const [org, setOrg] = useState("");
   const [summary, setSummary] = useState<OrgSummary | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const last = readLast();
-    if (last)
-      lookupOrg(last).then((m) => {
-        if (m.found) setOrgState(m.name);
-      });
+    fetch("/api/form-options")
+      .then((r) => r.json())
+      .then((o: { orgs: { name: string }[] }) => {
+        const names = o.orgs.map((x) => x.name);
+        setOrgs(names);
+        const last = readLast();
+        if (names.includes(last)) setOrg(last);
+      })
+      .catch(() => setOrgs([]));
   }, []);
 
   useEffect(() => {
     setSummary(null);
-    if (!org || !found) return;
+    if (!org) return;
     writeLast(org);
     setLoading(true);
     fetch(`/api/org-summary?org=${encodeURIComponent(org)}`)
@@ -48,22 +52,21 @@ export function useOrgSummary() {
       .then(setSummary)
       .catch(() => setSummary(null))
       .finally(() => setLoading(false));
-  }, [org, found]);
+  }, [org]);
 
-  const setOrg = (m: OrgMatch | null) => {
-    setFound(m?.found ?? true);
-    setOrgState(m?.name ?? "");
-  };
-  return { org, found, setOrg, summary, loading };
+  return { orgs, org, setOrg, summary, loading };
 }
 
-export function OrgPicker({ org, found, setOrg }: { org: string; found: boolean; setOrg: (m: OrgMatch | null) => void }) {
+export function OrgPicker({ orgs, org, setOrg }: { orgs: string[]; org: string; setOrg: (o: string) => void }) {
   return (
-    <OrgEntry
-      value={org}
-      onSet={setOrg}
-      onClear={() => setOrg(null)}
-      unknownHint={found ? null : "We don't have any programs under that name yet. Check the spelling, or submit your first program."}
+    <SearchPick
+      items={orgs}
+      label={(o) => o}
+      toText={(o) => o}
+      selected={org || null}
+      onPick={setOrg}
+      onClear={() => setOrg("")}
+      placeholder="Type your organization's name"
     />
   );
 }
