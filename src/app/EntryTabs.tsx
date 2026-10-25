@@ -13,7 +13,7 @@ export default function EntryTabs() {
       role="tab"
       aria-selected={tab === id}
       onClick={() => setTab(id)}
-      className={`rounded-xl px-5 py-2.5 text-base ${tab === id ? "bg-sun-200 font-medium text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"}`}
+      className={`rounded-xl px-5 py-2.5 text-base ${tab === id ? "bg-white font-medium text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"}`}
     >
       {label}
     </button>

@@ -252,7 +252,7 @@ export default function PastRecords() {
                 </datalist>
                 <div className="mt-8 space-y-5">
                   {list.map((e, i) => (
-                    <div key={i} className="rounded-2xl border border-slate-200 p-6">
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-6">
                       <div className="grid gap-5 sm:grid-cols-2">
                         <div>
                           <p className="text-sm text-slate-700">Program</p>

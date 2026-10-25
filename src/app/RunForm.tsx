@@ -246,7 +246,7 @@ export default function RunForm() {
     <div className="max-w-3xl">
         {report && <ReportModal s={report.summary} run={report.run} onClose={() => setReport(null)} />}
 
-        <form onSubmit={submit} className="rounded-xl border border-slate-200 p-6">
+        <form onSubmit={submit}>
           <Field n={1} label="Your organization">
             <SearchPick
               items={allOrgs}
