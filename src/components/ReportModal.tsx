@@ -101,7 +101,7 @@ export default function ReportModal({ s, run, onClose }: { s: OrgSummary; run: S
             Report another program
           </button>
           <Link href="/report" className="rounded-lg bg-brand-800 px-5 py-2 text-sm font-medium text-white hover:bg-brand-900">
-            Full one-page report &amp; download →
+            My report &amp; download →
           </Link>
         </div>
       </div>

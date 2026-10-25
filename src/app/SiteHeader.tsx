@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 const ORG_LINKS = [
   { href: "/", label: "Submit data" },
-  { href: "/report", label: "One-page report" },
+  { href: "/report", label: "My report" },
   { href: "/grants", label: "Grants" },
   { href: "/data-use", label: "About & privacy" },
 ];

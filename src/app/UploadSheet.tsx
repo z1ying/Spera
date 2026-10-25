@@ -165,7 +165,7 @@ export default function UploadSheet() {
             </p>
           )}
           <Link href="/report" className="mt-3 inline-block font-medium text-brand-800 underline">
-            See your one-page report →
+            See my report →
           </Link>
         </div>
       )}
