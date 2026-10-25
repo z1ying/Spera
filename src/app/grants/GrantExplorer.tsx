@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type { Grant, GrantType } from "@/lib/grants";
 
 /** Simple line illustrations, one per grant type (CDCR's page has no images to reuse). */
@@ -76,52 +76,48 @@ export interface TypeWithRounds {
 
 export default function GrantExplorer({ items }: { items: TypeWithRounds[] }) {
   const [selected, setSelected] = useState(items[0]?.type.id ?? "");
-  const strip = useRef<HTMLDivElement>(null);
   const current = items.find((i) => i.type.id === selected) ?? items[0];
   const open = current?.rounds.find((r) => r.status === "open");
-  const scroll = (dir: number) => strip.current?.scrollBy({ left: dir * 260, behavior: "smooth" });
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">CDCR grant programs</h1>
-        <div className="flex gap-2">
-          <button type="button" onClick={() => scroll(-1)} aria-label="Scroll left" className="h-9 w-9 rounded-full border border-slate-300 bg-white hover:bg-slate-50">
-            ←
-          </button>
-          <button type="button" onClick={() => scroll(1)} aria-label="Scroll right" className="h-9 w-9 rounded-full border border-slate-300 bg-white hover:bg-slate-50">
-            →
-          </button>
-        </div>
-      </div>
+      <h1 className="text-2xl font-semibold">CDCR grant programs</h1>
+      <p className="mt-1 text-sm text-slate-500">Tap a program to see it below. Hover to pause.</p>
 
-      <div ref={strip} className="-mx-3 mt-2 flex snap-x snap-mandatory scroll-px-3 gap-4 overflow-x-auto px-3 py-3" role="tablist" aria-label="Grant programs">
-        {items.map(({ type, rounds }) => {
-          const isOpen = rounds.some((r) => r.status === "open");
-          const active = type.id === current?.type.id;
-          return (
-            <button
-              key={type.id}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              onClick={() => setSelected(type.id)}
-              className={`w-56 shrink-0 snap-start overflow-hidden rounded-2xl bg-white text-left shadow-sm transition ${
-                active ? "ring-4 ring-emerald-700 ring-offset-2" : "ring-1 ring-slate-200 hover:-translate-y-0.5 hover:shadow"
-              }`}
-            >
-              <div className={`bg-gradient-to-br ${COLORS[type.id] ?? "from-slate-600 to-slate-800"} px-4 pt-4`}>
-                <Art id={type.id} />
-              </div>
-              <div className="p-4">
-                <div className="font-semibold">{type.short}</div>
-                <div className={`mt-1 text-xs font-medium ${isOpen ? "text-emerald-800" : "text-slate-500"}`}>
-                  {isOpen ? "● Open now" : "Awarded · next round TBA"}
-                </div>
-              </div>
-            </button>
-          );
-        })}
+      {/* Auto-scrolling strip: the cards are drawn twice and the track slides by half its width, so it loops seamlessly. */}
+      <div className="marquee -mx-3 mt-2 overflow-hidden px-3 py-3" role="tablist" aria-label="Grant programs">
+        <div className="marquee-track flex w-max">
+          {[0, 1].map((copy) =>
+            items.map(({ type, rounds }) => {
+              const isOpen = rounds.some((r) => r.status === "open");
+              const active = type.id === current?.type.id;
+              return (
+                <button
+                  key={`${copy}-${type.id}`}
+                  type="button"
+                  role={copy === 0 ? "tab" : undefined}
+                  aria-selected={copy === 0 ? active : undefined}
+                  aria-hidden={copy === 1 ? true : undefined}
+                  tabIndex={copy === 1 ? -1 : undefined}
+                  onClick={() => setSelected(type.id)}
+                  className={`mr-4 w-56 shrink-0 overflow-hidden rounded-2xl bg-white text-left shadow-sm transition ${
+                    active ? "ring-4 ring-emerald-700 ring-offset-2" : "ring-1 ring-slate-200 hover:-translate-y-0.5 hover:shadow"
+                  }`}
+                >
+                  <div className={`bg-gradient-to-br ${COLORS[type.id] ?? "from-slate-600 to-slate-800"} px-4 pt-4`}>
+                    <Art id={type.id} />
+                  </div>
+                  <div className="p-4">
+                    <div className="font-semibold">{type.short}</div>
+                    <div className={`mt-1 text-xs font-medium ${isOpen ? "text-emerald-800" : "text-slate-500"}`}>
+                      {isOpen ? "● Open now" : "Awarded · next round TBA"}
+                    </div>
+                  </div>
+                </button>
+              );
+            }),
+          )}
+        </div>
       </div>
 
       {current && (

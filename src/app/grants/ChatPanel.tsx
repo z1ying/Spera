@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import WritingRobot from "@/components/WritingRobot";
 
 interface Message {
   role: "user" | "assistant";
@@ -57,11 +58,14 @@ export default function ChatPanel({ org }: { org: string }) {
 
   return (
     <section className="flex flex-col rounded-xl border border-slate-200 bg-white shadow-sm">
-      <header className="border-b border-slate-100 px-5 py-4">
-        <h2 className="text-lg font-semibold">Grant writing assistant</h2>
-        <p className="text-xs text-slate-500">
-          Drafts for {org}&apos;s RIGHT 4.0 application, using only the numbers you&apos;ve reported. Powered by Gemma.
-        </p>
+      <header className="flex items-center gap-4 border-b border-slate-100 px-5 py-4">
+        <WritingRobot className="h-24 w-20 shrink-0 text-slate-900" />
+        <div>
+          <h2 className="text-lg font-semibold">Grant writing assistant</h2>
+          <p className="text-xs text-slate-500">
+            Drafts for {org}&apos;s RIGHT 4.0 application, using only the numbers you&apos;ve reported. Powered by Gemma.
+          </p>
+        </div>
       </header>
 
       <div className="max-h-[60vh] min-h-80 flex-1 space-y-4 overflow-y-auto px-5 py-4" aria-live="polite">
@@ -132,9 +136,9 @@ export default function ChatPanel({ org }: { org: string }) {
                 send(draft);
               }
             }}
-            rows={2}
+            rows={5}
             placeholder="e.g. Our class meets twice a week for 2 hours, 20 people. Add that to the summary."
-            className="flex-1 resize-none rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className="min-h-32 flex-1 resize-y rounded-lg border border-slate-300 px-3 py-2 text-sm"
           />
           <button
             type="submit"

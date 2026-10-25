@@ -39,3 +39,57 @@ body {
     break-inside: avoid;
   }
 }
+
+/* Writing assistant robot (src/components/WritingRobot.tsx). */
+.writing-robot .wr-antenna {
+  transform-origin: 60px 30px;
+  animation: wr-sway 2.4s ease-in-out infinite;
+}
+.writing-robot .wr-eyes {
+  transform-origin: 60px 52px;
+  animation: wr-blink 4s infinite;
+}
+.writing-robot .wr-pen {
+  transform-origin: 100px 118px;
+  animation: wr-write 1.2s ease-in-out infinite;
+}
+.writing-robot .wr-line {
+  stroke-dasharray: 20;
+  animation: wr-ink 1.2s ease-in-out infinite;
+}
+@keyframes wr-sway {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+@keyframes wr-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+@keyframes wr-write {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-4px, 1px) rotate(-6deg); }
+}
+@keyframes wr-ink {
+  0% { stroke-dashoffset: 20; }
+  60%, 100% { stroke-dashoffset: 0; }
+}
+
+/* Auto-scrolling grant program strip (src/app/grants/GrantExplorer.tsx). */
+.marquee-track {
+  animation: marquee 40s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .writing-robot *,
+  .marquee-track {
+    animation: none !important;
+  }
+}
