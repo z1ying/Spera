@@ -1,4 +1,4 @@
-# ImpactLink — program reporting for TPW's network
+# Spera — program reporting for TPW's network
 
 *A minute to report a program. One place for TPW to see it all.*
 
@@ -15,7 +15,7 @@ programming hours, participants, completions. Today those numbers arrive in a
 shared spreadsheet, mostly copied from paper sign-in sheets, by organizations
 that are not paid to report.
 
-## What ImpactLink does
+## What Spera does
 
 - **Organizations report a program run in about a minute** — no sign-in, mostly
   clicks: organization, program, prison, status, dates, hours (or let it work

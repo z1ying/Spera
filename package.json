@@ -6,7 +6,7 @@
     "react-dom": "19.1.1",
     "recharts": "3.1.2"
   },
-  "description": "ImpactLink \u2014 program reporting for TPW's network (HSI 2026, Justice Reform track).",
+  "description": "Spera \u2014 program reporting for TPW's network (HSI 2026, Justice Reform track).",
   "devDependencies": {
     "@tailwindcss/postcss": "4.1.12",
     "@types/node": "22.15.0",
@@ -18,7 +18,7 @@
     "typescript": "5.9.2",
     "vitest": "3.2.4"
   },
-  "name": "impactlink",
+  "name": "spera",
   "private": true,
   "scripts": {
     "build": "next build",

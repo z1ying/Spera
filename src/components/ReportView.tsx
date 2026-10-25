@@ -82,7 +82,7 @@ export default function ReportView({ s }: { s: OrgSummary }) {
       )}
 
       <footer className="border-t border-slate-200 pt-2 text-[0.7rem] text-slate-500">
-        Reported to Transformative Programming Works through ImpactLink. Participant programming hours = participants completed ×
+        Reported to Transformative Programming Works through Spera. Participant programming hours = participants completed ×
         total programming hours (TPW&apos;s definition). Counts only — no individual data.
       </footer>
     </article>

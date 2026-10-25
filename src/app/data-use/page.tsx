@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const metadata = { title: "How your data is used — ImpactLink" };
+export const metadata = { title: "How your data is used — Spera" };
 
 /**
  * One-screen, plain-language data-use promise (backlog 1c; design doc §23).
@@ -39,7 +39,7 @@ export default function DataUse() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
       <h1 className="text-3xl font-semibold">How your data is used</h1>
-      <p className="mt-2 text-slate-600">In plain words — what ImpactLink promises every organization that reports a program.</p>
+      <p className="mt-2 text-slate-600">In plain words — what Spera promises every organization that reports a program.</p>
       <ul className="mt-8 space-y-4">
         {PROMISES.map((p) => (
           <li key={p.promise} className="rounded-lg border border-slate-200 bg-white p-4">

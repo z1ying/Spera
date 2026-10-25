@@ -1,8 +1,8 @@
-# ImpactLink Data Standard v0.2 — program-run reporting
+# Spera Data Standard v0.2 — program-run reporting
 
 *What a TPW member organization reports, and how TPW's numbers are calculated.*
 
-This standard is the framework; the ImpactLink software is one implementation of it. An organization can follow it on paper or in a spreadsheet. It replaces v0.1, which described person-level records: TPW confirmed (2026-10-24) that it does not need individual IDs.
+This standard is the framework; the Spera software is one implementation of it. An organization can follow it on paper or in a spreadsheet. It replaces v0.1, which described person-level records: TPW confirmed (2026-10-24) that it does not need individual IDs.
 
 ## 1. The unit: one program run
 
@@ -51,4 +51,4 @@ A number that is not known (blank or "TBD") stays missing. It is left out of tot
 - Organization budget (for RIGHT budget points) and program type are not collected yet; add them if TPW wants them.
 - Person-level outcomes (recidivism) are out of scope until TPW chooses a linkage approach.
 
-TPW owns the standard; ImpactLink implements it. v0.2, 2026-10-24.
+TPW owns the standard; Spera implements it. v0.2, 2026-10-24.

@@ -4,7 +4,7 @@ import { isTpwSignedIn } from "@/lib/tpwAuth";
 import LoginForm from "./LoginForm";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "TPW dashboard — ImpactLink" };
+export const metadata = { title: "TPW dashboard — Spera" };
 
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 const pct = (x: number | null) => (x === null ? "—" : `${(x * 100).toFixed(1)}%`);

@@ -239,3 +239,13 @@ Decisions:
   tooltips; compact axis numbers (6K, 12K).
 - Not clicked through in the browser: the post-submit pop-up (the pane was
   in use). Report, overview and check pages were checked visually.
+
+## 2026-10-25 — rename to Spera, month/year dates, TPW sign-in
+
+- Product renamed Spera in the UI, README, data standard and package.json.
+  Repo name and internal keys (cookie `impactlink_tpw`, localStorage
+  `impactlink.*`) unchanged so existing sessions/remembered choices survive.
+- Dates are month + year selects, stored as the 1st of the month.
+- TPW sign-in already gated the dashboard; the user saw no prompt because
+  this browser still held the 12-hour cookie from earlier testing. Cookie is
+  now session-only, and the org-side link reads "TPW staff sign in".

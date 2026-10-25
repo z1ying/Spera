@@ -4,7 +4,7 @@ import { isTpwSignedIn } from "@/lib/tpwAuth";
 import SiteHeader from "./SiteHeader";
 
 export const metadata: Metadata = {
-  title: "ImpactLink — TPW program reporting",
+  title: "Spera — TPW program reporting",
   description:
     "Community organizations report their prison programs in a minute; TPW sees programming hours, participants and completions across its network.",
 };

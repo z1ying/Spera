@@ -25,7 +25,7 @@ const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 
 /** Facts about one organization, from its reported runs only. */
 export function orgFacts(orgName: string, runs: Run[]): string {
-  if (runs.length === 0) return `Organization: ${orgName}. No program runs reported in ImpactLink yet.`;
+  if (runs.length === 0) return `Organization: ${orgName}. No program runs reported in Spera yet.`;
   const t = totals(runs);
   const s = right4Signals(runs);
   const ps = priorService(runs, 2026);
@@ -74,7 +74,7 @@ RULES
 GRANT
 ${grantFacts(g)}
 
-ORGANIZATION FACTS (from programs reported to TPW through ImpactLink; the only numbers you may use)
+ORGANIZATION FACTS (from programs reported to TPW through Spera; the only numbers you may use)
 ${facts}`;
 }
 

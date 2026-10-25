@@ -1,5 +1,5 @@
 /**
- * Seed the ImpactLink database with TPW's real program-run data (design doc §28).
+ * Seed the Spera database with TPW's real program-run data (design doc §28).
  *
  *   npm run seed
  *

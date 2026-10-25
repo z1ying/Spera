@@ -2,7 +2,7 @@ import Link from "next/link";
 import { daysUntil, GRANTS } from "@/lib/grants";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Grants — ImpactLink" };
+export const metadata = { title: "Grants — Spera" };
 
 const longDate = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });

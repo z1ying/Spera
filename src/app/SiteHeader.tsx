@@ -34,7 +34,7 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
     <header className="border-b border-slate-200 bg-white print:hidden">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3 text-sm">
         <Link href={tpwArea ? "/tpw" : "/"} className="font-semibold text-emerald-900">
-          ImpactLink{tpwArea && <span className="ml-1 font-normal text-slate-500">· TPW</span>}
+          Spera{tpwArea && <span className="ml-1 font-normal text-slate-500">· TPW</span>}
         </Link>
         {tpwArea ? (
           <>
@@ -53,8 +53,11 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
         ) : (
           <>
             {ORG_LINKS.map((l) => link(l.href, l.label))}
-            <Link href="/tpw" className="ml-auto text-xs text-slate-400 hover:text-slate-700">
-              TPW staff
+            <Link
+              href="/tpw"
+              className="ml-auto rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:border-slate-400 hover:text-slate-800"
+            >
+              {tpwSignedIn ? "TPW dashboard" : "TPW staff sign in"}
             </Link>
           </>
         )}

@@ -102,6 +102,52 @@ function Chip({ selected, onClick, children }: { selected: boolean; onClick: () 
   );
 }
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const THIS_YEAR = new Date().getFullYear();
+const YEARS = Array.from({ length: 10 }, (_, i) => THIS_YEAR + 1 - i);
+
+/**
+ * Month + year only (organizations rarely know the exact day). The value is
+ * stored as the first of the month ("YYYY-MM-01"); "" until both are chosen.
+ */
+function MonthYear({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const [month, setMonth] = useState(value ? value.slice(5, 7) : "");
+  const [year, setYear] = useState(value ? value.slice(0, 4) : "");
+  useEffect(() => {
+    setMonth(value ? value.slice(5, 7) : "");
+    setYear(value ? value.slice(0, 4) : "");
+  }, [value]);
+  const update = (m: string, y: string) => {
+    setMonth(m);
+    setYear(y);
+    onChange(m && y ? `${y}-${m}-01` : "");
+  };
+  const cls = "rounded-lg border border-slate-300 bg-white px-3 py-2";
+  return (
+    <fieldset>
+      <legend className="text-slate-600">{label}</legend>
+      <div className="mt-1 flex gap-2">
+        <select aria-label={`${label} month`} value={month} onChange={(e) => update(e.target.value, year)} className={cls}>
+          <option value="">Month</option>
+          {MONTHS.map((m, i) => (
+            <option key={m} value={String(i + 1).padStart(2, "0")}>
+              {m}
+            </option>
+          ))}
+        </select>
+        <select aria-label={`${label} year`} value={year} onChange={(e) => update(month, e.target.value)} className={cls}>
+          <option value="">Year</option>
+          {YEARS.map((y) => (
+            <option key={y} value={String(y)}>
+              {y}
+            </option>
+          ))}
+        </select>
+      </div>
+    </fieldset>
+  );
+}
+
 function Stepper({ value, onChange, label, disabled }: { value: number | null; onChange: (v: number | null) => void; label: string; disabled?: boolean }) {
   const v = value ?? 0;
   return (
@@ -183,8 +229,8 @@ export default function RunForm() {
       facilityCode: r.facilityCode,
       yard: r.yard ?? "",
       status: asEdit ? r.status : "",
-      startDate: asEdit ? r.startDate?.slice(0, 10) ?? "" : "",
-      endDate: asEdit ? r.endDate?.slice(0, 10) ?? "" : "",
+      startDate: asEdit && r.startDate ? `${r.startDate.slice(0, 7)}-01` : "",
+      endDate: asEdit && r.endDate ? `${r.endDate.slice(0, 7)}-01` : "",
       totalHours: r.totalHours,
       participants: asEdit ? r.participants : null,
       completed: asEdit ? r.completed : null,
@@ -341,16 +387,10 @@ export default function RunForm() {
                 </div>
               </Field>
 
-              <Field n={5} label="Dates" hint="Leave the end date empty if you don't know it yet.">
+              <Field n={5} label="When" hint="Month and year are enough. Leave the end empty if you don't know it yet.">
                 <div className="flex flex-wrap gap-4 text-sm">
-                  <label>
-                    <span className="block text-slate-600">Start</span>
-                    <input type="date" value={form.startDate ?? ""} onChange={(e) => set({ startDate: e.target.value })} className="rounded-lg border border-slate-300 px-3 py-2" />
-                  </label>
-                  <label>
-                    <span className="block text-slate-600">End</span>
-                    <input type="date" value={form.endDate ?? ""} onChange={(e) => set({ endDate: e.target.value })} className="rounded-lg border border-slate-300 px-3 py-2" />
-                  </label>
+                  <MonthYear label="Start" value={form.startDate ?? ""} onChange={(v) => set({ startDate: v })} />
+                  <MonthYear label="End" value={form.endDate ?? ""} onChange={(v) => set({ endDate: v })} />
                 </div>
               </Field>
 
@@ -405,14 +445,14 @@ export default function RunForm() {
                   <input type="checkbox" checked={!!form.specialPopulations} onChange={(e) => set({ specialPopulations: e.target.checked })} className="mt-0.5 h-4 w-4 accent-emerald-800" />
                   <span>
                     Serves people in restricted housing or mental health programs (RHU, EOP or MHCB)
-                    <span className="block text-xs text-slate-500">Optional. Programs for these groups earn an extra half point in CDCR&apos;s RIGHT grant.</span>
+                    <span className="block text-xs text-slate-500">Programs for these groups earn an extra half point in CDCR&apos;s RIGHT grant.</span>
                   </span>
                 </label>
                 <label className="mt-3 flex items-start gap-2 text-sm">
                   <input type="checkbox" checked={otherLanguage} onChange={(e) => setOtherLanguage(e.target.checked)} className="mt-0.5 h-4 w-4 accent-emerald-800" />
                   <span>
                     Taught in a language other than English
-                    <span className="block text-xs text-slate-500">Optional. Also earns an extra half point in RIGHT 4.0.</span>
+                    <span className="block text-xs text-slate-500">Earns an extra half point in RIGHT 4.0.</span>
                   </span>
                 </label>
                 {otherLanguage && (
@@ -471,7 +511,7 @@ export default function RunForm() {
                 <div className="font-medium">{r.programName}</div>
                 <div className="text-xs text-slate-500">
                   {r.facilityCode} · {r.status}
-                  {r.startDate ? ` · ${r.startDate.slice(0, 10)}` : ""}
+                  {r.startDate ? ` · ${r.startDate.slice(0, 7)}` : ""}
                   {r.participantHours !== null ? ` · ${fmt(r.participantHours)} participant hours` : ""}
                 </div>
                 <div className="mt-2 flex gap-3 text-xs">
@@ -487,7 +527,7 @@ export default function RunForm() {
           </ul>
         )}
         <p className="mt-6 text-xs text-slate-500">
-          ImpactLink collects counts only — never names or ID numbers.{" "}
+          Spera collects counts only — never names or ID numbers.{" "}
           <a href="/data-use" className="underline">
             How your data is used
           </a>
