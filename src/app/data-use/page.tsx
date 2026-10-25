@@ -30,7 +30,7 @@ export default function AboutPrivacy() {
       </div>
 
       <h2 className="mt-16 text-3xl font-semibold">Privacy</h2>
-      <p className="mt-4 max-w-3xl border-l-4 border-sun-400 pl-5 text-lg leading-relaxed text-slate-700">
+      <p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-700">
         <strong className="font-semibold text-slate-900">We count programs, not people:</strong> no names, birth dates, CDCR or case
         numbers — only hours, how many took part and finished, where and when. TPW shares network totals only; in this pilot anyone
         can still open an organization&apos;s report, and private links come next. Missing numbers stay missing, never guessed. The
