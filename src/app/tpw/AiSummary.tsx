@@ -43,7 +43,7 @@ export default function AiSummary({ filters }: { filters: Filters }) {
   const stale = summary && forKey !== key;
 
   return (
-    <section aria-label="AI summary" className="mt-8 rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-sun-100 p-6">
+    <section aria-label="AI summary" className="mt-8 rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-sun-100 px-6 py-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-800 text-white">
@@ -69,11 +69,10 @@ export default function AiSummary({ filters }: { filters: Filters }) {
       </div>
 
       {busy && !summary && (
-        <div className="mt-5 grid gap-3 md:grid-cols-2" aria-hidden>
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-28 animate-pulse rounded-xl bg-white/70" />
-          ))}
-        </div>
+        <p role="status" className="mt-3 flex items-center gap-2 text-sm text-slate-600">
+          <span aria-hidden className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-brand-200 border-t-brand-800" />
+          Reading the numbers in this view…
+        </p>
       )}
       {error && <p className="mt-4 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-900">{error}</p>}
 
