@@ -39,7 +39,7 @@ export default function SearchPick<T>({
   if (selected)
     return (
       <div className="flex flex-wrap items-center gap-3">
-        <span className="rounded-full bg-emerald-800 px-4 py-2 text-sm text-white">{label(selected)}</span>
+        <span className="rounded-full bg-brand-800 px-4 py-2 text-sm text-white">{label(selected)}</span>
         {badge?.(selected)}
         <button type="button" className="text-sm text-slate-600 underline" onClick={() => { setQ(""); onClear(); }}>
           Change
@@ -64,7 +64,7 @@ export default function SearchPick<T>({
       <ul className="mt-1 divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200 bg-white">
         {matches.map((i) => (
           <li key={label(i)}>
-            <button type="button" onClick={() => { setQ(""); onPick(i); }} className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-emerald-50">
+            <button type="button" onClick={() => { setQ(""); onPick(i); }} className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-brand-50">
               <span>{label(i)}</span>
               {badge?.(i)}
             </button>
@@ -73,7 +73,7 @@ export default function SearchPick<T>({
         {matches.length === 0 && !onAdd && <li className="px-3 py-2 text-sm text-slate-500">No match — try another spelling.</li>}
         {onAdd && query && !exact && (
           <li>
-            <button type="button" onClick={() => { onAdd(q.trim()); setQ(""); }} className="w-full px-3 py-2 text-left text-sm font-medium text-emerald-800 hover:bg-emerald-50">
+            <button type="button" onClick={() => { onAdd(q.trim()); setQ(""); }} className="w-full px-3 py-2 text-left text-sm font-medium text-brand-800 hover:bg-brand-50">
               + Add &ldquo;{q.trim()}&rdquo; as {addLabel}
             </button>
           </li>

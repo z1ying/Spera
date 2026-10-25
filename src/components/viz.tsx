@@ -2,13 +2,13 @@
 
 /**
  * Small visual building blocks for organization-facing pages. One brand hue
- * (emerald) for single-series marks; text stays in slate ink; bars are thin
+ * (brand blue) for single-series marks; text stays in slate ink; bars are thin
  * with rounded data-ends; every chart has a hover tooltip or labelled values.
  */
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { compact, fmt } from "@/lib/orgSummary";
 
-const BRAND = "#047857";
+const BRAND = "#2f3190";
 
 export function Stat({ value, label, sub }: { value: string; label: string; sub?: string }) {
   return (
@@ -105,7 +105,7 @@ export function PointsMeter({ points, max = 4 }: { points: number; max?: number 
     <div>
       <div className="flex gap-1" role="img" aria-label={`${points} of ${max} points`}>
         {Array.from({ length: max * 2 }, (_, i) => (
-          <span key={i} className={`h-4 flex-1 ${i % 2 ? "rounded-r" : "rounded-l"} ${i < points * 2 ? "bg-emerald-700" : "bg-slate-200"}`} />
+          <span key={i} className={`h-4 flex-1 ${i % 2 ? "rounded-r" : "rounded-l"} ${i < points * 2 ? "bg-brand-700" : "bg-slate-200"}`} />
         ))}
       </div>
       <div className="mt-1 flex justify-between text-[0.7rem] text-slate-500">

@@ -268,3 +268,21 @@ Decisions:
   Others show description, who can apply and their funded rounds with links.
   The separate "Other CDCR grants" list is gone.
 - `data/grants.json` gains `types`; every round has a `typeId`.
+
+## 2026-10-25 — new look (user's reference design) + spreadsheet upload
+
+- Visual system: indigo-blue brand fading to sun-yellow on warm paper
+  (`@theme` tokens brand-*/sun-*/paper in globals.css); Source Serif 4 for
+  display, IBM Plex Sans for body (next/font). All former emerald classes now
+  use the brand scale; hero blocks use a blue→yellow gradient.
+- Header per reference: indigo banner with shield, sun-arc logo, serif
+  "Spera" + mission, nav right (Submit data · One-page report · Grants ·
+  About & privacy) + TPW switch, gradient wave band. No "Dashboard" for
+  organizations. The reference banner said "Demonstration data are synthetic" —
+  not true for Spera, so it states the privacy rule instead.
+- Home: italic serif quote, "For program staff" section, lock callout, sun arc,
+  tabs "Quick entry" | "Upload a spreadsheet".
+- Upload: CSV in TPW's Collective Impact Report columns (template at
+  /api/runs/template); month/year parsed from common date styles; preview with
+  per-row problems; good rows imported via /api/runs/bulk (re-validated).
+  Excel/Sheets users save as CSV (no .xlsx parser added).

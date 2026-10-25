@@ -12,8 +12,8 @@ const day = (d: Date | null) => (d ? d.toISOString().slice(0, 10) : "—");
 
 function Card({ value, label, sub, primary }: { value: string; label: string; sub?: string; primary?: boolean }) {
   return (
-    <div className={`rounded-xl border bg-white p-5 ${primary ? "border-emerald-800 ring-1 ring-emerald-800" : "border-slate-200"}`}>
-      <div className={`text-3xl font-semibold tabular-nums ${primary ? "text-emerald-900" : ""}`}>{value}</div>
+    <div className={`rounded-xl border bg-white p-5 ${primary ? "border-brand-800 ring-1 ring-brand-800" : "border-slate-200"}`}>
+      <div className={`text-3xl font-semibold tabular-nums ${primary ? "text-brand-900" : ""}`}>{value}</div>
       <div className="mt-1 text-sm font-medium text-slate-800">{label}</div>
       {sub && <div className="mt-0.5 text-xs text-slate-500">{sub}</div>}
     </div>
@@ -23,7 +23,7 @@ function Card({ value, label, sub, primary }: { value: string; label: string; su
 function Bar({ value, max }: { value: number; max: number }) {
   return (
     <div className="h-2 w-full min-w-16 rounded bg-slate-100">
-      <div className="h-2 rounded bg-emerald-800" style={{ width: `${max ? (value / max) * 100 : 0}%` }} />
+      <div className="h-2 rounded bg-brand-800" style={{ width: `${max ? (value / max) * 100 : 0}%` }} />
     </div>
   );
 }
@@ -99,7 +99,7 @@ export default async function TpwDashboard() {
     <main className="mx-auto max-w-6xl px-6 py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-medium uppercase tracking-wide text-emerald-800">TPW network · program reporting</p>
+          <p className="text-sm font-medium uppercase tracking-wide text-brand-800">TPW network · program reporting</p>
           <h1 className="mt-1 text-3xl font-semibold">Programming across the network</h1>
           <p className="mt-1 text-sm text-slate-600">
             {orgs.length} organizations · {t.runs} program runs · {prisons.length} prisons · program years {yearSpan}
@@ -146,7 +146,7 @@ export default async function TpwDashboard() {
                     {s.underservedRuns > 0 ? `${s.underservedRuns} runs at underserved prisons (${s.underservedInstitutions.join(", ")})` : "No underserved-prison runs"}
                     {s.specialPopulationRuns > 0 && ` · ${s.specialPopulationRuns} serving RHU/EOP/MHCB`}
                     {s.languages.length > 0 && ` · offered in ${s.languages.join(", ")}`}
-                    <span className="block font-medium text-emerald-900">+{s.additionalPoints} point evidence</span>
+                    <span className="block font-medium text-brand-900">+{s.additionalPoints} point evidence</span>
                   </td>
                 }
               />
@@ -200,7 +200,7 @@ export default async function TpwDashboard() {
                 label={
                   <>
                     {f.facilityName}
-                    {f.underserved && <span className="ml-2 rounded bg-emerald-100 px-1.5 py-0.5 text-[0.65rem] font-semibold text-emerald-900">RIGHT 4.0 underserved</span>}
+                    {f.underserved && <span className="ml-2 rounded bg-brand-100 px-1.5 py-0.5 text-[0.65rem] font-semibold text-brand-900">RIGHT 4.0 underserved</span>}
                     {f.womens && <span className="ml-1 rounded bg-slate-100 px-1.5 py-0.5 text-[0.65rem] font-semibold text-slate-700">Women&apos;s</span>}
                   </>
                 }

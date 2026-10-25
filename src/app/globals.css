@@ -1,9 +1,31 @@
 @import "tailwindcss";
 
-/* Spera base styles. Visual system lands in the M6 polish pass
-   (design doc §8): deep green / slate, print stylesheet on /report. */
+/* Spera visual system: deep indigo-blue brand fading to warm sun-yellow,
+   on a warm paper background; serif display type, sans body. */
+@theme {
+  --color-brand-50: #eef0fd;
+  --color-brand-100: #e0e4fb;
+  --color-brand-200: #c5cbf6;
+  --color-brand-300: #a2abef;
+  --color-brand-600: #4b4fc4;
+  --color-brand-700: #3b3ea8;
+  --color-brand-800: #2f3190;
+  --color-brand-900: #26286f;
+  --color-sun-100: #fdf3d3;
+  --color-sun-300: #f6d77e;
+  --color-sun-400: #f0c14b;
+  --color-sun-500: #e3a92a;
+  --color-paper: #f8f6f1;
+  --font-serif: var(--font-source-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-paper font-sans text-slate-900 antialiased;
+}
+h1,
+h2 {
+  @apply font-serif;
 }
 
 @media print {

@@ -36,7 +36,7 @@ export default function LoginForm() {
         />
       </label>
       {error && <p className="mt-2 text-sm text-red-800">{error}</p>}
-      <button disabled={busy || !passcode} className="mt-5 w-full rounded-lg bg-emerald-800 py-2.5 font-medium text-white hover:bg-emerald-900 disabled:opacity-40">
+      <button disabled={busy || !passcode} className="mt-5 w-full rounded-lg bg-brand-800 py-2.5 font-medium text-white hover:bg-brand-900 disabled:opacity-40">
         {busy ? "Signing in…" : "Sign in"}
       </button>
     </form>

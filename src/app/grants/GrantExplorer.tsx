@@ -60,7 +60,7 @@ function Art({ id, color }: { id: string; color: string }) {
  * two-tone wordmark (our own design — not CDCR's official artwork).
  */
 const MARKS: Record<string, { acronym: string; accent: string; ink: string; tagline: string }> = {
-  right: { acronym: "RIGHT", accent: "#047857", ink: "#64748b", tagline: "Healing & Transformation" },
+  right: { acronym: "RIGHT", accent: "#2f3190", ink: "#64748b", tagline: "Healing & Transformation" },
   vi: { acronym: "VI", accent: "#e11d48", ink: "#64748b", tagline: "Victim Impact" },
   ipg: { acronym: "IPG", accent: "#f59e0b", ink: "#64748b", tagline: "Innovative Programming" },
   care: { acronym: "CARE", accent: "#0284c7", ink: "#64748b", tagline: "Reentry & Enrichment" },
@@ -123,13 +123,13 @@ export default function GrantExplorer({ items }: { items: TypeWithRounds[] }) {
                   tabIndex={copy === 1 ? -1 : undefined}
                   onClick={() => setSelected(type.id)}
                   className={`mr-4 w-56 shrink-0 overflow-hidden rounded-2xl bg-white text-left shadow-sm transition ${
-                    active ? "ring-4 ring-emerald-700 ring-offset-2" : "ring-1 ring-slate-200 hover:-translate-y-0.5 hover:shadow"
+                    active ? "ring-4 ring-brand-700 ring-offset-2" : "ring-1 ring-slate-200 hover:-translate-y-0.5 hover:shadow"
                   }`}
                 >
                   <Mark id={type.id} />
                   <div className="border-t border-slate-100 p-4">
                     <div className="font-semibold">{type.short}</div>
-                    <div className={`mt-1 text-xs font-medium ${isOpen ? "text-emerald-800" : "text-slate-500"}`}>
+                    <div className={`mt-1 text-xs font-medium ${isOpen ? "text-brand-800" : "text-slate-500"}`}>
                       {isOpen ? "● Open now" : "Awarded · next round TBA"}
                     </div>
                   </div>
@@ -144,18 +144,18 @@ export default function GrantExplorer({ items }: { items: TypeWithRounds[] }) {
         <section className="mt-6" role="tabpanel" aria-label={current.type.name}>
           {open ? (
             <>
-              <div className="grid items-center gap-6 rounded-3xl bg-emerald-900 p-8 text-white sm:grid-cols-[auto_1fr]">
+              <div className="grid items-center gap-6 rounded-3xl bg-gradient-to-r from-brand-900 via-brand-800 to-sun-500 p-8 text-white sm:grid-cols-[auto_1fr]">
                 <div className="text-center">
                   <div className="text-7xl font-semibold tabular-nums leading-none">{open.daysLeft !== null && open.daysLeft >= 0 ? open.daysLeft : 0}</div>
-                  <div className="mt-1 text-sm uppercase tracking-wide text-emerald-100">days left</div>
+                  <div className="mt-1 text-sm uppercase tracking-wide text-brand-100">days left</div>
                 </div>
                 <div>
-                  <span className="rounded-full bg-emerald-700 px-3 py-1 text-xs font-semibold uppercase tracking-wide">Open now</span>
+                  <span className="rounded-full bg-brand-700 px-3 py-1 text-xs font-semibold uppercase tracking-wide">Open now</span>
                   <h2 className="mt-3 text-3xl font-semibold">{open.name}</h2>
-                  <p className="mt-1 text-emerald-100">
+                  <p className="mt-1 text-brand-100">
                     ${((open.totalFunding ?? 0) / 1e6).toFixed(1)} million from CDCR · due {open.dueLabel}
                   </p>
-                  <p className="mt-3 text-sm text-emerald-50">Every eligible organization gets points; each point is worth the same share.</p>
+                  <p className="mt-3 text-sm text-brand-50">Every eligible organization gets points; each point is worth the same share.</p>
                 </div>
               </div>
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -163,12 +163,12 @@ export default function GrantExplorer({ items }: { items: TypeWithRounds[] }) {
                   <Link
                     key={a.href}
                     href={a.href}
-                    className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-700 hover:shadow"
+                    className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-700 hover:shadow"
                   >
-                    <span aria-hidden className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-lg text-emerald-900">
+                    <span aria-hidden className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 text-lg text-brand-900">
                       {a.icon}
                     </span>
-                    <h3 className="mt-4 text-lg font-semibold group-hover:text-emerald-900">{a.title} →</h3>
+                    <h3 className="mt-4 text-lg font-semibold group-hover:text-brand-900">{a.title} →</h3>
                     <p className="mt-1 text-sm text-slate-600">{a.text}</p>
                   </Link>
                 ))}
@@ -198,7 +198,7 @@ export default function GrantExplorer({ items }: { items: TypeWithRounds[] }) {
                       <div className="font-medium">{r.name}</div>
                       <div className="text-slate-600">Funding {r.fundingPeriod}</div>
                       {r.links?.map((l) => (
-                        <a key={l.url} href={l.url} target="_blank" rel="noreferrer" className="mt-1 inline-block text-emerald-800 underline">
+                        <a key={l.url} href={l.url} target="_blank" rel="noreferrer" className="mt-1 inline-block text-brand-800 underline">
                           {l.label} ↗
                         </a>
                       ))}

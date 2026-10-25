@@ -81,7 +81,7 @@ export default function ChatPanel({ org }: { org: string }) {
                   key={s}
                   type="button"
                   onClick={() => send(s)}
-                  className="rounded-full border border-slate-300 px-3 py-1.5 text-left text-sm hover:border-emerald-700 hover:bg-emerald-50"
+                  className="rounded-full border border-slate-300 px-3 py-1.5 text-left text-sm hover:border-brand-700 hover:bg-brand-50"
                 >
                   {s}
                 </button>
@@ -91,7 +91,7 @@ export default function ChatPanel({ org }: { org: string }) {
         )}
         {messages.map((m, i) =>
           m.role === "user" ? (
-            <div key={i} className="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-emerald-800 px-4 py-2 text-sm text-white">
+            <div key={i} className="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-brand-800 px-4 py-2 text-sm text-white">
               {m.content}
             </div>
           ) : (
@@ -146,7 +146,7 @@ export default function ChatPanel({ org }: { org: string }) {
           <button
             type="submit"
             disabled={busy || !draft.trim()}
-            className="self-end rounded-lg bg-emerald-800 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-900 disabled:opacity-40"
+            className="self-end rounded-lg bg-brand-800 px-4 py-2 text-sm font-medium text-white hover:bg-brand-900 disabled:opacity-40"
           >
             Send
           </button>

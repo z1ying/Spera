@@ -59,7 +59,7 @@ function Field({ n, label, hint, children }: { n: number; label: string; hint?: 
   return (
     <section className="border-t border-slate-100 py-5 first:border-t-0 first:pt-0">
       <h2 className="flex items-baseline gap-3 text-base font-semibold">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-900">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-900">
           {n}
         </span>
         {label}
@@ -77,7 +77,7 @@ function Chip({ selected, onClick, children }: { selected: boolean; onClick: () 
       aria-pressed={selected}
       onClick={onClick}
       className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-        selected ? "border-emerald-800 bg-emerald-800 text-white" : "border-slate-300 bg-white text-slate-800 hover:border-emerald-700"
+        selected ? "border-brand-800 bg-brand-800 text-white" : "border-slate-300 bg-white text-slate-800 hover:border-brand-700"
       }`}
     >
       {children}
@@ -297,7 +297,7 @@ export default function RunForm() {
                   onClear={() => set({ facilityCode: "" })}
                   placeholder="Type to search, e.g. San Quentin or SQ"
                   badge={(f) =>
-                    f.underserved ? <span className="shrink-0 text-xs font-medium text-emerald-800">RIGHT 4.0 underserved prison</span> : null
+                    f.underserved ? <span className="shrink-0 text-xs font-medium text-brand-800">RIGHT 4.0 underserved prison</span> : null
                   }
                 />
                 <input
@@ -317,11 +317,11 @@ export default function RunForm() {
                       aria-pressed={form.status === s}
                       onClick={() => set({ status: s })}
                       className={`rounded-lg border px-3 py-3 text-left text-sm ${
-                        form.status === s ? "border-emerald-800 bg-emerald-800 text-white" : "border-slate-300 bg-white hover:border-emerald-700"
+                        form.status === s ? "border-brand-800 bg-brand-800 text-white" : "border-slate-300 bg-white hover:border-brand-700"
                       }`}
                     >
                       <span className="block font-medium">{s}</span>
-                      <span className={`block text-xs ${form.status === s ? "text-emerald-100" : "text-slate-500"}`}>{STATUS_HELP[s]}</span>
+                      <span className={`block text-xs ${form.status === s ? "text-brand-100" : "text-slate-500"}`}>{STATUS_HELP[s]}</span>
                     </button>
                   ))}
                 </div>
@@ -382,14 +382,14 @@ export default function RunForm() {
                   </div>
                 </div>
                 <label className="mt-4 flex items-start gap-2 text-sm">
-                  <input type="checkbox" checked={!!form.specialPopulations} onChange={(e) => set({ specialPopulations: e.target.checked })} className="mt-0.5 h-4 w-4 accent-emerald-800" />
+                  <input type="checkbox" checked={!!form.specialPopulations} onChange={(e) => set({ specialPopulations: e.target.checked })} className="mt-0.5 h-4 w-4 accent-brand-800" />
                   <span>
                     Serves people in restricted housing or mental health programs (RHU, EOP or MHCB)
                     <span className="block text-xs text-slate-500">Programs for these groups earn an extra half point in CDCR&apos;s RIGHT grant.</span>
                   </span>
                 </label>
                 <label className="mt-3 flex items-start gap-2 text-sm">
-                  <input type="checkbox" checked={otherLanguage} onChange={(e) => setOtherLanguage(e.target.checked)} className="mt-0.5 h-4 w-4 accent-emerald-800" />
+                  <input type="checkbox" checked={otherLanguage} onChange={(e) => setOtherLanguage(e.target.checked)} className="mt-0.5 h-4 w-4 accent-brand-800" />
                   <span>
                     Taught in a language other than English
                     <span className="block text-xs text-slate-500">Earns an extra half point in RIGHT 4.0.</span>
@@ -430,7 +430,7 @@ export default function RunForm() {
                 <button
                   type="submit"
                   disabled={busy || !form.status || !form.facilityCode}
-                  className="rounded-lg bg-emerald-800 px-6 py-3 font-medium text-white hover:bg-emerald-900 disabled:opacity-40"
+                  className="rounded-lg bg-brand-800 px-6 py-3 font-medium text-white hover:bg-brand-900 disabled:opacity-40"
                 >
                   {busy ? "Saving…" : "Submit program"}
                 </button>

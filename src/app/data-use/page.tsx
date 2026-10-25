@@ -57,7 +57,7 @@ export default function DataUse() {
       <p className="mt-8 text-sm text-slate-600">
         Questions? Contact TPW.
       </p>
-      <Link href="/" className="mt-6 inline-block rounded-md bg-emerald-800 px-5 py-2 text-sm font-medium text-white hover:bg-emerald-900">
+      <Link href="/" className="mt-6 inline-block rounded-md bg-brand-800 px-5 py-2 text-sm font-medium text-white hover:bg-brand-900">
         Report a program
       </Link>
     </main>

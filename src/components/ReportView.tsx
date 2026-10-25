@@ -19,9 +19,9 @@ export default function ReportView({ s }: { s: OrgSummary }) {
 
   return (
     <article className="report-page space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-2 border-b-2 border-emerald-800 pb-3">
+      <header className="flex flex-wrap items-end justify-between gap-2 border-b-2 border-brand-800 pb-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">Program report {span && `· ${span}`}</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand-800">Program report {span && `· ${span}`}</p>
           <h2 className="text-2xl font-semibold">{s.org}</h2>
           <p className="text-sm text-slate-600">{s.programs.join(" · ")}</p>
         </div>
@@ -29,10 +29,10 @@ export default function ReportView({ s }: { s: OrgSummary }) {
       </header>
 
       <section className="grid gap-4 sm:grid-cols-[1.3fr_1fr]">
-        <div className="rounded-2xl bg-emerald-800 p-6 text-white">
+        <div className="rounded-2xl bg-gradient-to-br from-brand-900 via-brand-800 to-sun-500 p-6 text-white">
           <div className="text-5xl font-semibold tabular-nums tracking-tight">{fmt(n.participantHours)}</div>
-          <div className="mt-2 text-sm font-medium text-emerald-50">participant programming hours delivered</div>
-          <div className="text-xs text-emerald-100">{fmt(n.completed)} people completed × course length</div>
+          <div className="mt-2 text-sm font-medium text-brand-50">participant programming hours delivered</div>
+          <div className="text-xs text-brand-100">{fmt(n.completed)} people completed × course length</div>
         </div>
         <Ring value={n.completionRate} label="of participants completed their program" />
       </section>
@@ -57,7 +57,7 @@ export default function ReportView({ s }: { s: OrgSummary }) {
               label: (
                 <>
                   {p.code}
-                  {p.underserved && <span className="ml-1 text-emerald-800">★</span>}
+                  {p.underserved && <span className="ml-1 text-brand-800">★</span>}
                 </>
               ),
               value: p.participantHours,
@@ -72,7 +72,7 @@ export default function ReportView({ s }: { s: OrgSummary }) {
       {(s.signals.underservedInstitutions.length > 0 || womens.length > 0 || s.signals.languages.length > 0) && (
         <section className="flex flex-wrap gap-2 text-sm">
           {s.signals.underservedInstitutions.length > 0 && (
-            <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-900">
+            <span className="rounded-full bg-brand-50 px-3 py-1 text-brand-900">
               Underserved prisons served: {s.signals.underservedInstitutions.join(", ")}
             </span>
           )}

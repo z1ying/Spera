@@ -10,7 +10,7 @@ import { OrgPicker, useOrgSummary } from "../../useOrg";
 const open = GRANTS.grants.find((g) => g.status === "open")!;
 
 function Tick({ state, children }: { state: "yes" | "no" | "ask"; children: React.ReactNode }) {
-  const style = { yes: "bg-emerald-700 text-white", no: "bg-amber-200 text-amber-900", ask: "bg-slate-200 text-slate-600" }[state];
+  const style = { yes: "bg-brand-700 text-white", no: "bg-amber-200 text-amber-900", ask: "bg-slate-200 text-slate-600" }[state];
   return (
     <li className="flex items-start gap-3">
       <span aria-hidden className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-bold ${style}`}>
@@ -60,7 +60,7 @@ export default function GrantCheck() {
           <section className="rounded-2xl border border-slate-200 bg-white p-6">
             <div className="flex items-baseline justify-between">
               <h2 className="text-lg font-semibold">Estimated points</h2>
-              <span className="text-3xl font-semibold tabular-nums text-emerald-900">
+              <span className="text-3xl font-semibold tabular-nums text-brand-900">
                 {points}
                 <span className="text-base text-slate-400"> / 4</span>
               </span>
@@ -77,7 +77,7 @@ export default function GrantCheck() {
                   aria-pressed={budget === t.points}
                   onClick={() => setBudget(t.points)}
                   className={`rounded-full border px-3 py-1.5 text-xs ${
-                    budget === t.points ? "border-emerald-800 bg-emerald-800 text-white" : "border-slate-300 hover:border-emerald-700"
+                    budget === t.points ? "border-brand-800 bg-brand-800 text-white" : "border-slate-300 hover:border-brand-700"
                   }`}
                 >
                   {t.label} · {t.points}
@@ -109,7 +109,7 @@ export default function GrantCheck() {
                   setCopied(false);
                 }
               }}
-              className="mt-3 rounded-lg bg-emerald-800 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-900"
+              className="mt-3 rounded-lg bg-brand-800 px-4 py-2 text-sm font-medium text-white hover:bg-brand-900"
             >
               {copied ? "Copied ✓" : "Copy"}
             </button>
@@ -123,7 +123,7 @@ export default function GrantCheck() {
           {open.documents?.map((d) => (
             <li key={d}>
               <label className="flex items-start gap-2 text-sm">
-                <input type="checkbox" className="mt-0.5 h-4 w-4 accent-emerald-800" />
+                <input type="checkbox" className="mt-0.5 h-4 w-4 accent-brand-800" />
                 <span>{d}</span>
               </label>
             </li>
