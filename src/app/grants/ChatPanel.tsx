@@ -68,7 +68,10 @@ export default function ChatPanel({ org }: { org: string }) {
         </div>
       </header>
 
-      <div className="max-h-[60vh] min-h-80 flex-1 space-y-4 overflow-y-auto px-5 py-4" aria-live="polite">
+      <div
+        className={`${messages.length ? "max-h-[55vh] min-h-64" : ""} flex-1 space-y-4 overflow-y-auto px-5 py-4`}
+        aria-live="polite"
+      >
         {messages.length === 0 && (
           <div>
             <p className="text-sm text-slate-600">Start with one of these, or ask anything about the application:</p>
@@ -138,7 +141,7 @@ export default function ChatPanel({ org }: { org: string }) {
             }}
             rows={5}
             placeholder="e.g. Our class meets twice a week for 2 hours, 20 people. Add that to the summary."
-            className="min-h-32 flex-1 resize-y rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className={`${messages.length ? "min-h-40" : "min-h-[40vh]"} flex-1 resize-y rounded-lg border border-slate-300 px-3 py-2 text-sm`}
           />
           <button
             type="submit"
