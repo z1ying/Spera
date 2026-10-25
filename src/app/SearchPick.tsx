@@ -18,7 +18,6 @@ export default function SearchPick<T>({
   placeholder,
   badge,
   addLabel = "new",
-  browse = true,
 }: {
   items: T[];
   label: (item: T) => string;
@@ -31,8 +30,6 @@ export default function SearchPick<T>({
   badge?: (item: T) => React.ReactNode;
   /** Words after "Add …" e.g. "a new organization". */
   addLabel?: string;
-  /** false: show no list until something is typed (keeps busy forms short). */
-  browse?: boolean;
 }) {
   const [q, setQ] = useState("");
   const query = q.trim().toLowerCase();
@@ -64,7 +61,6 @@ export default function SearchPick<T>({
         aria-label={placeholder}
         className="w-full rounded-lg border border-slate-300 px-3 py-2"
       />
-      {(browse || query) && (
       <ul className="mt-1 divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200 bg-white">
         {matches.map((i) => (
           <li key={label(i)}>
@@ -83,8 +79,7 @@ export default function SearchPick<T>({
           </li>
         )}
       </ul>
-      )}
-      {browse && !query && items.length > 8 && <p className="mt-1 text-xs text-slate-500">Showing 8 of {items.length} — type to narrow.</p>}
+      {!query && items.length > 8 && <p className="mt-1 text-xs text-slate-500">Showing 8 of {items.length} — type to narrow.</p>}
     </div>
   );
 }

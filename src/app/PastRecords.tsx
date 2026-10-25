@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import type { RunInput } from "@/lib/runs";
 import { OrgPicker, useOrgSummary } from "./useOrg";
 import RisingSun from "./RisingSun";
-import SearchPick from "./SearchPick";
 
 /**
  * "Past records (retroactive)" on Submit data (design doc §28): years with no data yet, filled in as
@@ -109,6 +108,15 @@ export default function PastRecords() {
 
   const setEntry = (i: number, patch: Partial<Entry>) =>
     setEntries((all) => ({ ...all, [year!]: list.map((e, j) => (j === i ? { ...e, ...patch } : e)) }));
+  const started = (e: Entry) => !!e.program.trim() || !!e.facility || e.participants !== null || e.completed !== null || e.hours !== null;
+  /** What a started line still needs before it can be saved, in plain words. */
+  const missing = (e: Entry) =>
+    [
+      !e.program.trim() && "the program",
+      !e.facility && "the prison",
+      e.participants !== null && e.completed !== null && e.completed > e.participants && "fewer finished than took part",
+    ].filter((x): x is string => !!x);
+  const yearBlocked = list.some((e) => started(e) && missing(e).length > 0);
   const ready = (e: Entry) => !!e.program.trim() && !!e.facility && (e.participants === null || e.completed === null || e.completed <= e.participants);
   // Progress grows with each answer: the years, then per entry its program,
   // prison and three numbers. Full only on the last (check and save) step.
@@ -237,6 +245,11 @@ export default function PastRecords() {
               <>
                 <h2 className="mt-4 font-serif text-4xl">What did you run in {year}?</h2>
                 <p className="mt-3 text-lg text-slate-600">One line per program and prison. Rough numbers are fine; leave a box empty if you&apos;re not sure.</p>
+                <datalist id="past-programs">
+                  {orgPrograms.map((p) => (
+                    <option key={p} value={p} />
+                  ))}
+                </datalist>
                 <div className="mt-8 space-y-5">
                   {list.map((e, i) => (
                     <div key={i} className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -244,32 +257,30 @@ export default function PastRecords() {
                         <div>
                           <p className="text-sm text-slate-700">Program</p>
                           <div className="mt-1">
-                            <SearchPick
-                              items={orgPrograms}
-                              label={(p) => p}
-                              toText={(p) => p}
-                              selected={e.program || null}
-                              onPick={(p) => setEntry(i, { program: p })}
-                              onAdd={(p) => setEntry(i, { program: p })}
-                              onClear={() => setEntry(i, { program: "" })}
+                            <input
+                              list="past-programs"
+                              value={e.program}
+                              onChange={(ev) => setEntry(i, { program: ev.target.value })}
                               placeholder="Program name"
-                              addLabel="a program"
+                              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2"
                             />
                           </div>
                         </div>
                         <div>
                           <p className="text-sm text-slate-700">Prison</p>
                           <div className="mt-1">
-                            <SearchPick
-                              items={facilities}
-                              label={(f) => f.name}
-                              toText={(f) => `${f.name} ${f.code}`}
-                              selected={e.facility}
-                              onPick={(f) => setEntry(i, { facility: f })}
-                              onClear={() => setEntry(i, { facility: null })}
-                              placeholder="Type the prison or its code"
-                              browse={false}
-                            />
+                            <select
+                              value={e.facility?.code ?? ""}
+                              onChange={(ev) => setEntry(i, { facility: facilities.find((f) => f.code === ev.target.value) ?? null })}
+                              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2"
+                            >
+                              <option value="">Choose the prison</option>
+                              {facilities.map((f) => (
+                                <option key={f.code} value={f.code}>
+                                  {f.name}
+                                </option>
+                              ))}
+                            </select>
                           </div>
                         </div>
                       </div>
@@ -278,8 +289,8 @@ export default function PastRecords() {
                         <Estimate label="About how many finished?" value={e.completed} onChange={(v) => setEntry(i, { completed: v })} />
                         <Estimate label="Hours of programming each" value={e.hours} onChange={(v) => setEntry(i, { hours: v })} />
                       </div>
-                      {e.participants !== null && e.completed !== null && e.completed > e.participants && (
-                        <p className="mt-3 text-sm text-amber-800">More people finished than took part — check the numbers.</p>
+                      {started(e) && missing(e).length > 0 && (
+                        <p className="mt-4 text-sm text-amber-800">To save this line, add {missing(e).join(" and ")}.</p>
                       )}
                       {list.length > 1 && (
                         <button
@@ -302,10 +313,12 @@ export default function PastRecords() {
                 </button>
                 <div className="mt-10 flex items-center gap-4">
                   {back}
-                  {next(step === chosen.length ? "Review" : "Next year", () => setStep(step + 1))}
-                  <button type="button" onClick={() => setStep(step + 1)} className="text-slate-500 hover:text-slate-800">
-                    Skip {year}
-                  </button>
+                  {next(step === chosen.length ? "Review" : "Next year", () => setStep(step + 1), yearBlocked)}
+                  {!list.some(started) && (
+                    <button type="button" onClick={() => setStep(step + 1)} className="text-slate-500 hover:text-slate-800">
+                      Skip {year}
+                    </button>
+                  )}
                 </div>
               </>
             )}
@@ -314,7 +327,7 @@ export default function PastRecords() {
               <>
                 <h2 className="mt-4 font-serif text-4xl">Check and save</h2>
                 {filled.length === 0 ? (
-                  <p className="mt-3 text-lg text-slate-600">Nothing to save yet — go back and add a program and prison for at least one year.</p>
+                  <p className="mt-3 text-lg text-slate-600">You skipped every year, so there is nothing to save. Go back to add one, or come back when you find old records.</p>
                 ) : (
                   <>
                     <p className="mt-3 text-lg text-slate-600">These are saved as estimates for each year, so everyone can tell them apart from exact records.</p>
