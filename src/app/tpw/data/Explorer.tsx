@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { toCsv } from "@/lib/csv";
 import { groupTotals, missingFields, participantHours, programYear, right4Signals, type Run, type Totals } from "@/lib/runs";
+import { CompletenessCard, RunCompletionCard, TrendCard } from "../charts";
 import FilterBar, { useFilteredRuns, type WireRun } from "../FilterBar";
 
 /**
@@ -125,7 +126,13 @@ export default function Explorer({ wire }: { wire: WireRun[] }) {
 
       <FilterBar all={all} filters={filters} setFilters={setFilters} />
 
-      <section aria-label="Grouping" className="mt-5 flex flex-wrap items-end gap-6">
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <TrendCard runs={runs} />
+        <RunCompletionCard runs={runs} />
+      </div>
+      <CompletenessCard runs={runs} className="mt-6" />
+
+      <section aria-label="Grouping" className="mt-8 flex flex-wrap items-end gap-6">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Group by</p>
           <div role="radiogroup" className="mt-1 inline-flex flex-wrap gap-1 rounded-lg border border-slate-200 bg-white p-1">

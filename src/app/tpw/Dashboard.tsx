@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { SAVINGS_INPUTS, savingsEstimate, timeliness, yearTrend } from "@/lib/dashboard";
+import { SAVINGS_INPUTS, savingsEstimate, timeliness } from "@/lib/dashboard";
 import { groupTotals, totals } from "@/lib/runs";
 import AiSummary from "./AiSummary";
+import { BRAND, ReadinessCard, SUN } from "./charts";
 import FilterBar, { useFilteredRuns, type WireRun } from "./FilterBar";
 
-const BRAND = "#2f3190";
-const SUN = "#e3a92a";
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 const money = (n: number) => `$${fmt(n)}`;
 const pct = (x: number | null) => (x === null ? "—" : `${(x * 100).toFixed(1)}%`);
@@ -73,23 +71,6 @@ function Kpi({ icon, label, value, sub }: { icon: React.ReactNode; label: string
   );
 }
 
-function FunnelBar({ label, value, of }: { label: string; value: number; of: number }) {
-  const share = of ? value / of : 0;
-  return (
-    <div>
-      <div className="flex justify-between text-sm">
-        <span>{label}</span>
-        <span className="font-medium tabular-nums">
-          {fmt(value)} · {pct(share)}
-        </span>
-      </div>
-      <div className="mt-1.5 h-3 rounded-full bg-slate-100">
-        <div className="h-full rounded-full bg-brand-800" style={{ width: `${share * 100}%` }} />
-      </div>
-    </div>
-  );
-}
-
 function Timely({ title, sub, rows, max }: { title: string; sub: string; rows: { org: string; days: number }[]; max: number }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5">
@@ -119,7 +100,6 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
   const { all, runs, filters: f, setFilters } = useFilteredRuns(wire);
 
   const t = totals(runs);
-  const trend = yearTrend(runs);
   const savings = savingsEstimate(t.completed);
   const timely = timeliness(runs);
   // Fastest and slowest never overlap: with few organizations, each gets half.
@@ -127,7 +107,6 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
   const slowest = timely.slice(fastest.length).reverse().slice(0, 3);
   const slowestDays = timely.length ? timely[timely.length - 1].days : 0;
   const orgCount = new Set(runs.map((r) => r.orgName)).size;
-  const chart = trend.map((y) => ({ ...y, label: y.openRuns ? `${y.year}*` : String(y.year) }));
 
   // Each program: completion in finished runs and programming hours per person who completed.
   const programs = groupTotals(runs, (r) => `${r.programName}\u0000${r.orgName}`)
@@ -198,47 +177,6 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
       </section>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <section className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-serif text-xl text-slate-900">{trend.length > 1 ? "Participation over time" : "Participation funnel"}</h2>
-          {trend.length > 1 ? (
-            <>
-              <div className="mt-1 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-600">
-                <span>By program year</span>
-                <span className="flex items-center gap-2">
-                  <span className="h-1 w-5 rounded" style={{ background: BRAND }} /> Enrolled
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="h-1 w-5 rounded" style={{ background: SUN }} /> Completed
-                </span>
-              </div>
-              <div className="mt-3 h-60">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chart} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
-                    <CartesianGrid stroke="#e2e8f0" vertical={false} />
-                    <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: "#475569", fontSize: 12 }} />
-                    <YAxis tickLine={false} axisLine={false} tick={{ fill: "#475569", fontSize: 12 }} tickFormatter={(v: number) => fmt(v)} width={48} />
-                    <Tooltip
-                      formatter={(v, name) => [fmt(Number(v)), name === "participants" ? "Enrolled" : "Completed"]}
-                      labelFormatter={(_, p) => {
-                        const y = p?.[0]?.payload as (typeof chart)[number] | undefined;
-                        return y ? `${y.year} · completion ${pct(y.completionRate)}${y.openRuns ? ` · ${y.openRuns} runs still open` : ""}` : "";
-                      }}
-                    />
-                    <Line type="monotone" dataKey="participants" stroke={BRAND} strokeWidth={2.5} dot={{ r: 4, fill: BRAND }} activeDot={{ r: 6 }} />
-                    <Line type="monotone" dataKey="completed" stroke={SUN} strokeWidth={2.5} dot={{ r: 4, fill: SUN }} activeDot={{ r: 6 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-              {chart.some((y) => y.openRuns) && <p className="mt-2 text-xs text-slate-500">* Some cohorts that year are still open, so their completions aren&apos;t in yet.</p>}
-            </>
-          ) : (
-            <div className="mt-4 space-y-5">
-              <FunnelBar label="Enrolled" value={t.participants} of={t.participants} />
-              <FunnelBar label="Completed" value={t.completed} of={t.participants} />
-              {trend.length === 1 && <p className="text-xs text-slate-500">One program year selected — pick more years to see the trend.</p>}
-            </div>
-          )}
-        </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-5">
           <h2 className="font-serif text-xl text-slate-900">Programs: completion and dose</h2>
@@ -277,6 +215,7 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
           {programs.length === 0 && <p className="mt-4 text-sm text-slate-500">No programs in this view.</p>}
           <p className="mt-4 text-xs text-slate-500">Groups under 20 participants are too small to compare.</p>
         </section>
+        <ReadinessCard runs={runs} />
       </div>
 
       <AiSummary filters={f} />

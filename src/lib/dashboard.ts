@@ -3,7 +3,7 @@
  * filters, the yearly trend, the avoided-returns estimate and reporting
  * timeliness. No I/O.
  */
-import { programYear, totals, type Run } from "./runs";
+import { missingFields, priorService, programYear, right4Signals, totals, type Run } from "./runs";
 
 export interface Filters {
   facilities: string[];
@@ -96,4 +96,73 @@ export function timeliness(runs: Run[]) {
   return [...byOrg]
     .map(([org, days]) => ({ org, days: median(days), reports: days.length }))
     .sort((a, b) => a.days - b.days || a.org.localeCompare(b.org));
+}
+
+/** Year of the next RIGHT 4.0 application; prior service counts the five years before it. */
+export const RIGHT4_APPLICATION_YEAR = 2026;
+
+/**
+ * RIGHT 4.0 readiness per organization: prior service (programming in at least
+ * 2 of the 5 preceding years) and evidence for the additional half-points.
+ * Budget points (1–3) depend on the organization's own budget, which Spera
+ * doesn't hold.
+ */
+export function right4Readiness(runs: Run[], applicationYear = RIGHT4_APPLICATION_YEAR) {
+  const byOrg = new Map<string, Run[]>();
+  for (const r of runs) byOrg.set(r.orgName, [...(byOrg.get(r.orgName) ?? []), r]);
+  return [...byOrg]
+    .map(([org, rs]) => {
+      const ps = priorService(rs, applicationYear);
+      const s = right4Signals(rs);
+      const next: string[] = [];
+      if (!ps.meets) next.push(`Needs programming in ${2 - ps.yearsWithProgramming.length} more of ${ps.window[0]}–${ps.window[4]}`);
+      if (s.additionalPoints < 1) {
+        const missing = [
+          !s.criteria.underserved && "an underserved prison",
+          !s.criteria.specialPopulations && "RHU/EOP/MHCB",
+          !s.criteria.nonEnglish && "a non-English program",
+        ].filter(Boolean);
+        next.push(`+${(1 - s.additionalPoints).toFixed(1)} more possible with ${missing.join(" or ")}`);
+      }
+      return {
+        org,
+        window: ps.window,
+        yearsWithProgramming: ps.yearsWithProgramming,
+        meetsPriorService: ps.meets,
+        underservedInstitutions: s.underservedInstitutions,
+        specialPopulations: s.criteria.specialPopulations,
+        languages: s.languages,
+        additionalPoints: s.additionalPoints,
+        next,
+      };
+    })
+    .sort((a, b) => a.org.localeCompare(b.org));
+}
+
+/** Completion of each finished run with known counts — one point per cohort. */
+export function runCompletion(runs: Run[]) {
+  return runs
+    .filter((r) => r.status === "Completed" && r.participants && r.completed !== null)
+    .map((r) => ({
+      id: r.id,
+      org: r.orgName,
+      program: r.programName,
+      prison: r.facilityCode,
+      year: programYear(r),
+      participants: r.participants!,
+      rate: r.completed! / r.participants!,
+    }));
+}
+
+/** Runs with every number filled in, per organization, and which numbers are missing. */
+export function completeness(runs: Run[]) {
+  const byOrg = new Map<string, Run[]>();
+  for (const r of runs) byOrg.set(r.orgName, [...(byOrg.get(r.orgName) ?? []), r]);
+  return [...byOrg]
+    .map(([org, rs]) => {
+      const missing = new Map<string, number>();
+      for (const r of rs) for (const m of missingFields(r)) missing.set(m, (missing.get(m) ?? 0) + 1);
+      return { org, runs: rs.length, complete: rs.filter((r) => missingFields(r).length === 0).length, missing: [...missing].sort((a, b) => b[1] - a[1]) };
+    })
+    .sort((a, b) => a.complete / a.runs - b.complete / b.runs || a.org.localeCompare(b.org));
 }

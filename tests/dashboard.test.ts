@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterRuns, NO_FILTERS, savingsEstimate, timeliness, yearTrend } from "../src/lib/dashboard";
+import { completeness, filterRuns, NO_FILTERS, right4Readiness, runCompletion, savingsEstimate, timeliness, yearTrend } from "../src/lib/dashboard";
 import type { Run } from "../src/lib/runs";
 
 const run = (o: Partial<Run>): Run => ({
@@ -73,5 +73,30 @@ describe("reporting timeliness", () => {
       { org: "Other Org", days: 5, reports: 1 },
       { org: "Defy Ventures", days: 20, reports: 3 },
     ]);
+  });
+});
+
+describe("RIGHT 4.0 readiness", () => {
+  it("checks prior service and says what would add points", () => {
+    const [r] = right4Readiness([run({ id: "1" }), run({ id: "2", startDate: new Date("2025-03-01") })]);
+    expect(r).toMatchObject({ org: "Defy Ventures", meetsPriorService: true, yearsWithProgramming: [2024, 2025], additionalPoints: 0.5 });
+    expect(r.next).toEqual(["+0.5 more possible with RHU/EOP/MHCB or a non-English program"]);
+  });
+  it("flags missing prior service", () => {
+    const [r] = right4Readiness([run({ id: "1" })]);
+    expect(r.next[0]).toBe("Needs programming in 1 more of 2021–2025");
+  });
+});
+
+describe("per-run completion and completeness", () => {
+  it("keeps only finished runs with known counts", () => {
+    expect(runCompletion(runs).map((r) => [r.id, r.rate])).toEqual([
+      ["a", 0.75],
+      ["b", 0.8],
+    ]);
+  });
+  it("counts complete runs and missing fields per organization", () => {
+    const c = completeness([run({ id: "1" }), run({ id: "2", totalHours: null }), run({ id: "3", orgName: "Other Org" })]);
+    expect(c[0]).toEqual({ org: "Defy Ventures", runs: 2, complete: 1, missing: [["programming hours", 1]] });
   });
 });
