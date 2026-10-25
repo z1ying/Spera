@@ -18,7 +18,7 @@ const DIMS: { id: Dim; label: string }[] = [
   { id: "org", label: "Organization" },
   { id: "program", label: "Program" },
   { id: "prison", label: "Prison" },
-  { id: "year", label: "Program year" },
+  { id: "year", label: "Year" },
   { id: "status", label: "Status" },
 ];
 const keyOf: Record<Dim, (r: Run) => string> = {
@@ -253,7 +253,7 @@ export default function Explorer({ wire }: { wire: WireRun[] }) {
                     {h}
                   </th>
                 ))}
-                {["Program year", "Total programming hours", "Participants", "Completed", "Total participant programming hours"].map((h) => (
+                {["Year", "Total programming hours", "Participants", "Completed", "Total participant programming hours"].map((h) => (
                   <th key={h} className="py-1 pr-3 text-right align-bottom">
                     {h}
                   </th>

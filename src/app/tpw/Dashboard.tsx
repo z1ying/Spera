@@ -71,19 +71,18 @@ function Kpi({ icon, label, value, sub }: { icon: React.ReactNode; label: string
   );
 }
 
-function Timely({ title, sub, rows, max }: { title: string; sub: string; rows: { org: string; days: number }[]; max: number }) {
+function TimelyList({ title, rows, max }: { title: string; rows: { org: string; days: number }[]; max: number }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5">
+    <div className="mt-4">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">{title}</p>
-      <p className="mt-1 text-sm text-slate-600">{sub}</p>
-      <ul className="mt-4 space-y-4">
+      <ul className="mt-2 space-y-3">
         {rows.map((r) => (
           <li key={r.org}>
             <div className="flex justify-between text-sm">
               <span>{r.org}</span>
               <span className="font-semibold tabular-nums">{fmt(r.days)} days</span>
             </div>
-            <div className="mt-2 h-2 rounded-full bg-slate-100">
+            <div className="mt-1.5 h-2 rounded-full bg-slate-100">
               <div className="h-full rounded-full bg-slate-900" style={{ width: `${max ? Math.max(4, (r.days / max) * 100) : 0}%` }} />
             </div>
           </li>
@@ -143,54 +142,50 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
 
       <AiSummary filters={f} />
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <ReadinessCard runs={runs} />
-        <Card title="Estimated savings from avoided returns" sub="From the people who completed a program in this view">
-          <div className="mt-4 grid gap-3">
-            <div className="rounded-xl bg-sun-200 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-800">Conservative (marginal cost)</p>
-              <p className="mt-1 font-serif text-3xl tabular-nums text-slate-900">{money(savings.conservative)}</p>
-              <p className="mt-1 text-sm text-slate-800">
-                at {money(SAVINGS_INPUTS.marginalCost)} per person-year <Cite n={3} href={SOURCES.lao} />
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Long-run capacity (average cost)</p>
-              <p className="mt-1 font-serif text-3xl tabular-nums text-slate-900">{money(savings.capacity)}</p>
-              <p className="mt-1 text-sm text-slate-600">
-                at {money(SAVINGS_INPUTS.averageCost)} per person-year <Cite n={3} href={SOURCES.lao} />
-              </p>
-            </div>
+      <section className="mt-8">
+        <h2 className="font-serif text-2xl text-slate-900">Estimated savings from avoided returns</h2>
+        <div className="mt-3 grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl bg-sun-200 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-800">Conservative (marginal cost)</p>
+            <p className="mt-2 font-serif text-3xl tabular-nums text-slate-900">{money(savings.conservative)}</p>
+            <p className="mt-1 text-sm text-slate-800">
+              at {money(SAVINGS_INPUTS.marginalCost)} per person-year <Cite n={3} href={SOURCES.lao} />
+            </p>
           </div>
-          <p className="mt-3 text-xs leading-relaxed text-slate-600">
-            {fmt(t.completed)} people completed a program. If they return to prison at the rate CDCR reports for people who earned
-            rehabilitative credits ({pct(SAVINGS_INPUTS.creditRate)}) instead of the no-credit rate ({pct(SAVINGS_INPUTS.noCreditRate)}){" "}
-            <Cite n={2} href={SOURCES.cdcr} />, about {fmt(savings.avoidedReturns)} returns are avoided — one year of incarceration each.
-            Association, not causation.
-          </p>
-        </Card>
-      </div>
+          <div className="rounded-xl border border-slate-200 bg-white p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Long-run capacity (average cost)</p>
+            <p className="mt-2 font-serif text-3xl tabular-nums text-slate-900">{money(savings.capacity)}</p>
+            <p className="mt-1 text-sm text-slate-600">
+              at {money(SAVINGS_INPUTS.averageCost)} per person-year <Cite n={3} href={SOURCES.lao} />
+            </p>
+          </div>
+        </div>
+        <p className="mt-3 text-xs leading-relaxed text-slate-600">
+          Based on the current filtered view: {fmt(t.completed)} people completed a program. If they return to prison at the rate CDCR
+          reports for people who earned rehabilitative credits ({pct(SAVINGS_INPUTS.creditRate)}) instead of the no-credit rate (
+          {pct(SAVINGS_INPUTS.noCreditRate)}) <Cite n={2} href={SOURCES.cdcr} />, about {fmt(savings.avoidedReturns)} returns are avoided — one year
+          of incarceration each. Association, not causation.
+        </p>
+      </section>
 
-      {timely.length > 0 && (
-        <section className="mt-10">
-          <h2 className="font-serif text-2xl text-slate-900">Reporting timeliness</h2>
-          <p className="mt-1 text-sm text-slate-600">How long organizations take to report data after a program ends. This measures timing, not program results.</p>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
+      <div className={`mt-8 grid gap-6 ${timely.length > 0 ? "lg:grid-cols-2" : ""}`}>
+        {timely.length > 0 && (
+          <Card
+            title="Reporting timeliness"
+            sub="Median days from a program's end to its report on Spera. Measures timing, not program results; imported records and past-year estimates are excluded."
+          >
             {fastest.length > 0 && slowest.length > 0 ? (
               <>
-                <Timely title="Most timely reports" sub="Shortest time between program end and report" rows={fastest} max={slowestDays} />
-                <Timely title="Least timely reports" sub="Organizations TPW may want to check in with" rows={slowest} max={slowestDays} />
+                <TimelyList title="Most timely" rows={fastest} max={slowestDays} />
+                <TimelyList title="Least timely — TPW may want to check in" rows={slowest} max={slowestDays} />
               </>
             ) : (
-              <Timely title="Time to report" sub="Only one organization has reported on Spera so far" rows={timely} max={slowestDays} />
+              <TimelyList title="Only one organization has reported on Spera so far" rows={timely} max={slowestDays} />
             )}
-          </div>
-          <p className="mt-4 text-xs text-slate-600">
-            Timeliness is the median number of days between a program&apos;s end date and the date the organization submitted it on Spera.
-            Imported records and past-year estimates are excluded.
-          </p>
-        </section>
-      )}
+          </Card>
+        )}
+        <ReadinessCard runs={runs} />
+      </div>
 
       <footer className="mt-12 space-y-2 text-xs leading-relaxed text-slate-500">
         <p>
