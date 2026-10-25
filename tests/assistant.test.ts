@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { askGemma, AssistantUnavailable, MAX_MESSAGES, OPEN_GRANT, orgFacts, requestBody, systemPrompt, trimHistory } from "../src/lib/grantAssistant";
+import { answerText, askGemma, AssistantUnavailable, MAX_MESSAGES, OPEN_GRANT, orgFacts, requestBody, systemPrompt, trimHistory } from "../src/lib/grantAssistant";
 import type { Run } from "../src/lib/runs";
 
 const run = (o: Partial<Run>): Run => ({
@@ -65,7 +65,22 @@ describe("conversation handling", () => {
     const fake = (async () =>
       new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: " Draft text " }] } }] }))) as unknown as typeof fetch;
     await expect(askGemma("s", [{ role: "user", content: "hi" }], fake)).resolves.toBe("Draft text");
+    let calls = 0;
+    const busyThenOk = (async () =>
+      ++calls === 1
+        ? new Response("{}", { status: 503 })
+        : new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: "ok" }] } }] }))) as unknown as typeof fetch;
+    await expect(askGemma("s", [{ role: "user", content: "hi" }], busyThenOk, 0)).resolves.toBe("ok");
+    expect(calls).toBe(2);
     if (saved === undefined) delete process.env.GEMINI_API_KEY;
     else process.env.GEMINI_API_KEY = saved;
+  });
+});
+
+describe("model output", () => {
+  it("drops Gemma's thinking and keeps only the answer", () => {
+    expect(
+      answerText({ candidates: [{ content: { parts: [{ text: "* plan the reply", thought: true }, { text: " The draft. " }] } }] }),
+    ).toBe("The draft.");
   });
 });

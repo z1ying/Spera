@@ -306,3 +306,17 @@ Decisions:
   9757db7 and the code of cf6da47. Kept: "My report" naming and the
   four-point privacy section, with the visibility point reworded to say reports
   are open during the pilot and private per-organization links are the next step.
+
+## 2026-10-25 — grant assistant tested against the real Gemma API
+
+- Key works; available Gemma models: gemma-4-31b-it, gemma-4-26b-a4b-it.
+- Gemma 4 returns its reasoning as parts marked `thought: true`; these were
+  showing in replies. Now filtered (`answerText`).
+- Default model switched to gemma-4-26b-a4b-it with thinkingLevel "minimal":
+  ~1 s for a short reply vs 13–21 s on 31B; full drafts take 5–16 s.
+  (31B rejects thinking levels other than "minimal"; a 400 retries without it.)
+- One automatic retry on 503/429 (the service returned 503 once in testing).
+- Content fixes after reviewing real drafts: budget points come from the
+  organization's own budget (the model had said "request amount"); RHU/EOP/MHCB
+  spelled out (it had guessed wrong expansions); prompt forbids describing
+  what a program teaches or its effects (it had invented Defy's curriculum).
