@@ -320,3 +320,10 @@ Decisions:
   organization's own budget (the model had said "request amount"); RHU/EOP/MHCB
   spelled out (it had guessed wrong expansions); prompt forbids describing
   what a program teaches or its effects (it had invented Defy's curriculum).
+
+## 2026-10-25 — TPW passcode every time
+
+- Leaving the TPW pages signs TPW staff out (SiteHeader calls the logout route
+  silently), so the TPW switch asks for the passcode on every entry. Session
+  cookie also capped at 30 minutes. Verified: sign in → Organization view →
+  TPW shows the passcode form; export returns 401 after leaving.

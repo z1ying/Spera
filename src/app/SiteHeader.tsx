@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const ORG_LINKS = [
   { href: "/", label: "Submit data" },
@@ -45,7 +46,16 @@ function WaveBand() {
  */
 export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
   const path = usePathname();
+  const router = useRouter();
   const tpwArea = path.startsWith("/tpw");
+
+  // Security: TPW access lasts only while on the TPW pages. Stepping back to
+  // the organization side signs out, so the TPW switch asks for the passcode
+  // every time.
+  useEffect(() => {
+    if (tpwArea || !tpwSignedIn) return;
+    fetch("/api/tpw/logout", { method: "POST", headers: { "x-spera-silent": "1" } }).finally(() => router.refresh());
+  }, [tpwArea, tpwSignedIn, router]);
   const active = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
   const link = (href: string, label: string) => (
     <Link

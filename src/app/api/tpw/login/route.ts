@@ -14,7 +14,9 @@ export async function POST(req: Request) {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    // No maxAge: a session cookie, so closing the browser signs TPW staff out.
+    // Short-lived: leaving the TPW pages signs out (SiteHeader); this caps a
+    // forgotten tab at 30 minutes.
+    maxAge: 60 * 30,
   });
   return res;
 }
