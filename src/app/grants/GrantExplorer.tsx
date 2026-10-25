@@ -107,7 +107,7 @@ export default function GrantExplorer({ items }: { items: TypeWithRounds[] }) {
       <h1 className="text-2xl font-semibold">CDCR grant programs</h1>
 
       {/* Auto-scrolling strip: the cards are drawn twice and the track slides by half its width, so it loops seamlessly. */}
-      <div className="marquee -mx-3 mt-2 overflow-hidden px-3 py-3" role="tablist" aria-label="Grant programs">
+      <div className="marquee mt-2 overflow-hidden rounded-2xl py-3" role="tablist" aria-label="Grant programs">
         <div className="marquee-track flex w-max">
           {[0, 1].map((copy) =>
             items.map(({ type, rounds }) => {
