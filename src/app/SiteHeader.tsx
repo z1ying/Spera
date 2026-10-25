@@ -90,7 +90,7 @@ export default function SiteHeader({ tpwSignedIn }: { tpwSignedIn: boolean }) {
               <>
                 {tpwSignedIn && link("/tpw", "Dashboard")}
                 {tpwSignedIn && link("/tpw/data", "Data explorer")}
-                <Link href="/" className="text-slate-600 hover:text-slate-900">
+                <Link href="/" className="px-3 py-1.5 text-slate-800 underline decoration-sun-400 decoration-2 underline-offset-8 hover:text-slate-950">
                   Organization view
                 </Link>
                 {tpwSignedIn && (
