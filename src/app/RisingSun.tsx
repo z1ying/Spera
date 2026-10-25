@@ -3,20 +3,20 @@
 import { useEffect, useRef } from "react";
 
 /**
- * The sun behind the privacy note rises and drifts as the page scrolls, set
- * against a horizon line. Scroll-linked (not timed), updated once per frame;
- * stays still under prefers-reduced-motion.
+ * A soft yellow half-ring standing on a horizon line, behind the content. It
+ * rises as the page scrolls down and sinks back as it scrolls up — linked to
+ * scroll position, updated once per frame, still under prefers-reduced-motion.
  */
 export default function RisingSun() {
-  const sun = useRef<SVGSVGElement>(null);
+  const ring = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     let frame = 0;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const update = () => {
       frame = 0;
-      const p = Math.min(1, window.scrollY / 500); // 0 at the top → 1 after 500px
-      if (sun.current) sun.current.style.transform = `translate(${p * 60}px, ${(1 - p) * 34}px)`;
+      const p = reduced ? 1 : Math.min(1, window.scrollY / 450); // 0 at the top → 1 after 450px
+      if (ring.current) ring.current.style.transform = `translateY(${(1 - p) * 70}%)`;
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -30,15 +30,13 @@ export default function RisingSun() {
   }, []);
 
   return (
-    <div className="relative h-14 overflow-hidden" aria-hidden>
-      <svg
-        ref={sun}
-        viewBox="0 0 520 260"
-        className="absolute left-[34%] top-2 h-24 w-[26rem] will-change-transform"
-        style={{ transform: "translate(0px, 34px)" }}
-      >
-        <circle cx="260" cy="260" r="240" fill="#f6d77e" opacity="0.5" />
-      </svg>
+    <div className="relative h-10" aria-hidden>
+      {/* clipped at the horizon, so the ring sinks below it rather than over the content underneath */}
+      <div className="pointer-events-none absolute bottom-0 left-[38%] -z-10 h-56 w-[28rem] overflow-hidden">
+        <svg ref={ring} viewBox="0 0 400 200" className="absolute bottom-0 h-full w-full will-change-transform" style={{ transform: "translateY(70%)" }}>
+          <path d="M28 200A172 172 0 0 1 372 200" fill="none" stroke="#f6d77e" strokeWidth="26" opacity="0.6" />
+        </svg>
+      </div>
       <div className="absolute bottom-0 right-0 h-1.5 w-3/4 rounded-full bg-slate-200" />
     </div>
   );
