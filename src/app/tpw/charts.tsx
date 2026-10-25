@@ -6,7 +6,7 @@
  * and data completeness. Each
  * reads only the runs in the current filtered view.
  */
-import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from "recharts";
+import { Bar, CartesianGrid, Cell, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from "recharts";
 import { completeness, right4Readiness, runCompletion, yearTrend } from "@/lib/dashboard";
 import { groupTotals, totals, type Run } from "@/lib/runs";
 
@@ -67,7 +67,7 @@ export function TrendCard({ runs }: { runs: Run[] }) {
       title="Participation over time"
       sub={
         <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
-          <span>By program year</span>
+          <span>By year · columns with trend lines</span>
           <Key color={BRAND}>Enrolled</Key>
           <Key color={SUN}>Completed</Key>
         </div>
@@ -75,23 +75,36 @@ export function TrendCard({ runs }: { runs: Run[] }) {
     >
       <div className="mt-3 h-60">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chart} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
+          <ComposedChart data={chart} margin={{ top: 8, right: 16, bottom: 0, left: 0 }} barGap={4} barCategoryGap="28%">
             <CartesianGrid stroke="#e2e8f0" vertical={false} />
             <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: "#475569", fontSize: 12 }} />
             <YAxis tickLine={false} axisLine={false} tick={{ fill: "#475569", fontSize: 12 }} tickFormatter={(v: number) => fmt(v)} width={48} />
             <Tooltip
+              cursor={{ fill: "#f1f5f9" }}
               formatter={(v, name) => [fmt(Number(v)), name === "participants" ? "Enrolled" : "Completed"]}
               labelFormatter={(_, p) => {
                 const y = p?.[0]?.payload as (typeof chart)[number] | undefined;
                 return y ? `${y.year} · completion ${pct(y.completionRate)}${y.openRuns ? ` · ${y.openRuns} runs still open` : ""}` : "";
               }}
             />
-            <Line type="monotone" dataKey="participants" stroke={BRAND} strokeWidth={2.5} dot={{ r: 4, fill: BRAND }} activeDot={{ r: 6 }} />
-            <Line type="monotone" dataKey="completed" stroke={SUN} strokeWidth={2.5} dot={{ r: 4, fill: SUN }} activeDot={{ r: 6 }} />
-          </LineChart>
+            <Bar dataKey="participants" radius={[4, 4, 0, 0]} maxBarSize={36} legendType="none">
+              {chart.map((y) => (
+                <Cell key={y.year} fill={BRAND} fillOpacity={y.openRuns ? 0.35 : 0.85} />
+              ))}
+            </Bar>
+            <Bar dataKey="completed" radius={[4, 4, 0, 0]} maxBarSize={36} legendType="none">
+              {chart.map((y) => (
+                <Cell key={y.year} fill={SUN} fillOpacity={y.openRuns ? 0.35 : 0.9} />
+              ))}
+            </Bar>
+            <Line type="monotone" dataKey="participants" stroke={BRAND} strokeWidth={2} dot={{ r: 3, fill: BRAND }} activeDot={false} tooltipType="none" />
+            <Line type="monotone" dataKey="completed" stroke={SUN} strokeWidth={2} dot={{ r: 3, fill: SUN }} activeDot={false} tooltipType="none" />
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
-      {chart.some((y) => y.openRuns) && <p className="mt-2 text-xs text-slate-500">* Some cohorts that year are still open, so their completions aren&apos;t in yet.</p>}
+      {chart.some((y) => y.openRuns) && (
+        <p className="mt-2 text-xs text-slate-500">* Lighter columns: some cohorts that year are still open, so their completions aren&apos;t in yet.</p>
+      )}
     </Card>
   );
 }
