@@ -6,6 +6,7 @@ import { GRANTS } from "@/lib/grants";
 import { fmt } from "@/lib/orgSummary";
 import { BUDGET_TIERS } from "@/lib/runs";
 import { OrgPicker, useOrgSummary } from "../../useOrg";
+import DocumentsTable from "./DocumentsTable";
 
 const open = GRANTS.grants.find((g) => g.status === "open")!;
 
@@ -117,20 +118,7 @@ export default function GrantCheck() {
         </div>
       )}
 
-      <section id="documents" className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
-        <h2 className="text-lg font-semibold">What to prepare</h2>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-          {open.documents?.map((d) => (
-            <li key={d}>
-              <label className="flex items-start gap-2 text-sm">
-                <input type="checkbox" className="mt-0.5 h-4 w-4 accent-brand-800" />
-                <span>{d}</span>
-              </label>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3 text-xs text-slate-500">{open.notes?.join(" ")}</p>
-      </section>
+      <DocumentsTable org={org} notes={open.notes} />
     </>
   );
 }
