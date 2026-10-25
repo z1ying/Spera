@@ -2,12 +2,13 @@
 
 /**
  * Chart cards for the TPW pages (design doc §28): participation over time,
- * RIGHT 4.0 readiness, completion per cohort, and data completeness. Each
+ * RIGHT 4.0 readiness, program completion and dose, completion per cohort,
+ * and data completeness. Each
  * reads only the runs in the current filtered view.
  */
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from "recharts";
 import { completeness, right4Readiness, runCompletion, yearTrend } from "@/lib/dashboard";
-import { totals, type Run } from "@/lib/runs";
+import { groupTotals, totals, type Run } from "@/lib/runs";
 
 export const BRAND = "#2f3190";
 export const SUN = "#e3a92a";
@@ -213,11 +214,10 @@ export function RunCompletionCard({ runs }: { runs: Run[] }) {
 }
 
 /** Share of each organization's runs with every number filled in, and what's missing most. */
-export function CompletenessCard({ runs, className }: { runs: Run[]; className?: string }) {
+export function CompletenessCard({ runs }: { runs: Run[] }) {
   const rows = completeness(runs);
   return (
     <Card
-      className={className}
       title="Data completeness"
       sub={
         <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
@@ -246,6 +246,59 @@ export function CompletenessCard({ runs, className }: { runs: Run[]; className?:
         ))}
       </ul>
       {rows.length === 0 && <p className="mt-4 text-sm text-slate-500">No runs in this view.</p>}
+    </Card>
+  );
+}
+
+/** Each program: completion in finished runs and programming hours per person who completed. */
+export function ProgramsCard({ runs }: { runs: Run[] }) {
+  const programs = groupTotals(runs, (r) => `${r.programName}\u0000${r.orgName}`)
+    .map((p) => {
+      const [name, org] = p.key.split("\u0000");
+      return {
+        name,
+        org,
+        participants: p.totals.participants,
+        rate: p.totals.completionRate,
+        hours: p.totals.completed ? p.totals.participantHours / p.totals.completed : null,
+      };
+    })
+    .sort((a, b) => b.participants - a.participants);
+  const maxHours = Math.max(0, ...programs.map((p) => p.hours ?? 0));
+  const cols = "grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-4";
+  return (
+    <Card title="Programs: completion and dose" sub={`Completion in finished runs · programming hours per person who completed · network completion ${pct(totals(runs).completionRate)}`}>
+      <div className={`mt-4 ${cols} text-xs font-semibold uppercase tracking-wide text-slate-500`}>
+        <span>Program</span>
+        <span>Completion</span>
+        <span>Hours per completer</span>
+      </div>
+      <ul className="mt-2 space-y-3">
+        {programs.map((p) => (
+          <li key={`${p.name}|${p.org}`} className={`${cols} items-center text-sm`}>
+            <span className="min-w-0">
+              <span className="block truncate font-medium text-slate-900">{p.name}</span>
+              <span className="block truncate text-xs text-slate-500">
+                {p.org} · {fmt(p.participants)} participants{p.participants < 20 ? " · small group" : ""}
+              </span>
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="h-2.5 flex-1 rounded-full bg-slate-100">
+                <span className="block h-full rounded-full" style={{ width: `${(p.rate ?? 0) * 100}%`, background: BRAND }} />
+              </span>
+              <span className="w-12 text-right tabular-nums">{pct(p.rate)}</span>
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="h-2.5 flex-1 rounded-full bg-slate-100">
+                <span className="block h-full rounded-full" style={{ width: `${maxHours && p.hours ? (p.hours / maxHours) * 100 : 0}%`, background: SUN }} />
+              </span>
+              <span className="w-12 text-right tabular-nums">{p.hours === null ? "—" : fmt(p.hours)}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      {programs.length === 0 && <p className="mt-4 text-sm text-slate-500">No programs in this view.</p>}
+      <p className="mt-4 text-xs text-slate-500">Groups under 20 participants are too small to compare.</p>
     </Card>
   );
 }

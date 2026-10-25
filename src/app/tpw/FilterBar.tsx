@@ -21,7 +21,20 @@ export function useFilteredRuns(wire: WireRun[]) {
   return { all, runs, filters, setFilters };
 }
 
-export default function FilterBar({ all, filters: f, setFilters: setF }: { all: Run[]; filters: Filters; setFilters: (f: Filters) => void }) {
+type Field = keyof Filters;
+
+/** Filters for the TPW pages; `fields` picks which ones to show (all by default). */
+export default function FilterBar({
+  all,
+  filters: f,
+  setFilters: setF,
+  fields = ["facilities", "orgs", "programs", "years"],
+}: {
+  all: Run[];
+  filters: Filters;
+  setFilters: (f: Filters) => void;
+  fields?: Field[];
+}) {
   const options = useMemo(() => {
     const uniq = <T,>(xs: T[]) => [...new Set(xs)];
     const facilities = uniq(all.map((r) => r.facilityCode))
@@ -37,11 +50,15 @@ export default function FilterBar({ all, filters: f, setFilters: setF }: { all: 
 
   return (
     <section aria-label="Filters" className="mt-6 print:hidden">
-      <div className="grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]">
-        <MultiSelect label="Facility" options={options.facilities} value={f.facilities} onChange={(v) => setF({ ...f, facilities: v })} />
-        <MultiSelect label="Organization" options={options.orgs} value={f.orgs} onChange={(v) => setF({ ...f, orgs: v })} />
-        <MultiSelect label="Program" options={options.programs} value={f.programs} onChange={(v) => setF({ ...f, programs: v })} />
-        <MultiSelect label="Year" options={options.years} value={f.years} onChange={(v) => setF({ ...f, years: v })} />
+      <div className={`grid items-end gap-3 sm:grid-cols-2 ${fields.length === 4 ? "lg:grid-cols-[1fr_1fr_1fr_1fr_auto]" : "lg:grid-cols-[minmax(0,16rem)_minmax(0,16rem)_auto]"}`}>
+        {fields.includes("facilities") && (
+          <MultiSelect label="Facility" options={options.facilities} value={f.facilities} onChange={(v) => setF({ ...f, facilities: v })} />
+        )}
+        {fields.includes("years") && <MultiSelect label="Year" options={options.years} value={f.years} onChange={(v) => setF({ ...f, years: v })} />}
+        {fields.includes("orgs") && <MultiSelect label="Organization" options={options.orgs} value={f.orgs} onChange={(v) => setF({ ...f, orgs: v })} />}
+        {fields.includes("programs") && (
+          <MultiSelect label="Program" options={options.programs} value={f.programs} onChange={(v) => setF({ ...f, programs: v })} />
+        )}
         <button
           type="button"
           onClick={() => setF(NO_FILTERS)}

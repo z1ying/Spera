@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { toCsv } from "@/lib/csv";
 import { groupTotals, missingFields, participantHours, programYear, right4Signals, type Run, type Totals } from "@/lib/runs";
-import { CompletenessCard, RunCompletionCard, TrendCard } from "../charts";
+import { CompletenessCard, ProgramsCard, RunCompletionCard, TrendCard } from "../charts";
 import FilterBar, { useFilteredRuns, type WireRun } from "../FilterBar";
 
 /**
@@ -128,9 +128,10 @@ export default function Explorer({ wire }: { wire: WireRun[] }) {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <TrendCard runs={runs} />
+        <ProgramsCard runs={runs} />
         <RunCompletionCard runs={runs} />
+        <CompletenessCard runs={runs} />
       </div>
-      <CompletenessCard runs={runs} className="mt-6" />
 
       <section aria-label="Grouping" className="mt-8 flex flex-wrap items-end gap-6">
         <div>

@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { SAVINGS_INPUTS, savingsEstimate, timeliness } from "@/lib/dashboard";
-import { groupTotals, totals } from "@/lib/runs";
+import { totals } from "@/lib/runs";
 import AiSummary from "./AiSummary";
-import { BRAND, ReadinessCard, SUN } from "./charts";
+import { Card, ReadinessCard } from "./charts";
 import FilterBar, { useFilteredRuns, type WireRun } from "./FilterBar";
 
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
@@ -94,8 +94,9 @@ function Timely({ title, sub, rows, max }: { title: string; sub: string; rows: {
 }
 
 // TPW dashboard — design doc §28. Real data only: TPW's program-run reports
-// plus what organizations submit on Spera. TPW staff only. The full tables
-// live in the data explorer (/tpw/data).
+// plus what organizations submit on Spera. TPW staff only. The dashboard is
+// the summary (numbers, AI summary, RIGHT 4.0, savings); analysis charts and
+// tables live in the data explorer (/tpw/data).
 export default function Dashboard({ wire }: { wire: WireRun[] }) {
   const { all, runs, filters: f, setFilters } = useFilteredRuns(wire);
 
@@ -107,21 +108,6 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
   const slowest = timely.slice(fastest.length).reverse().slice(0, 3);
   const slowestDays = timely.length ? timely[timely.length - 1].days : 0;
   const orgCount = new Set(runs.map((r) => r.orgName)).size;
-
-  // Each program: completion in finished runs and programming hours per person who completed.
-  const programs = groupTotals(runs, (r) => `${r.programName}\u0000${r.orgName}`)
-    .map((p) => {
-      const [name, org] = p.key.split("\u0000");
-      return {
-        name,
-        org,
-        participants: p.totals.participants,
-        rate: p.totals.completionRate,
-        hours: p.totals.completed ? p.totals.participantHours / p.totals.completed : null,
-      };
-    })
-    .sort((a, b) => b.participants - a.participants);
-  const maxHours = Math.max(0, ...programs.map((p) => p.hours ?? 0));
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-8 print:max-w-none print:p-0">
@@ -141,7 +127,11 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
         </div>
       </div>
 
-      <FilterBar all={all} filters={f} setFilters={setFilters} />
+      <FilterBar all={all} filters={f} setFilters={setFilters} fields={["years", "orgs"]} />
+      <p className="mt-4 hidden text-sm text-slate-700 print:block">
+        {[f.years.length ? `Program years ${f.years.join(", ")}` : "All program years", f.orgs.length ? f.orgs.join(", ") : "All organizations"].join(" · ")} ·
+        generated {new Date().toISOString().slice(0, 10)}
+      </p>
 
       <section aria-label="Core numbers" className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi icon={ICONS.people} label="Participants" value={fmt(t.participants)} sub={`${t.inProgressRuns + t.plannedRuns} runs still open`} />
@@ -150,75 +140,36 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
         <Kpi icon={ICONS.clock} label="Participant hours" value={fmt(t.participantHours)} sub="completed × programming hours" />
       </section>
 
-      <section className="mt-8">
-        <h2 className="font-serif text-2xl text-slate-900">Estimated savings from avoided returns</h2>
-        <div className="mt-3 grid gap-4 md:grid-cols-2">
-          <div className="rounded-xl bg-sun-200 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-800">Conservative (marginal cost)</p>
-            <p className="mt-2 font-serif text-3xl tabular-nums text-slate-900">{money(savings.conservative)}</p>
-            <p className="mt-1 text-sm text-slate-800">
-              at {money(SAVINGS_INPUTS.marginalCost)} per person-year <Cite n={3} href={SOURCES.lao} />
-            </p>
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Long-run capacity (average cost)</p>
-            <p className="mt-2 font-serif text-3xl tabular-nums text-slate-900">{money(savings.capacity)}</p>
-            <p className="mt-1 text-sm text-slate-600">
-              at {money(SAVINGS_INPUTS.averageCost)} per person-year <Cite n={3} href={SOURCES.lao} />
-            </p>
-          </div>
-        </div>
-        <p className="mt-3 text-xs leading-relaxed text-slate-600">
-          Based on the current filtered view: {fmt(t.completed)} people completed a program. If they return to prison at the rate CDCR
-          reports for people who earned rehabilitative credits ({pct(SAVINGS_INPUTS.creditRate)}) instead of the no-credit rate (
-          {pct(SAVINGS_INPUTS.noCreditRate)}) <Cite n={2} href={SOURCES.cdcr} />, about {fmt(savings.avoidedReturns)} returns are avoided — one year
-          of incarceration each. Association, not causation.
-        </p>
-      </section>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-
-        <section className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-serif text-xl text-slate-900">Programs: completion and dose</h2>
-          <p className="mt-1 text-xs text-slate-600">
-            Completion in finished runs · programming hours per person who completed · network completion {pct(t.completionRate)}
-          </p>
-          <div className="mt-4 grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
-            <span>Program</span>
-            <span>Completion</span>
-            <span>Hours per completer</span>
-          </div>
-          <ul className="mt-2 space-y-3">
-            {programs.map((p) => (
-              <li key={`${p.name}|${p.org}`} className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)] items-center gap-x-4 text-sm">
-                <span className="min-w-0">
-                  <span className="block truncate font-medium text-slate-900">{p.name}</span>
-                  <span className="block truncate text-xs text-slate-500">
-                    {p.org} · {fmt(p.participants)} participants{p.participants < 20 ? " · small group" : ""}
-                  </span>
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="h-2.5 flex-1 rounded-full bg-slate-100">
-                    <span className="block h-full rounded-full" style={{ width: `${(p.rate ?? 0) * 100}%`, background: BRAND }} />
-                  </span>
-                  <span className="w-12 text-right tabular-nums">{pct(p.rate)}</span>
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="h-2.5 flex-1 rounded-full bg-slate-100">
-                    <span className="block h-full rounded-full" style={{ width: `${maxHours && p.hours ? (p.hours / maxHours) * 100 : 0}%`, background: SUN }} />
-                  </span>
-                  <span className="w-12 text-right tabular-nums">{p.hours === null ? "—" : fmt(p.hours)}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-          {programs.length === 0 && <p className="mt-4 text-sm text-slate-500">No programs in this view.</p>}
-          <p className="mt-4 text-xs text-slate-500">Groups under 20 participants are too small to compare.</p>
-        </section>
-        <ReadinessCard runs={runs} />
-      </div>
 
       <AiSummary filters={f} />
+
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <ReadinessCard runs={runs} />
+        <Card title="Estimated savings from avoided returns" sub="From the people who completed a program in this view">
+          <div className="mt-4 grid gap-3">
+            <div className="rounded-xl bg-sun-200 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-800">Conservative (marginal cost)</p>
+              <p className="mt-1 font-serif text-3xl tabular-nums text-slate-900">{money(savings.conservative)}</p>
+              <p className="mt-1 text-sm text-slate-800">
+                at {money(SAVINGS_INPUTS.marginalCost)} per person-year <Cite n={3} href={SOURCES.lao} />
+              </p>
+            </div>
+            <div className="rounded-xl border border-slate-200 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Long-run capacity (average cost)</p>
+              <p className="mt-1 font-serif text-3xl tabular-nums text-slate-900">{money(savings.capacity)}</p>
+              <p className="mt-1 text-sm text-slate-600">
+                at {money(SAVINGS_INPUTS.averageCost)} per person-year <Cite n={3} href={SOURCES.lao} />
+              </p>
+            </div>
+          </div>
+          <p className="mt-3 text-xs leading-relaxed text-slate-600">
+            {fmt(t.completed)} people completed a program. If they return to prison at the rate CDCR reports for people who earned
+            rehabilitative credits ({pct(SAVINGS_INPUTS.creditRate)}) instead of the no-credit rate ({pct(SAVINGS_INPUTS.noCreditRate)}){" "}
+            <Cite n={2} href={SOURCES.cdcr} />, about {fmt(savings.avoidedReturns)} returns are avoided — one year of incarceration each.
+            Association, not causation.
+          </p>
+        </Card>
+      </div>
 
       {timely.length > 0 && (
         <section className="mt-10">
@@ -244,7 +195,7 @@ export default function Dashboard({ wire }: { wire: WireRun[] }) {
       <footer className="mt-12 space-y-2 text-xs leading-relaxed text-slate-500">
         <p>
           Definitions follow TPW&apos;s Collective Impact Report: participant programming hours = participants completed × total
-          programming hours; program year = year of the start date. Hours per completer = total participant programming hours ÷ participants completed.
+          programming hours; program year = year of the start date.
         </p>
         <p>
           [2] CDCR, &ldquo;CDCR Recidivism Report Finds Recidivism Rates Drop,&rdquo; Feb 13, 2024 — three-year conviction rate 45.6% with
