@@ -1,4 +1,4 @@
-# Design Document — ImpactLink（TPW 影响数据框架）
+# Design Document — Spera（TPW 影响数据框架）
 
 **赛事**：Hack for Social Impact 2026，Justice Reform 赛道，合作方 Transformative Programming Works（TPW）
 **时间盒**：2026-10-24 09:00 – 10-25 18:00（约 33 小时，含睡眠实际可开发约 16–20 小时）
@@ -43,7 +43,7 @@
 | 项 | 锁定 | 备选（仅当锁定项不可行） |
 |---|---|---|
 | 形态 | Next.js（App Router）+ TypeScript 单体应用 | — |
-| 数据库 | SQLite（单文件 `data/impactlink.db`），Prisma ORM | — |
+| 数据库 | SQLite（单文件 `data/spera.db`），Prisma ORM | — |
 | 样式 | Tailwind CSS | — |
 | 图表 | Recharts | — |
 | 字段映射 LLM | Gemini API（赛事赞助商，现场发放 credits）；调用点仅在导入向导 | 无 key 时降级为规则映射（列名模糊匹配 + 人工选择），功能不中断 |
@@ -357,7 +357,7 @@ savings_capacity     = avoided_returns × return_years × avg_cost_year        (
 - 功能冻结提前到周日 **12:00**；12:00–14:00 只做 Devpost 提交页 + pitch 彩排 + 演示数据复位；14:00–15:00 缓冲与提交，禁止新功能
 - 第 10 节 3 分钟动线作废，按下方 4 分钟结构执行；另备 5 分钟决赛版（多：人的原话收尾 + 试点细节 + 公众版报告）
 - Q&A 只有 1 分钟 ≈ 1–2 个问题：只彩排最高频三问的 20 秒版（选择偏差、省钱口径、赛后谁维护）
-- **Devpost 提交清单**（周日 12:00 前完成文案）：项目名 ImpactLink、一句话描述、长描述（问题/框架/洞察/引用口径）、GitHub 链接、演示链接、3–5 张截图、Built with 标签（Next.js / Prisma / Gemini）、赛道与合作方标注（Justice Reform · TPW）
+- **Devpost 提交清单**（周日 12:00 前完成文案）：项目名 Spera、一句话描述、长描述（问题/框架/洞察/引用口径）、GitHub 链接、演示链接、3–5 张截图、Built with 标签（Next.js / Prisma / Gemini）、赛道与合作方标注（Justice Reform · TPW）
 - Crowd Favorite 存在观众投票 → 决赛版的可视化与故事版报告权重上升；动画打磨（M6）优先保总览页数字动画与梯度图
 
 *文档版本：v1.4（2026-10-23 新增第 21 节：官方赛程与重排）。*

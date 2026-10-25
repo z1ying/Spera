@@ -1,4 +1,4 @@
-// ImpactLink data model — design doc §28.
+// Spera data model — design doc §28.
 // What TPW collects: one row per program run (a cohort of a program at one
 // prison), with aggregate counts only. There are no tables for individuals
 // and no identifier fields anywhere.
@@ -68,7 +68,7 @@ model ProgramRun {
   /// Language other than English the run is delivered in; null = English (RIGHT 4.0, +0.5 point).
   nonEnglishLanguage String?        @map("non_english_language")
   notes              String?
-  /// "form" (submitted on ImpactLink) or "import:<file>#<row>".
+  /// "form" (submitted on Spera) or "import:<file>#<row>".
   source             String
   createdAt          DateTime       @default(now()) @map("created_at")
   updatedAt          DateTime       @updatedAt @map("updated_at")

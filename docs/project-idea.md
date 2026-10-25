@@ -1,10 +1,10 @@
 > ⚠️ **Outdated (2026-10-24):** written for the earlier synthetic outcome-linkage demo, which has been removed. Current direction: design doc §28 (real TPW program-run data). Rewrite before use.
 
-# ImpactLink — The Idea (show this to your teammate)
+# Spera — The Idea (show this to your teammate)
 
 ## One line
 
-TPW advocates for 120 community organizations, but it cannot prove their programs work — because the data that would prove it is split in two. ImpactLink joins the two halves and turns them into evidence a legislator can trust.
+TPW advocates for 120 community organizations, but it cannot prove their programs work — because the data that would prove it is split in two. Spera joins the two halves and turns them into evidence a legislator can trust.
 
 ## The problem
 
@@ -18,7 +18,7 @@ TPW advocates for 120 community organizations, but it cannot prove their program
 
 - CDCR's own published numbers show a dose-response gradient: the deeper the participation, the lower the three-year conviction rate — no credits 45.6%, any credit 39.2%, education credits 26.1%, rehabilitation credits 21.1% [2].
 - What nobody can show today is whether that holds for TPW's network, organization by organization and program by program — because the process half and the outcome half of the data never meet.
-- Our demo dataset is synthetic and calibrated to these published rates, so any pattern in it (for example, dropouts looking like non-participants) reflects the calibration, not a discovery. We never present it as a finding. With real records, ImpactLink is how TPW would find out.
+- Our demo dataset is synthetic and calibrated to these published rates, so any pattern in it (for example, dropouts looking like non-participants) reflects the calibration, not a discovery. We never present it as a finding. With real records, Spera is how TPW would find out.
 
 ## The product (a website, three parts)
 

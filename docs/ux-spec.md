@@ -1,4 +1,4 @@
-# ImpactLink UX spec (v1, 2026-10-24 — org-first)
+# Spera UX spec (v1, 2026-10-24 — org-first)
 
 ## Information architecture: orgs are the majority user
 

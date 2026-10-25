@@ -44,7 +44,7 @@ TPW's permission. The workbook itself is not committed.
 npm install
 cp .env.example .env     # then set TPW_PASSCODE
 npm run db:generate
-npm run db:push          # creates data/impactlink.db
+npm run db:push          # creates data/spera.db
 npm run seed             # loads data/real (also clears form submissions)
 npm test
 npm run dev              # http://localhost:3000      organization form

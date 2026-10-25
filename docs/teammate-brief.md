@@ -1,6 +1,6 @@
 > ⚠️ **Outdated (2026-10-24):** written for the earlier synthetic outcome-linkage demo, which has been removed. Current direction: design doc §28 (real TPW program-run data). Rewrite before use.
 
-# Teammate Brief — ImpactLink (read this first, 3 minutes)
+# Teammate Brief — Spera (read this first, 3 minutes)
 
 **The project in one line:** TPW advocates for 120 community organizations but can only track process data. We join program records (enrollment → completion → credits) with outcome records (arrest → conviction → return to custody) using privacy-safe keys, compute impact with CDCR's own metrics, and generate a one-page report funders and legislators can trust.
 

@@ -10,7 +10,7 @@
 
 TPW 代表 120 家社区组织（CBO）在加州监狱里做康复项目，但他们只能证明"我们办了课"，证明不了"我们让多少人没再回去"——因为结果数据（假释、再犯）散在别的系统里。我们做的就是把这两半数据拼起来的框架，并一键生成能拿去国会山争经费的影响报告。
 
-**产品名（建议）**：ImpactLink — TPW Impact Framework。副标题：*From attendance sheets to evidence.*
+**产品名（建议）**：Spera — TPW Impact Framework。副标题：*From attendance sheets to evidence.*
 
 ---
 

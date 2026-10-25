@@ -1,4 +1,4 @@
-# ImpactLink visual style (HSI family, dignified data)
+# Spera visual style (HSI family, dignified data)
 
 Reference: the Hack for Social Impact brand mark (white ground, black grotesque
 type, code-symbol confetti). Do NOT copy their logo; borrow the language.

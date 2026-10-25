@@ -43,6 +43,6 @@ Thank you for reading. Short answers are perfect, and I may type follow-ups.*
 
 13. Do staff at any organizations prefer to work in Spanish?
 
-*Thank you. My name is Grace — my team is building ImpactLink, the data-joining
+*Thank you. My name is Grace — my team is building Spera, the data-joining
 framework. I would love to stay in touch by email or text after today,
 whichever is easier for you.*

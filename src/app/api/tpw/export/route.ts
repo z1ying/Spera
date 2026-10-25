@@ -21,6 +21,6 @@ export async function GET() {
     "CALC: Total Participant Programming hours", "CALC: Program Year", "RIGHT 4.0 underserved institution", "Serves RHU/EOP/MHCB", "Language other than English",
   ];
   return new Response("﻿" + toCsv(headers, rows), {
-    headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": 'attachment; filename="impactlink_program_runs.csv"' },
+    headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": 'attachment; filename="spera_program_runs.csv"' },
   });
 }

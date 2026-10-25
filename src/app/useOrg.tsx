@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { OrgSummary } from "@/lib/orgSummary";
 import SearchPick from "./SearchPick";
 
-const LAST = "impactlink.last";
+const LAST = "spera.last";
 
 /** The organization this browser last used (convenience only). */
 function readLast(): string {

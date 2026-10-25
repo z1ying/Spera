@@ -7,9 +7,9 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 
-export const TPW_COOKIE = "impactlink_tpw";
+export const TPW_COOKIE = "spera_tpw";
 
-const sessionValue = (passcode: string) => createHash("sha256").update(`impactlink-tpw:${passcode}`).digest("hex");
+const sessionValue = (passcode: string) => createHash("sha256").update(`spera-tpw:${passcode}`).digest("hex");
 
 export function passcodeMatches(attempt: string): boolean {
   const passcode = process.env.TPW_PASSCODE;

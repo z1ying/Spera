@@ -1,12 +1,12 @@
 > ⚠️ **Outdated (2026-10-24):** written for the earlier synthetic outcome-linkage demo, which has been removed. Current direction: design doc §28 (real TPW program-run data). Rewrite before use.
 
-# Handover memo — ImpactLink for TPW
+# Handover memo — Spera for TPW
 
-**To:** Transformative Programming Works · **From:** the ImpactLink team (Hack for Social Impact 2026) · **Date:** October 2026
+**To:** Transformative Programming Works · **From:** the Spera team (Hack for Social Impact 2026) · **Date:** October 2026
 
 ## What it is
 
-ImpactLink joins the two halves of the evidence TPW needs: **program records** from member organizations (who enrolled, who completed, credits earned) and **outcome records** from other systems (convictions, returns to custody, parole events). It measures impact with CDCR's own three-year conviction rate and produces a one-page report with both a conservative and a long-run cost figure, every number sourced.
+Spera joins the two halves of the evidence TPW needs: **program records** from member organizations (who enrolled, who completed, credits earned) and **outcome records** from other systems (convictions, returns to custody, parole events). It measures impact with CDCR's own three-year conviction rate and produces a one-page report with both a conservative and a long-run cost figure, every number sourced.
 
 ## How an organization submits data (three steps)
 

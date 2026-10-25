@@ -56,7 +56,7 @@ Verification results are appended below as they land.
   curl into `.prisma-engines/` (git-ignored) and used via
   `PRISMA_SCHEMA_ENGINE_BINARY` / `PRISMA_QUERY_ENGINE_LIBRARY`. On an
   unrestricted network, plain `npx prisma generate` needs none of this.
-- `prisma generate` + `db push`: OK, `data/impactlink.db` created.
+- `prisma generate` + `db push`: OK, `data/spera.db` created.
 - `npm run seed`: organizations 8, programs 25, participants 7,000,
   enrollments 5,000, outcomes 8,068, cost_params 3 — matches source CSVs.
 - `npm test`: 14/14 pass (12 metrics incl. the §7.2 worked example at 0.5%
@@ -327,3 +327,12 @@ Decisions:
   silently), so the TPW switch asks for the passcode on every entry. Session
   cookie also capped at 30 minutes. Verified: sign in → Organization view →
   TPW shows the passcode form; export returns 401 after leaving.
+
+## 2026-10-25 — old name removed everywhere
+
+- Every "ImpactLink" is now "Spera": CSV download (`spera_program_runs.csv`),
+  database file (`data/spera.db` — update `DATABASE_URL` in your `.env`),
+  TPW cookie (`spera_tpw`), remembered-organization key (`spera.last`),
+  schema comments and docs. Only the GitHub repo name stays `impactlink`.
+- Side effect: TPW staff are signed out once and the form forgets the last
+  organization once.

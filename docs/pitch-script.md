@@ -1,6 +1,6 @@
 > ⚠️ **Outdated (2026-10-24):** written for the earlier synthetic outcome-linkage demo, which has been removed. Current direction: design doc §28 (real TPW program-run data). Rewrite before use.
 
-# ImpactLink — Pitch 讲稿（Round 1：4 分钟 + 1 分钟 Q&A）
+# Spera — Pitch 讲稿（Round 1：4 分钟 + 1 分钟 Q&A）
 
 语速基准 ~135 词/分钟，全文约 540 词。每段标注时间与屏幕动作。
 语气：稳、慢、像在陈述事实，不像在推销。
@@ -26,10 +26,10 @@ CDCR reports that people who earn no program credits are convicted again at 45.6
 People who earn rehabilitative achievement credits: 21.1. [2]
 The deeper the participation, the lower the rate.
 What nobody can tell you is whether that holds for TPW's 120 organizations — program by program.
-That is the question ImpactLink lets TPW answer.”
+That is the question Spera lets TPW answer.”
 
 **[1:35–3:00｜切到 live demo，操作者同步动作]**
-“This is ImpactLink.
+“This is Spera.
 [导入西班牙语 Q1 表] A program manager drops in her spreadsheet — Spanish headers, three different date formats, duplicates.
 [映射确认页] The system proposes the mapping, she confirms it — she never fills in a new form.
 [校验回执] Duplicates merged. Problem rows listed, not hidden. Her organizations are grade B: process data only.

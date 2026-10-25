@@ -12,7 +12,7 @@ interface Options {
 }
 
 
-const LAST = "impactlink.last";
+const LAST = "spera.last";
 
 // Browser storage is a convenience only (remembered choices, this browser's
 // submissions); every read and write is guarded so the form works without it.
