@@ -6,32 +6,6 @@ export const metadata = { title: "About & privacy — Spera" };
  * About & privacy (design doc §28). Every privacy statement here describes
  * what the software does today, or says plainly where it doesn't yet.
  */
-const PROMISES: { title: string; body: React.ReactNode }[] = [
-  {
-    title: "We count programs, not people.",
-    body: <>No names, birth dates, CDCR or case numbers — ever. Only hours, how many took part and finished, where and when.</>,
-  },
-  {
-    title: "Outside TPW, only totals.",
-    body: <>TPW shares network totals only. In this pilot anyone can still open an organization&apos;s report; private links come next.</>,
-  },
-  {
-    title: "We only report what you told us.",
-    body: <>Missing numbers stay missing, never guessed. The grant assistant sees only your totals — review its drafts and disclose AI use to CDCR.</>,
-  },
-  {
-    title: "You stay in control.",
-    body: (
-      <>
-        To fix or remove anything, email{" "}
-        <a href="mailto:info@thetpw.org" className="text-brand-800 underline">
-          info@thetpw.org
-        </a>
-        .
-      </>
-    ),
-  },
-];
 
 export default function AboutPrivacy() {
   return (
@@ -56,15 +30,16 @@ export default function AboutPrivacy() {
       </div>
 
       <h2 className="mt-16 text-3xl font-semibold">Privacy</h2>
-      <p className="mt-3 text-lg text-slate-600">Here is how we treat the information you share with us.</p>
-      <ul className="mt-8 space-y-7">
-        {PROMISES.map((p) => (
-          <li key={p.title} className="border-l-4 border-sun-400 pl-5">
-            <h3 className="text-lg font-semibold text-slate-900">{p.title}</h3>
-            <p className="mt-1 leading-relaxed text-slate-700">{p.body}</p>
-          </li>
-        ))}
-      </ul>
+      <p className="mt-4 max-w-3xl border-l-4 border-sun-400 pl-5 text-lg leading-relaxed text-slate-700">
+        <strong className="font-semibold text-slate-900">We count programs, not people:</strong> no names, birth dates, CDCR or case
+        numbers — only hours, how many took part and finished, where and when. TPW shares network totals only; in this pilot anyone
+        can still open an organization&apos;s report, and private links come next. Missing numbers stay missing, never guessed. The
+        grant assistant sees only your totals, so review its drafts and disclose AI use to CDCR. To fix or remove anything, email{" "}
+        <a href="mailto:info@thetpw.org" className="text-brand-800 underline">
+          info@thetpw.org
+        </a>
+        .
+      </p>
 
       <Link href="/" className="mt-12 inline-block rounded-lg bg-brand-800 px-6 py-3 font-medium text-white hover:bg-brand-900">
         Submit your program data
