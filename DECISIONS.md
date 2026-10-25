@@ -286,3 +286,15 @@ Decisions:
   /api/runs/template); month/year parsed from common date styles; preview with
   per-row problems; good rows imported via /api/runs/bulk (re-validated).
   Excel/Sheets users save as CSV (no .xlsx parser added).
+
+## 2026-10-25 — organizations never see other organizations' names
+
+- `/api/form-options` returns prisons only; new `/api/org-lookup` answers an
+  exact (case/space-insensitive) full-name lookup with that organization's own
+  programs. Partial names reveal nothing.
+- Form, one-page report and grants pages use `OrgEntry` (type your full name →
+  Continue); the browser remembers its own organization. Unknown names are
+  "new" on the form and "nothing reported yet" on reports.
+- Still a pilot: someone who knows an organization's exact name can open its
+  report. Privacy page says so; per-organization private links remain planned.
+- Privacy section merged from seven points into four.

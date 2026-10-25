@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { hoursFromSchedule, STATUSES, type RunInput } from "@/lib/runs";
+import OrgEntry, { lookupOrg } from "./OrgEntry";
 import SearchPick from "./SearchPick";
 import ReportModal, { type SubmittedRun } from "@/components/ReportModal";
 import type { OrgSummary } from "@/lib/orgSummary";
 
 interface Options {
-  orgs: { name: string; programs: string[] }[];
   facilities: { code: string; name: string; underserved: boolean; womens: boolean }[];
 }
 
@@ -157,8 +157,9 @@ function Stepper({ value, onChange, label, disabled }: { value: number | null; o
 export default function RunForm() {
   const [opts, setOpts] = useState<Options | null>(null);
   const [form, setForm] = useState<RunInput>(EMPTY);
-  /** Organizations typed in as new during this visit (not yet on the server). */
-  const [addedOrgs, setAddedOrgs] = useState<string[]>([]);
+  /** The organization's own programs (from an exact-name lookup) and whether it's on file. */
+  const [orgPrograms, setOrgPrograms] = useState<string[]>([]);
+  const [orgFound, setOrgFound] = useState(true);
   const [newProgram, setNewProgram] = useState(false);
   const [schedule, setSchedule] = useState<{ on: boolean; per: "week" | "month"; sessions: string; hours: string; count: string }>({
     on: false,
@@ -177,22 +178,20 @@ export default function RunForm() {
   useEffect(() => {
     fetch("/api/form-options")
       .then((r) => r.json())
-      .then((o: Options) => {
-        setOpts(o);
-        // Restore the last organization/program only if they still exist.
-        const last = readStore<Partial<RunInput>>(LAST, {});
-        const org = o.orgs.find((x) => x.name === last.orgName);
-        if (org) setForm((f) => ({ ...f, orgName: org.name, programName: org.programs.includes(last.programName ?? "") ? last.programName! : "" }));
-      })
-      .catch(() => setOpts({ orgs: [], facilities: [] }));
+      .then((o: Options) => setOpts(o))
+      .catch(() => setOpts({ facilities: [] }));
+    // Restore this browser's own organization/program only if they still exist.
+    const last = readStore<Partial<RunInput>>(LAST, {});
+    if (last.orgName)
+      lookupOrg(last.orgName).then((m) => {
+        if (!m.found) return;
+        setOrgPrograms(m.programs);
+        setOrgFound(true);
+        setForm((f) => ({ ...f, orgName: m.name, programName: m.programs.includes(last.programName ?? "") ? last.programName! : "" }));
+      });
   }, []);
 
-  const orgPrograms = opts?.orgs.find((o) => o.name === form.orgName)?.programs ?? [];
   const facility = opts?.facilities.find((f) => f.code === form.facilityCode);
-  const allOrgs = useMemo(
-    () => [...(opts?.orgs ?? []), ...addedOrgs.filter((n) => !opts?.orgs.some((o) => o.name === n)).map((name) => ({ name, programs: [] }))],
-    [opts, addedOrgs],
-  );
 
   const scheduleHours = schedule.on
     ? hoursFromSchedule(Number(schedule.sessions) || 0, Number(schedule.hours) || 0, Number(schedule.count) || 0)
@@ -234,7 +233,9 @@ export default function RunForm() {
       setForm({ ...EMPTY, orgName: form.orgName, programName: form.programName });
       setOtherLanguage(false);
         setNewProgram(false);
-      setOpts(await (await fetch("/api/form-options")).json());
+      const refreshed = await lookupOrg(form.orgName);
+      setOrgPrograms(refreshed.programs);
+      setOrgFound(true);
     } finally {
       setBusy(false);
     }
@@ -248,16 +249,20 @@ export default function RunForm() {
 
         <form onSubmit={submit} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           <Field n={1} label="Your organization">
-            <SearchPick
-              items={allOrgs}
-              label={(o) => o.name}
-              toText={(o) => o.name}
-              selected={allOrgs.find((o) => o.name === form.orgName) ?? null}
-              onPick={(o) => { set({ orgName: o.name, programName: "" }); setNewProgram(false); }}
-              onClear={() => set({ orgName: "", programName: "" })}
-              onAdd={(name) => { setAddedOrgs((xs) => [...xs, name]); set({ orgName: name, programName: "" }); setNewProgram(true); }}
-              placeholder="Type your organization's name"
-              addLabel="a new organization"
+            <OrgEntry
+              value={form.orgName}
+              unknownHint={orgFound ? null : "New to Spera — we'll add your organization when you submit."}
+              onSet={(m) => {
+                setOrgPrograms(m.programs);
+                setOrgFound(m.found);
+                setNewProgram(!m.found || m.programs.length === 0);
+                set({ orgName: m.name, programName: "" });
+              }}
+              onClear={() => {
+                setOrgPrograms([]);
+                setOrgFound(true);
+                set({ orgName: "", programName: "" });
+              }}
             />
           </Field>
 
@@ -441,7 +446,7 @@ export default function RunForm() {
       <p className="mt-4 text-xs text-slate-500">
         Spera collects counts only — never names or ID numbers.{" "}
         <a href="/data-use" className="underline">
-          About &amp; Privacy
+          About &amp; privacy
         </a>
       </p>
     </div>

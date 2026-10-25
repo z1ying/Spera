@@ -23,7 +23,7 @@ function Tick({ state, children }: { state: "yes" | "no" | "ask"; children: Reac
 
 // "Do we qualify?" — RIGHT 4.0 eligibility and estimated points from the org's reported runs.
 export default function GrantCheck() {
-  const { orgs, org, setOrg, summary: s, loading } = useOrgSummary();
+  const { org, found, setOrg, summary: s, loading } = useOrgSummary();
   const [budget, setBudget] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const extra = s?.signals.additionalPoints ?? 0;
@@ -36,7 +36,7 @@ export default function GrantCheck() {
     <>
       <h1 className="text-3xl font-semibold">Do we qualify for {open.name}?</h1>
       <div className="mt-4">
-        <OrgPicker orgs={orgs} org={org} setOrg={setOrg} />
+        <OrgPicker org={org} found={found} setOrg={setOrg} />
       </div>
       {loading && <p className="mt-6 text-slate-500">Loading…</p>}
 

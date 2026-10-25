@@ -5,12 +5,12 @@ import ChatPanel from "../ChatPanel";
 
 // "Write our application" — the grant-writing assistant, full page.
 export default function GrantWrite() {
-  const { orgs, org, setOrg, summary } = useOrgSummary();
+  const { org, found, setOrg, summary } = useOrgSummary();
   return (
     <>
       <h1 className="text-3xl font-semibold">Write our application</h1>
       <div className="mt-4">
-        <OrgPicker orgs={orgs} org={org} setOrg={setOrg} />
+        <OrgPicker org={org} found={found} setOrg={setOrg} />
       </div>
       <div className="mt-6">
         {summary ? <ChatPanel org={summary.org} /> : <p className="text-slate-500">Choose your organization to start.</p>}

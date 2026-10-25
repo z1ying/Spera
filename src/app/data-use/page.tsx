@@ -11,51 +11,30 @@ const PROMISES: { title: string; body: React.ReactNode }[] = [
     title: "We count programs, not people.",
     body: (
       <>
-        We never ask for names, birth dates, CDCR numbers or case numbers — not even in scrambled or hashed form. There is
-        simply no place in Spera to store them. What we collect is the shape of your program: how many hours it runs, how many
-        people took part, how many finished, and where and when.
+        We never ask for names, birth dates, CDCR numbers or case numbers — not even in scrambled or hashed form, and there is
+        no place in Spera to store them. We only ask for the shape of your program: hours, how many took part and finished,
+        and where and when. Every result describes a program, never a person — there are no individual risk scores.
       </>
     ),
   },
   {
-    title: "We only ask for what TPW needs.",
+    title: "Your numbers stay between you and TPW.",
     body: (
       <>
-        Every question on the form is either a number TPW reports to funders and lawmakers, or a detail that can earn your
-        organization points in a state grant. If a field doesn&apos;t serve one of those, we leave it out.
+        Spera never shows you a list of other organizations, and you only see your own organization&apos;s programs and report.
+        TPW staff sign in to see the whole network, and anything TPW shares publicly is a total across all organizations. While
+        Spera is a pilot, the page opens for whoever types your organization&apos;s exact name; before real deployment, each
+        organization will get its own private link.
       </>
     ),
   },
   {
-    title: "We keep your organization's numbers between you and TPW.",
+    title: "We only report what you told us.",
     body: (
       <>
-        TPW staff sign in to see the whole network. When TPW shares results publicly, it shares totals across all
-        organizations. One honest caveat while Spera is a pilot: anyone who types your organization&apos;s name can open its
-        one-page report. Before real deployment, each organization will get its own private link.
-      </>
-    ),
-  },
-  {
-    title: "We never score individuals.",
-    body: <>There are no risk scores in Spera. Every result describes a program or a group of programs — never a person.</>,
-  },
-  {
-    title: "We don't fill in the blanks for you.",
-    body: (
-      <>
-        If a number is missing or marked TBD, it stays missing. We flag it for a follow-up rather than estimating it, so
-        every figure TPW cites is one you actually reported.
-      </>
-    ),
-  },
-  {
-    title: "When AI helps you write, it only sees your program totals.",
-    body: (
-      <>
-        The grant writing assistant receives your organization&apos;s reported totals and the grant&apos;s rules — nothing about
-        individuals. Its drafts are a starting point: your team reviews every word, and CDCR&apos;s application asks you to
-        disclose AI-assisted text.
+        If a number is missing, it stays missing and is flagged for a follow-up — we never estimate it. The grant writing
+        assistant sees only your program totals and the grant&apos;s rules; its drafts are a starting point that your team
+        reviews, and CDCR asks you to disclose AI-assisted text.
       </>
     ),
   },
