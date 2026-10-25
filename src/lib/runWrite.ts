@@ -59,7 +59,9 @@ async function checked(input: RunInput) {
 export async function createRun(input: RunInput) {
   const data = await checked(input);
   const run = await prisma.programRun.create({
-    data: { id: `run-${randomUUID()}`, ...data, source: "form" },
+    data: input.estimate
+      ? { id: `run-${randomUUID()}`, ...data, source: "estimate", notes: "Past year, estimated by the organization (year only)." }
+      : { id: `run-${randomUUID()}`, ...data, source: "form" },
   });
   return { id: run.id };
 }

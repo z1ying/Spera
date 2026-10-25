@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import ReportView from "@/components/ReportView";
 import { OrgPicker, useOrgSummary } from "../useOrg";
 
@@ -15,15 +16,23 @@ export default function MyReport() {
           <div className="w-full max-w-md flex-1">
             <OrgPicker orgs={orgs} org={org} setOrg={setOrg} />
           </div>
-          {summary && summary.runs > 0 && (
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="rounded-lg bg-brand-800 px-5 py-2.5 font-medium text-white hover:bg-brand-900"
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/report/past"
+              className="rounded-lg border border-brand-800 px-5 py-2.5 font-medium text-brand-800 hover:bg-brand-50"
             >
-              Download / print (PDF)
-            </button>
-          )}
+              + Add past records
+            </Link>
+            {summary && summary.runs > 0 && (
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="rounded-lg bg-brand-800 px-5 py-2.5 font-medium text-white hover:bg-brand-900"
+              >
+                Download / print (PDF)
+              </button>
+            )}
+          </div>
         </div>
       </div>
       <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm print:mt-0 print:border-0 print:p-0 print:shadow-none">

@@ -170,6 +170,8 @@ export interface RunInput {
   specialPopulations?: boolean;
   /** Language other than English, if any. */
   nonEnglishLanguage?: string;
+  /** A past year added from memory ("Add past records"): year-level estimate, not an exact record. */
+  estimate?: boolean;
 }
 
 /** Hours helper: "2 sessions a week, 3 hours each, for 12 weeks" = 72. */
